@@ -1,6 +1,6 @@
 import * as THREE from '../assets/vendor/three.module.js';
-import { createNotebook, createMicroscope } from './models-learning.js?v=study-2';
-import { createCampus } from './model-campus.js?v=study-2';
+import { createNotebook, createMicroscope } from './models-learning.js?v=study-3';
+import { createProjectDisplay } from './project-display.js?v=study-3';
 
 const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
 const ids = ['studies', 'experience', 'projects'];
@@ -11,10 +11,11 @@ export function createStudy(canvas, { onSelect, onReady, onUnavailable, onLabels
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
   } catch {
     onUnavailable?.();
-    return { select() {}, reset() {}, cancel() {}, setMesh() {}, setTheme() {}, setReduced() {}, setStudyChapter() {}, destroy() {}, getState: () => ({ ready: false, unavailable: true }) };
+    return { select() {}, reset() {}, cancel() {}, setMesh() {}, setTheme() {}, setReduced() {}, setStudyChapter() {}, setExperienceCategory() {}, setProject() {}, destroy() {}, getState: () => ({ ready: false, unavailable: true }) };
   }
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.75));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.localClippingEnabled = true;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
   renderer.shadowMap.enabled = true;
@@ -57,7 +58,7 @@ export function createStudy(canvas, { onSelect, onReady, onUnavailable, onLabels
   const groups = {
     studies: createNotebook(THREE),
     experience: createMicroscope(THREE),
-    projects: createCampus(THREE),
+    projects: createProjectDisplay(THREE),
   };
   groups.studies.position.set(-4.7, .03, 1.05);
   groups.studies.rotation.y = .10;
@@ -80,8 +81,12 @@ export function createStudy(canvas, { onSelect, onReady, onUnavailable, onLabels
     if (id !== 'furniture') world.add(group);
   }
   world.updateMatrixWorld(true);
-  const boxes = Object.fromEntries(ids.map(id => [id, new THREE.Box3().setFromObject(groups[id])]));
+  const boxes = Object.fromEntries(ids.map(id => [id, groups[id].userData.frameBounds
+    ? groups[id].userData.frameBounds.clone().applyMatrix4(groups[id].matrixWorld)
+    : new THREE.Box3().setFromObject(groups[id])]));
   const book = groups.studies.userData.book;
+  const microscope = groups.experience.userData.microscope;
+  const projects = groups.projects.userData.projects;
   // Keep the lifted sheet inside the frame without moving the camera on every turn.
   const studyFrame = boxes.studies.clone();
   studyFrame.max.y = Math.max(studyFrame.max.y, groups.studies.position.y + 2.3);
@@ -161,6 +166,8 @@ export function createStudy(canvas, { onSelect, onReady, onUnavailable, onLabels
     animating = current.center.distanceTo(desired.center) > .001 ||
       Math.abs(current.yaw - desired.yaw) + Math.abs(current.pitch - desired.pitch) + Math.abs(current.height - desired.height) > .002;
     if (book?.update(dt)) animating = true;
+    if (microscope?.update(dt)) animating = true;
+    if (projects?.update(dt)) animating = true;
     for (const [id, materials] of materialSets) {
       const goal = page === 'about' || id === page ? 1 : id === 'furniture' ? .12 : 0;
       let amount = opacity.get(id) + (goal - opacity.get(id)) * (reduced ? 1 : 1 - Math.exp(-dt / .12));
@@ -211,7 +218,11 @@ export function createStudy(canvas, { onSelect, onReady, onUnavailable, onLabels
     mouse.set((event.clientX - rect.left) / rect.width * 2 - 1, -(event.clientY - rect.top) / rect.height * 2 + 1);
     raycaster.setFromCamera(mouse, camera);
     const hits = raycaster.intersectObjects(ids.filter(id => page === 'about' || page === id).map(id => groups[id]), true);
-    return hits.find(result => result.object.isMesh)?.object.userData.section || null;
+    return hits.find(result => {
+      if (!result.object.isMesh) return false;
+      for (let object = result.object; object; object = object.parent) if (!object.visible) return false;
+      return true;
+    })?.object.userData.section || null;
   }
   function hover(id) { if (id === hovered) return; hovered = id; canvas.style.cursor = id && page === 'about' ? 'pointer' : 'grab'; onHover?.(id); }
   function pointerDown(event) {
@@ -317,9 +328,11 @@ export function createStudy(canvas, { onSelect, onReady, onUnavailable, onLabels
   return {
     select, cancel, setMesh, setTheme,
     setStudyChapter(chapter, options) { book?.setChapter(chapter, options); request(); },
+    setExperienceCategory(category, options) { microscope?.setCategory(category, options); request(); },
+    setProject(id, options) { projects?.setProject(id, options); request(); },
     reset() { cancel(); destination(true); request(); },
-    setReduced(value) { reduced = value; book?.setReduced(value); request(); },
-    getState: () => ({ ready, unavailable: lost, page, theme, mesh: meshMode, dragging: Boolean(drag || pinch), animating, book: book?.getState(), yaw: current.yaw, pitch: current.pitch, zoom, width, height, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }),
+    setReduced(value) { reduced = value; book?.setReduced(value); microscope?.setReduced(value); projects?.setReduced(value); request(); },
+    getState: () => ({ ready, unavailable: lost, page, theme, mesh: meshMode, dragging: Boolean(drag || pinch), animating, book: book?.getState(), microscope: microscope?.getState(), projects: projects?.getState(), yaw: current.yaw, pitch: current.pitch, zoom, width, height, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }),
     destroy() {
       disposed = true; cancel(); cancelAnimationFrame(raf); observer.disconnect();
       canvas.removeEventListener('pointerdown', pointerDown); canvas.removeEventListener('pointermove', pointerMove);

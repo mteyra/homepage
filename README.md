@@ -8,9 +8,11 @@ A personal homepage arranged as a 3D study, with Marc Teyra Galiano as its main 
 
 The overview presents three labelled objects. Click an object or its HTML label to open the corresponding chapter; Explore also provides direct links. Drag to orbit the view, pinch or use the wheel to zoom, and reset to restore its framing. Mesh view exposes the geometry. Day and night modes change the scene and interface together.
 
-Studies and Experience each show one selected category. Selecting a study category turns a physical 3D sheet to a printed spread about computation, biology and medicine, or independent study. The topic notes are symbolic illustrations. Ordinary category links preserve browser history, and the degree and current employer appear in their chapter introductions. Experience types, dates and contributions remain distinct; supporting accounts use native disclosures. Projects contains five brief entries with direct links, beginning with the public, in-progress Rommelweb project.
+Studies and Experience each show one selected category. Selecting a study category turns a physical 3D sheet to a printed spread about computation, biology and medicine, or independent study. Selecting an experience category indexes one of the microscope’s three objectives over the stage. The topic notes and microscope are symbolic illustrations. Ordinary category links preserve browser history, and the degree and current employer appear in their chapter introductions. Experience types, dates and contributions remain distinct; supporting accounts use native disclosures.
 
-On wide screens, the focused object and reading panel share the screen. On smaller screens, the object sits above the chapter and the page scrolls. HTML navigation and the CV work independently of WebGL. A preview image provides the scene fallback. Browser history, links to individual entries and keyboard navigation are supported. Reduced motion changes notebook spreads immediately and skips animated settling while keeping direct manipulation. The renderer stops requesting frames once the view and page turn settle.
+Projects contains five brief entries with direct links. Hovering, focusing or selecting an entry, or scrolling through the list, changes a shared 3D display: its current exhibit retracts, the empty plate flips, and the next exhibit rises. Rommelweb has its campus, Aloha its palm, Nixcare a maintenance instrument, the NixOS setup a convertible workstation, and the cube solver a cube-solving mechanism. The three hardware illustrations are symbolic models, not replicas of Marc’s equipment.
+
+On wide screens, the focused object and reading panel share the screen. On smaller screens, the object sits above the chapter and the page scrolls; the project display stays visible while reading the list. HTML navigation and the CV work independently of WebGL. A preview image provides the scene fallback. Browser history, links to individual entries and keyboard navigation are supported. Reduced motion changes spreads, objectives and exhibits immediately while keeping direct manipulation. The renderer stops requesting frames once the view and object transitions settle.
 
 ## Content
 
@@ -30,12 +32,15 @@ GitHub Pages serves `main` from the repository root. `.nojekyll` keeps the site 
 - `study/content.js` — chapter HTML derived from the public profile.
 - `study/main.js` — routing, categories, keyboard controls and preferences.
 - `study/scene.js` — overview, object focus, camera controls and rendering.
-- `study/models-learning.js` — printed notebook spreads, 3D page turns and microscope illustration.
+- `study/models-learning.js` — printed notebook spreads, 3D page turns and indexed microscope objectives.
+- `study/project-display.js` — one shared flipping plate and five selectable exhibits.
+- `study/models-projects.js` — maintenance instrument, convertible workstation and cube-solving mechanism.
 - `study/model-campus.js` and `study/campus-mesh.js` — the eleven-building Rommelweb miniature.
-- `study/model-palm.js` — retained Aloha palm asset, unused by the current scene.
+- `study/model-palm.js` — Aloha’s palm exhibit.
 - `study/preview.webp` — scene fallback when WebGL is unavailable.
 - `puzzle/content.js` — shared public profile content.
-- `archive/` — twenty-one preserved design iterations.
+- `archive/` — twenty-two preserved design iterations.
+- `archive/22-turning-pages/` — the preceding notebook, microscope and campus edition, frozen from `19b84ea8f658760a1b75aa1d514a6fbac5aedf28`.
 - `archive/21-personal-study/` — the preceding notebook, microscope and Aloha palm edition, frozen from `44ccaf77f63142401b7eadca05d171d75f8bfb41`.
 - `archive/20-faceted-compass/` — the earlier compass, frozen from `b5274c429493156dc3c13b20e2ab55972b43ce23`.
 - `design/STUDY.md` — design notes for the current edition.
@@ -48,6 +53,6 @@ The spatial overview and object inspection take direction from [Rommelweb](https
 
 Campus data: **Datenquelle: Bayerische Vermessungsverwaltung – www.geodaten.bayern.de**, [LoD2-BY](https://geodaten.bayern.de/opengeodata/OpenDataDetail.html?pn=lod2), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Paths: **© OpenStreetMap contributors**, [ODbL](https://www.openstreetmap.org/copyright). Rommelweb’s façade details are photographic appearance estimates, not surveyed openings or interiors. The miniature adapts the geometry to a common display scale; its plinth is not surveyed terrain.
 
-The preceding edition’s palm adapts [Aloha Robotics](https://github.com/clschulzer/Aloha-Robotics-HH2.0), `Website/site/palm.mjs` (`buildExhibit`). It remains preserved in the archive and as an unused source asset.
+The palm adapts [Aloha Robotics](https://github.com/clschulzer/Aloha-Robotics-HH2.0), `Website/site/palm.mjs` (`buildExhibit`). Its earlier standalone display remains preserved in the archive.
 
 Three.js is MIT licensed (`assets/vendor/THREE-LICENSE.txt`). Manrope uses the SIL Open Font License (`assets/fonts/LICENSES.txt`). The archived editions retain their own assets and credits, including Instrument Serif’s license in `assets/fonts/INSTRUMENT-SERIF-OFL.txt`.

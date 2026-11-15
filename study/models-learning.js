@@ -797,32 +797,36 @@ export function createMicroscope(THREE) {
   const condenserFocus = axis([-.30, 1.18, -.03], [-1, 0, 0], assembly);
   knurled(.075, .068, p.graphite, [0, 0, 0], [0, 1, 0], condenserFocus, 28);
 
-  // The revolving nosepiece carries three distinct, stepped objective barrels.
-  const turret = new THREE.Group(); turret.name = 'revolving-objective-turret'; turret.position.set(0, 2.72, .075); assembly.add(turret);
-  cylinder(.266, .21, p.bodyShade, [0, .12, 0], turret, 48, .224);
-  cylinder(.427, .116, p.graphite, [0, -.026, 0], turret, 64);
-  annulus(.332, .416, .018, p.steelDark, [0, .033, 0], turret);
-  knurled(.421, .067, p.graphite, [0, -.028, 0], [0, 1, 0], turret, 64);
-  cylinder(.364, .034, p.steelDark, [0, -.100, 0], turret, 48);
+  // The bearing collar is fixed to the head. The separately batched nosepiece
+  // revolves beneath it; its axis stays fixed above the mechanical stage.
+  cylinder(.266, .21, p.bodyShade, [0, 2.84, .075], assembly, 48, .224);
+  const turretTools = tools(THREE, 'revolving-objective-turret'), turretParts = turretTools.assembly;
+  turretTools.cylinder(.427, .116, p.graphite, [0, -.026, 0], turretParts, 64);
+  turretTools.annulus(.332, .416, .018, p.steelDark, [0, .033, 0], turretParts);
+  turretTools.knurled(.421, .067, p.graphite, [0, -.028, 0], [0, 1, 0], turretParts, 64);
+  turretTools.cylinder(.364, .034, p.steelDark, [0, -.100, 0], turretParts, 48);
   for (const [index, length] of [.80, .57, .45].entries()) {
     const theta = index / 3 * TAU;
-    const objective = axis([Math.sin(theta) * .25, -.132, Math.cos(theta) * .25], [0, -1, 0], turret, `objective-${[40, 10, 4][index]}x`);
-    cylinder(.128, .092, p.steelDark, [0, .026, 0], objective, 32);
-    knurled(.118, .058, p.steelDark, [0, .080, 0], [0, 1, 0], objective, 36);
-    cylinder(.106, length - .22, p.steel, [0, .117 + (length - .22) / 2, 0], objective, 40, .097);
-    cylinder(.109, .026, index === 0 ? p.sage : index === 1 ? p.bodyShade : p.graphite, [0, length - .174, 0], objective, 40);
-    cylinder(.081, .095, p.steelDark, [0, length - .091, 0], objective, 32, .091);
-    cylinder(.059, .056, p.graphite, [0, length - .024, 0], objective, 32);
-    cylinder(.044, .006, p.lens, [0, length + .008, 0], objective, 32);
+    const objective = turretTools.axis([Math.sin(theta) * .25, -.132, Math.cos(theta) * .25], [0, -1, 0], turretParts, `objective-${[40, 10, 4][index]}x`);
+    turretTools.cylinder(.128, .092, p.steelDark, [0, .026, 0], objective, 32);
+    turretTools.knurled(.118, .058, p.steelDark, [0, .080, 0], [0, 1, 0], objective, 36);
+    turretTools.cylinder(.106, length - .22, p.steel, [0, .117 + (length - .22) / 2, 0], objective, 40, .097);
+    turretTools.cylinder(.109, .026, index === 0 ? p.sage : index === 1 ? p.bodyShade : p.graphite, [0, length - .174, 0], objective, 40);
+    turretTools.cylinder(.081, .095, p.steelDark, [0, length - .091, 0], objective, 32, .091);
+    turretTools.cylinder(.059, .056, p.graphite, [0, length - .024, 0], objective, 32);
+    turretTools.cylinder(.044, .006, p.lens, [0, length + .008, 0], objective, 32);
     const labelTexture = t.canvasTexture((context, w, h) => {
       context.clearRect(0, 0, w, h); context.fillStyle = '#273b30'; context.textAlign = 'center';
       context.font = '500 35px sans-serif'; context.fillText(`${[40, 10, 4][index]}×`, w / 2, 43);
       context.font = '20px monospace'; context.fillText(['0.65', '0.25', '0.10'][index], w / 2, 75);
     }, 128, 96);
     if (labelTexture) {
-      const label = mesh(new THREE.PlaneGeometry(.136, .105), new THREE.MeshStandardMaterial({ map: labelTexture,
-        transparent: true, depthWrite: false, roughness: .84, metalness: 0, side: THREE.DoubleSide }), [0, length * .49, .105], objective);
-      label.rotation.z = Math.PI;
+      const label = turretTools.mesh(new THREE.PlaneGeometry(.136, .105), new THREE.MeshStandardMaterial({ map: labelTexture,
+        transparent: true, depthWrite: false, roughness: .84, metalness: 0, side: THREE.DoubleSide }),
+      [-Math.sin(theta) * .105, length * .49, Math.cos(theta) * .105], objective);
+      // Each inscription faces radially outwards, so indexing its objective
+      // over the stage also brings that objective's magnification into view.
+      label.rotation.set(0, -theta, Math.PI);
     }
   }
   // Prism housing and binocular bridge. The eyepieces incline toward the viewer.
@@ -853,5 +857,65 @@ export function createMicroscope(THREE) {
   repeatBox([.018, .030, .13], Array.from({ length: 7 }, (_, index) => ({
     position: [.289, 2.15 + index * .058, -.48],
   })), p.steelDark);
-  return t.finish(.24);
+  // Its own builder keeps shared static geometry from being disposed while
+  // batching the moving assembly. Restore its local origin after finish(),
+  // since this assembly rotates around the bearing rather than its bounds.
+  const turret = turretTools.finish(0);
+  turretParts.position.set(0, 0, 0); turret.position.set(0, 2.72, .075);
+  delete turret.userData.labelAnchor;
+  const root = t.finish(.24);
+  assembly.add(turret); root.updateMatrixWorld(true);
+
+  const categories = ['teams-prototypes', 'science-care', 'robotics-games'];
+  const magnifications = [40, 10, 4], step = TAU / categories.length;
+  const wrapped = angle => ((angle + Math.PI) % TAU + TAU) % TAU - Math.PI;
+  let category = categories[0], target = category, angle = 0, targetAngle = 0;
+  let velocity = 0, turning = false, reduced = false, initialDistance = 0;
+  function settle() {
+    angle = targetAngle = wrapped(targetAngle); velocity = 0; turning = false;
+    category = target; turret.rotation.y = angle;
+  }
+  root.userData.microscope = {
+    // The selected barrel indexes to the front of the stage in 120° steps.
+    // dt is in seconds; no timer, RAF, or idle rotation is owned by this model.
+    setCategory(key, { instant = false } = {}) {
+      const index = categories.indexOf(key);
+      if (index < 0) return false;
+      const changed = target !== key;
+      if (changed) {
+        target = key;
+        // Reuse current position and velocity on rapid selection. Choosing the
+        // nearest equivalent angle avoids a long sweep across the other lens.
+        targetAngle = angle + wrapped(-index * step - angle);
+        initialDistance = Math.abs(targetAngle - angle);
+        turning = initialDistance > .00015 || Math.abs(velocity) > .003;
+      }
+      if (instant || reduced || !turning) settle();
+      return changed || turning;
+    },
+    update(dt) {
+      if (!turning || !Number.isFinite(dt) || dt <= 0) return turning;
+      // Exact critically damped motion preserves velocity across retargets and
+      // cannot become unstable after a delayed frame or a backgrounded tab.
+      const elapsed = Math.min(dt, 1), frequency = 14;
+      const offset = angle - targetAngle, damping = velocity + frequency * offset;
+      const decay = Math.exp(-frequency * elapsed);
+      angle = targetAngle + (offset + damping * elapsed) * decay;
+      velocity = (velocity - frequency * damping * elapsed) * decay;
+      turret.rotation.y = angle;
+      if (Math.abs(angle - targetAngle) < .00015 && Math.abs(velocity) < .003) settle();
+      return turning;
+    },
+    setReduced(value) {
+      reduced = Boolean(value);
+      if (reduced && turning) settle();
+    },
+    getState: () => ({
+      category, target, turning, angle, targetAngle, velocity, reduced,
+      progress: turning && initialDistance ? Math.max(0, Math.min(1, 1 - Math.abs(angle - targetAngle) / initialDistance)) : 1,
+      objective: magnifications[categories.indexOf(category)],
+      targetObjective: magnifications[categories.indexOf(target)],
+    }),
+  };
+  return root;
 }

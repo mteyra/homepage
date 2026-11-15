@@ -129,9 +129,9 @@ function projectPage() {
     'cube-solver': 'A LEGO Mindstorms robot that solves a 3×3 cube. Mechanical design, sensors and EV3 programming.',
   };
   return `${masthead('projects', 'Public work and completed projects.')}
-    <div class="project-index">${selectedProjects.map(project => `<section class="project-entry" id="project-${esc(project.id)}" aria-labelledby="project-${esc(project.id)}-title">
+    <div class="project-index">${selectedProjects.map(project => `<section class="project-entry" id="project-${esc(project.id)}" data-project="${esc(project.id)}" aria-labelledby="project-${esc(project.id)}-title">
       <div class="project-heading">
-        <h2 id="project-${esc(project.id)}-title">${esc(project.title)}</h2>
+        <h2 id="project-${esc(project.id)}-title"><button class="project-select" type="button" data-project-select="${esc(project.id)}" aria-label="View ${esc(project.title)} miniature" aria-pressed="${project.id === 'rommelweb'}">${esc(project.title)}</button></h2>
         <p class="project-meta">${esc(project.type)}</p>
       </div>
       <div class="project-description">
