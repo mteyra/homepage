@@ -9,6 +9,14 @@ const titles = { studies: 'Studies', experience: 'Experience', projects: 'Projec
 const dates = { '2024–25': '2024–2025', '2017–18': '2017–2018' };
 const credentialById = new Map(credentials.map(entry => [entry.id, entry]));
 const experienceById = new Map(experiences.map(entry => [entry.id, entry]));
+const selectedProjects = [{
+  id: 'rommelweb',
+  title: 'Rommelweb',
+  type: 'Public campus explorer · in development',
+  text: 'An interactive 3D campus explorer using official building geometry, with detailed façades, floor-plan studies and community information.',
+  url: 'https://mteyra.github.io/rommelweb/',
+  sourceUrl: 'https://github.com/mteyra/rommelweb',
+}, ...projects];
 const experienceGroups = [
   {
     id: 'teams-prototypes',
@@ -121,7 +129,7 @@ function projectPage() {
     'cube-solver': 'A LEGO Mindstorms robot that solves a 3×3 cube. Mechanical design, sensors and EV3 programming.',
   };
   return `${masthead('projects', 'Public work and completed projects.')}
-    <div class="project-index">${projects.map(project => `<section class="project-entry" id="project-${esc(project.id)}" aria-labelledby="project-${esc(project.id)}-title">
+    <div class="project-index">${selectedProjects.map(project => `<section class="project-entry" id="project-${esc(project.id)}" aria-labelledby="project-${esc(project.id)}-title">
       <div class="project-heading">
         <h2 id="project-${esc(project.id)}-title">${esc(project.title)}</h2>
         <p class="project-meta">${esc(project.type)}</p>
@@ -130,9 +138,10 @@ function projectPage() {
         <p>${esc(summaries[project.id] ?? project.text)}</p>
       </div>
       <div class="project-links">
-        ${project.sourceUrl && project.url !== project.sourceUrl ? `<a href="${esc(project.url)}" ${external}>${project.id === 'aloha' ? 'View presentation' : 'View project'} ${outward}</a>` : ''}
+        ${project.sourceUrl && project.url !== project.sourceUrl ? `<a href="${esc(project.url)}" ${external}>${project.id === 'aloha' ? 'View presentation' : project.id === 'rommelweb' ? 'Explore campus' : 'View project'} ${outward}</a>` : ''}
         ${project.sourceUrl ? `<a href="${esc(project.sourceUrl)}" ${external}>GitHub ${outward}</a>` : `<a href="${esc(project.url)}" ${external}>In my CV ${outward}</a>`}
       </div>
+      ${project.id === 'rommelweb' ? `<p class="model-credit">Miniature geometry: <a href="https://www.geodaten.bayern.de" ${external}>Bayerische Vermessungsverwaltung</a> · <a href="https://creativecommons.org/licenses/by/4.0/" ${external}>CC BY 4.0</a>. Paths <a href="https://www.openstreetmap.org/copyright" ${external}>© OpenStreetMap contributors</a>. Adapted for this model.</p>` : ''}
     </section>`).join('')}</div>
     <a class="github-link" href="${esc(profile.links.github)}" ${external}>More on GitHub ${outward}</a>`;
 }

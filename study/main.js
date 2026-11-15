@@ -1,4 +1,4 @@
-import { renderContent } from './content.js?v=study-1';
+import { renderContent } from './content.js?v=study-2';
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
@@ -7,7 +7,7 @@ const titles = { about: 'Overview', studies: 'Studies', experience: 'Experience'
 const captions = {
   studies: ['01 / LEARNING', 'Computation, biology and medicine. An open notebook for the things I’m learning.'],
   experience: ['02 / PRACTICE', 'From supervised lab experience to team prototypes. A closer look at my contributions.'],
-  projects: ['03 / MAKING', 'The palm from Aloha’s website, brought into this study. Public software and completed projects.'],
+  projects: ['03 / MAKING', 'Rommelweb’s campus, in miniature. One of the projects I’m building.'],
 };
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 const rememberedGroups = new Map(), scrolls = new Map();
@@ -68,6 +68,7 @@ function route({ initial = false } = {}) {
   document.title = page === 'about' ? 'Marc Teyra Galiano' : `${titles[page]} · Marc Teyra Galiano`;
   $('.skip').href = `#${page}-title`;
   scene?.select(page, { instant: initial });
+  scene?.setStudyChapter(rememberedGroups.get('studies') || 'computation', { instant: initial || page !== 'studies' });
   if (changed || initial) {
     $('#reading-scroll').scrollTop = initial ? 0 : scrolls.get(page) || 0;
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -131,7 +132,7 @@ window.addEventListener('hashchange', () => route());
 reduced.addEventListener('change', () => scene?.setReduced(reduced.matches));
 window.addEventListener('pagehide', event => { if (!event.persisted) { closed = true; scene?.destroy(); } });
 window.studyState = () => ({ page, theme, mesh, menuOpen, groups: Object.fromEntries(rememberedGroups), scene: scene?.getState() || { ready: false } });
-import('./scene.js?v=study-1').then(({ createStudy }) => {
+import('./scene.js?v=study-2').then(({ createStudy }) => {
   if (closed) return;
   scene = createStudy($('#world'), {
     onSelect: navigate,
@@ -158,4 +159,5 @@ import('./scene.js?v=study-1').then(({ createStudy }) => {
   scene.setReduced(reduced.matches);
   scene.setTheme(theme);
   scene.select(page, { instant: true });
+  scene.setStudyChapter(rememberedGroups.get('studies') || 'computation', { instant: true });
 }).catch(unavailable);

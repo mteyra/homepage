@@ -203,15 +203,35 @@ function tools(THREE, name) {
     lines, edges, tube, repeatBox, screw, knurled, canvasTexture, finish };
 }
 
-function notebookPrint(context, width, height, right) {
-  context.fillStyle = '#dddac9'; context.fillRect(0, 0, width, height);
+const NOTEBOOK_CHAPTERS = ['computation', 'biology-medicine', 'independent-study'];
+
+function notebookPrint(context, width, height, chapter, right) {
+  context.save(); context.scale(width / 1024, height / 1024);
+  context.fillStyle = '#dddac9'; context.fillRect(0, 0, 1024, 1024);
   const ink = '#3d5548', quiet = '#82927c';
+  const titles = {
+    computation: ['ALGORITHMS', 'DATA REPRESENTATION'],
+    'biology-medicine': ['MOLECULAR BIOLOGY', 'DATA & PHYSIOLOGY'],
+    'independent-study': ['PYTHON FOR RESEARCH', 'SPACE & SYSTEMS'],
+  };
+  const rule = y => {
+    context.strokeStyle = '#a8b29c'; context.lineWidth = 1;
+    context.beginPath(); context.moveTo(84, y); context.lineTo(934, y); context.stroke();
+  };
+  const text = (value, x, y, size = 21, mono = false, color = ink) => {
+    context.fillStyle = color; context.font = `${size}px ${mono ? 'monospace' : 'sans-serif'}`; context.fillText(value, x, y);
+  };
+  const path = (points, color = '#557461', lineWidth = 2) => {
+    context.strokeStyle = color; context.lineWidth = lineWidth; context.beginPath();
+    points.forEach(([x, y], index) => index ? context.lineTo(x, y) : context.moveTo(x, y)); context.stroke();
+  };
   context.strokeStyle = quiet; context.lineWidth = 1.4;
   context.beginPath(); context.moveTo(84, 133); context.lineTo(934, 133); context.stroke();
   context.fillStyle = ink; context.font = '500 26px sans-serif';
-  context.fillText(right ? 'MOLECULAR BIOLOGY' : 'ALGORITHMS', 84, 108);
-  context.fillStyle = quiet; context.font = '16px monospace'; context.fillText(right ? '02' : '01', 902, 953);
-  if (!right) {
+  context.fillText(titles[chapter][right ? 1 : 0], 84, 108);
+  const folio = NOTEBOOK_CHAPTERS.indexOf(chapter) * 2 + (right ? 2 : 1);
+  context.fillStyle = quiet; context.font = '16px monospace'; context.fillText(String(folio).padStart(2, '0'), 902, 953);
+  if (chapter === 'computation' && !right) {
     context.fillStyle = ink; context.font = '23px sans-serif'; context.fillText('Binary search', 84, 199);
     const values = [2, 5, 9, 14, 18, 23, 31];
     values.forEach((value, index) => {
@@ -224,7 +244,8 @@ function notebookPrint(context, width, height, right) {
     context.fillStyle = quiet; context.font = '17px monospace';
     context.fillText('lo', 117, 319); context.fillText('mid', 458, 319); context.fillText('hi', 817, 319);
     context.fillStyle = ink; context.font = '21px monospace';
-    ['while lo ≤ hi', '  mid = ⌊(lo + hi) / 2⌋', '  a[mid] < x  →  lo = mid + 1', '  a[mid] > x  →  hi = mid − 1'].forEach((line, index) => context.fillText(line, 92, 404 + index * 40));
+    ['while lo ≤ hi', '  mid = ⌊(lo + hi) / 2⌋', '  a[mid] < x  →  lo = mid + 1',
+      '  a[mid] > x  →  hi = mid − 1', '  a[mid] = x  →  return mid'].forEach((line, index) => context.fillText(line, 92, 404 + index * 40));
     context.strokeStyle = '#7d927c'; context.lineWidth = 1.5;
     context.beginPath(); context.moveTo(120, 610); context.lineTo(120, 858); context.lineTo(886, 858); context.stroke();
     context.beginPath();
@@ -235,7 +256,7 @@ function notebookPrint(context, width, height, right) {
     context.lineWidth = 3; context.strokeStyle = '#4c7058'; context.stroke();
     context.fillStyle = ink; context.font = '22px monospace'; context.fillText('O(log n)', 686, 636);
     context.fillStyle = quiet; context.font = '17px sans-serif'; context.fillText('comparisons', 93, 593); context.fillText('n', 895, 867);
-  } else {
+  } else if (chapter === 'biology-medicine' && !right) {
     // A small molecular sketch, followed by the information flow and a neuron.
     for (const phase of [0, Math.PI]) {
       context.beginPath();
@@ -278,7 +299,95 @@ function notebookPrint(context, width, height, right) {
     }
     context.fillStyle = quiet; context.font = '18px sans-serif';
     context.fillText('dendrites', 113, 886); context.fillText('soma', 264, 886); context.fillText('axon', 517, 886);
+  } else if (chapter === 'computation') {
+    text('One byte · eight bits', 84, 199, 23);
+    [1, 0, 1, 1, 0, 1, 1, 0].forEach((bit, index) => {
+      const x = 92 + index * 103;
+      context.strokeStyle = '#a8b29c'; context.lineWidth = 1; context.strokeRect(x, 233, 78, 62);
+      text(String(bit), x + 29, 274, 26, true);
+      text(String(2 ** (7 - index)), x + 22, 327, 15, true, quiet);
+    });
+    text('10110110₂ = 182₁₀', 327, 382, 25, true);
+    rule(426); text('Structure expresses relationships', 84, 473, 23);
+    const nodes = [[155, 568], [307, 516], [307, 642], [456, 560], [456, 696], [610, 612]];
+    for (const [a, b] of [[0, 1], [0, 2], [1, 3], [2, 3], [2, 4], [3, 5], [4, 5]]) path([nodes[a], nodes[b]], '#8b9d84', 1.7);
+    nodes.forEach(([x, y], index) => {
+      context.fillStyle = '#dddac9'; context.strokeStyle = '#557461'; context.lineWidth = 2;
+      context.beginPath(); context.arc(x, y, 21, 0, TAU); context.fill(); context.stroke();
+      text(String.fromCharCode(65 + index), x - 7, y + 7, 19, true);
+    });
+    text('A → B, C', 722, 555, 19, true);
+    text('B → A, D', 722, 592, 19, true);
+    text('C → A, D, E', 722, 629, 19, true);
+    rule(752); text('AI PERSPECTIVES', 84, 799, 22);
+    text('ŷ = σ(w · x + b)', 84, 863, 27, true);
+    text('representation → model → prediction', 493, 861, 18, false, quiet);
+  } else if (chapter === 'biology-medicine') {
+    text('Reading a diagnostic model', 84, 197, 23);
+    text('predicted', 431, 236, 17, false, quiet);
+    text('+', 446, 275, 23, true); text('−', 626, 275, 23, true);
+    text('actual +', 163, 328, 19, true, quiet); text('actual −', 163, 412, 19, true, quiet);
+    [['TP', 'FN'], ['FP', 'TN']].forEach((row, j) => row.forEach((value, i) => {
+      const x = 373 + i * 180, y = 289 + j * 84;
+      context.strokeStyle = '#a8b29c'; context.lineWidth = 1; context.strokeRect(x, y, 180, 84);
+      text(value, x + 74, y + 50, 23, true);
+    }));
+    text('sensitivity = TP / (TP + FN)', 167, 502, 21, true);
+    text('specificity = TN / (TN + FP)', 167, 542, 21, true);
+    rule(586); text('Membrane potential', 84, 636, 23);
+    path([[127, 683], [127, 871], [883, 871]], '#8b9d84', 1.4);
+    text('Vₘ', 84, 690, 18, true, quiet); text('t', 898, 881, 18, true, quiet);
+    text('+30', 74, 736, 15, true, quiet); text('−70', 74, 841, 15, true, quiet);
+    path([[131, 834], [283, 834], [332, 830], [362, 804], [404, 723], [423, 716], [447, 746],
+      [493, 818], [532, 848], [573, 853], [641, 838], [690, 834], [873, 834]], '#4c7058', 3);
+    text('rest → depolarisation → recovery', 270, 913, 18, false, quiet);
+  } else if (!right) {
+    text('Small, reproducible experiments', 84, 199, 23);
+    const code = [
+      'import numpy as np', '', 'samples = np.array([2, 3, 5, 7])',
+      'mean = samples.mean()', 'centered = samples - mean',
+    ];
+    code.forEach((value, index) => text(value, 108, 269 + index * 43, 22, true));
+    rule(505); text('Inspect the distribution', 84, 554, 23);
+    path([[128, 600], [128, 818], [884, 818]], '#8b9d84', 1.5);
+    const curve = [];
+    for (let step = 0; step <= 100; step++) {
+      const x = step / 100;
+      curve.push([142 + x * 721, 808 - 175 * Math.exp(-(((x - .5) / .21) ** 2))]);
+    }
+    path(curve, '#557461', 2.7);
+    for (const x of [.09, .22, .29, .32, .37, .4, .43, .48, .52, .57, .61, .66, .73, .82, .9])
+      path([[142 + x * 721, 820], [142 + x * 721, 832]], '#8b9d84', 1.7);
+    text('mean · variation · uncertainty', 270, 871, 21, false, quiet);
+    text('CS50P / PH526x', 84, 952, 16, true, quiet);
+  } else {
+    text('From a measurement to an answer', 84, 199, 23);
+    context.strokeStyle = '#7d927c'; context.lineWidth = 1.8;
+    context.beginPath(); context.ellipse(489, 412, 316, 127, -.24, 0, TAU); context.stroke();
+    context.fillStyle = '#c6ceba'; context.strokeStyle = '#557461'; context.lineWidth = 2;
+    context.beginPath(); context.arc(489, 412, 90, 0, TAU); context.fill(); context.stroke();
+    context.beginPath(); context.ellipse(489, 412, 39, 90, 0, 0, TAU); context.stroke();
+    for (const y of [-37, 0, 37]) {
+      context.beginPath(); context.ellipse(489, 412 + y, Math.sqrt(90 ** 2 - y ** 2), 15, 0, 0, TAU); context.stroke();
+    }
+    context.save(); context.translate(750, 313); context.rotate(-.24);
+    context.fillStyle = '#a8b49a'; context.strokeRect(-18, -21, 36, 42); context.fillRect(-15, -18, 30, 36);
+    context.strokeRect(-74, -17, 48, 34); context.strokeRect(26, -17, 48, 34);
+    for (const x of [-62, -50, -38, 38, 50, 62]) path([[x, -17], [x, 17]], '#8b9d84', 1);
+    context.restore();
+    path([[744, 327], [564, 387]], '#a0ae94', 1.3);
+    text('sensor → downlink → analysis', 251, 590, 21, true);
+    rule(641); text('COMPUTER SCIENCE', 84, 690, 23);
+    const stages = ['source', 'compiler', 'machine code'];
+    stages.forEach((value, index) => {
+      const x = 86 + index * 304;
+      context.strokeStyle = '#a8b29c'; context.lineWidth = 1; context.strokeRect(x, 744, 238, 65);
+      text(value, x + (index === 2 ? 28 : 65), 784, 21, true);
+      if (index < 2) text('→', x + 256, 784, 24);
+    });
+    text('Digitalisation in space research / CS50x', 84, 894, 18, false, quiet);
   }
+  context.restore();
 }
 
 export function createNotebook(THREE) {
@@ -298,6 +407,7 @@ export function createNotebook(THREE) {
   const cover = t.material(0x344e40, { roughness: .98, metalness: 0, bumpMap: clothBump, bumpScale: .007 });
   const thread = t.material(0xa4b196, { roughness: 1, metalness: 0 });
   const edgeInk = 0x959f89, gutter = .055, pageWidth = 1.965, pageDepth = 2.91;
+  const pageMaterials = {};
   for (const side of [-1, 1]) {
     slab(2.045, 3.07, .045, .060, cover, [side * 1.035, .018, 0], assembly, .009);
     slab(2.005, 3.015, .018, .035, p.paperEdge, [side * 1.027, .078, 0], assembly, .003);
@@ -330,10 +440,12 @@ export function createNotebook(THREE) {
     const geometry = new THREE.BufferGeometry(); geometry.setIndex(indices);
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
     geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2)); geometry.computeVertexNormals();
-    const texture = t.canvasTexture((context, width, height) => notebookPrint(context, width, height, side > 0));
+    const texture = t.canvasTexture((context, width, height) => notebookPrint(context, width, height, 'computation', side > 0));
     const paper = t.material(0xffffff, { map: texture, color: texture ? 0xffffff : 0xdcd9c8,
       roughness: .98, metalness: 0, side: THREE.DoubleSide });
-    const page = mesh(geometry, paper); page.name = side > 0 ? 'biology-page' : 'algorithms-page';
+    paper.userData.print = `computation:${side > 0}`;
+    pageMaterials[side > 0 ? 'right' : 'left'] = paper;
+    const page = mesh(geometry, paper); page.name = side > 0 ? 'right-notebook-page' : 'left-notebook-page';
 
     // Actual front, rear and fore-edge surfaces close the paper stack.
     const edgePositions = [];
@@ -379,7 +491,193 @@ export function createNotebook(THREE) {
     slab(.18, .255, .008, .012, index === 1 ? p.paperEdge : p.sage, [2.055, .151 + index * .013, z], assembly, .001);
     lines([[[2.084, .163 + index * .013, z - .057], [2.084, .163 + index * .013, z + .057]]], 0x5a735b, .48);
   }
-  return t.finish(.22);
+  const root = t.finish(.22);
+
+  // Add the moving leaf after the static cover/pages have been batched. It has
+  // separate printed faces and a real paper-thickness edge, all in one mesh.
+  const columns = 56, rows = 32, surfaceCount = (columns + 1) * (rows + 1);
+  const perimeter = [];
+  for (let c = 0; c <= columns; c++) perimeter.push(c);
+  for (let r = 1; r <= rows; r++) perimeter.push(r * (columns + 1) + columns);
+  for (let c = columns - 1; c >= 0; c--) perimeter.push(rows * (columns + 1) + c);
+  for (let r = rows - 1; r > 0; r--) perimeter.push(r * (columns + 1));
+  const vertexCount = surfaceCount * 2 + perimeter.length * 4;
+  const leafPositions = new Float32Array(vertexCount * 3), leafNormals = new Float32Array(vertexCount * 3);
+  const leafUVs = new Float32Array(vertexCount * 2), midpoints = new Float32Array(surfaceCount * 3);
+  const leafIndices = [];
+  for (let row = 0; row < rows; row++) for (let column = 0; column < columns; column++) {
+    const a = row * (columns + 1) + column, b = a + 1, c = a + columns + 1, d = c + 1;
+    leafIndices.push(a, c, b, b, c, d);
+  }
+  const faceIndexCount = leafIndices.length;
+  for (let i = 0; i < faceIndexCount; i += 3)
+    leafIndices.push(leafIndices[i] + surfaceCount, leafIndices[i + 2] + surfaceCount, leafIndices[i + 1] + surfaceCount);
+  for (let i = 0; i < perimeter.length; i++) {
+    const a = surfaceCount * 2 + i * 4;
+    leafIndices.push(a, a + 1, a + 2, a, a + 2, a + 3);
+  }
+  const leafGeometry = new THREE.BufferGeometry();
+  leafGeometry.setIndex(leafIndices);
+  leafGeometry.setAttribute('position', new THREE.BufferAttribute(leafPositions, 3).setUsage(THREE.DynamicDrawUsage));
+  leafGeometry.setAttribute('normal', new THREE.BufferAttribute(leafNormals, 3).setUsage(THREE.DynamicDrawUsage));
+  leafGeometry.setAttribute('uv', new THREE.BufferAttribute(leafUVs, 2).setUsage(THREE.DynamicDrawUsage));
+  leafGeometry.addGroup(0, faceIndexCount, 0);
+  leafGeometry.addGroup(faceIndexCount, faceIndexCount, 1);
+  leafGeometry.addGroup(faceIndexCount * 2, perimeter.length * 6, 2);
+  const leafMaterials = [true, false].map(right => {
+    const texture = t.canvasTexture((context, width, height) => notebookPrint(context, width, height, 'computation', right));
+    const material = t.material(texture ? 0xffffff : 0xdcd9c8, { map: texture, roughness: .98, metalness: 0,
+      side: THREE.FrontSide });
+    material.userData.print = `computation:${right}`; return material;
+  });
+  leafMaterials.push(p.paperEdge.clone());
+  const leaf = mesh(leafGeometry, leafMaterials);
+  leaf.name = 'turning-notebook-sheet'; leaf.visible = false;
+  leaf.userData.isPageTurn = true;
+
+  function printOn(material, chapter, right) {
+    const print = `${chapter}:${right}`;
+    if (material.userData.print === print) return;
+    material.userData.print = print;
+    const canvas = material.map?.image, context = canvas?.getContext?.('2d');
+    if (!context) return;
+    notebookPrint(context, canvas.width, canvas.height, chapter, right); material.map.needsUpdate = true;
+  }
+  function printSpread(chapter) {
+    printOn(pageMaterials.left, chapter, false); printOn(pageMaterials.right, chapter, true);
+  }
+  function setLeafUVs(direction) {
+    for (let row = 0; row <= rows; row++) for (let column = 0; column <= columns; column++) {
+      const i = row * (columns + 1) + column, u = column / columns, v = 1 - row / rows;
+      leafUVs[i * 2] = direction > 0 ? u : 1 - u; leafUVs[i * 2 + 1] = v;
+      leafUVs[(i + surfaceCount) * 2] = direction > 0 ? 1 - u : u;
+      leafUVs[(i + surfaceCount) * 2 + 1] = v;
+    }
+    leafGeometry.attributes.uv.needsUpdate = true;
+  }
+  function poseLeaf(progress, direction, parked = false) {
+    const ease = progress * progress * (3 - 2 * progress), theta = Math.PI * ease;
+    const lift = Math.sin(theta), curvature = .75 * lift, step = pageWidth / columns;
+    const halfThickness = .0012, clearance = parked ? -.004 : .004;
+    // Integrating tangent angles produces a flexible sheet of nearly constant
+    // arc length. Its fore-edge curls ahead of the hinge instead of behaving
+    // like a rigid rectangular door; the slight row variation lifts one corner.
+    for (let row = 0; row <= rows; row++) {
+      const v = row / rows;
+      let x = gutter * Math.cos(theta), y = gutter * lift;
+      for (let column = 0; column <= columns; column++) {
+        const u = column / columns, index = (row * (columns + 1) + column) * 3;
+        if (column) {
+          const sample = (column - .5) / columns;
+          const angle = theta + curvature * (.95 * sample - .24 + .2 * (v - .5) * sample ** 2);
+          x += Math.cos(angle) * step; y += Math.sin(angle) * step;
+        }
+        const restingHeight = pageHeight(u, v, direction) * (1 - ease) + pageHeight(u, v, -direction) * ease;
+        midpoints[index] = x;
+        midpoints[index + 1] = restingHeight + y + clearance;
+        midpoints[index + 2] = (v - .5) * pageDepth + .025 * lift * Math.sin(Math.PI * u) * (v - .5);
+      }
+    }
+    for (let row = 0; row <= rows; row++) for (let column = 0; column <= columns; column++) {
+      const i = row * (columns + 1) + column, index = i * 3;
+      const beforeU = (i - (column > 0 ? 1 : 0)) * 3, afterU = (i + (column < columns ? 1 : 0)) * 3;
+      const beforeV = (i - (row > 0 ? columns + 1 : 0)) * 3, afterV = (i + (row < rows ? columns + 1 : 0)) * 3;
+      const ux = midpoints[afterU] - midpoints[beforeU], uy = midpoints[afterU + 1] - midpoints[beforeU + 1],
+        uz = midpoints[afterU + 2] - midpoints[beforeU + 2];
+      const vx = midpoints[afterV] - midpoints[beforeV], vy = midpoints[afterV + 1] - midpoints[beforeV + 1],
+        vz = midpoints[afterV + 2] - midpoints[beforeV + 2];
+      let nx = vy * uz - vz * uy, ny = vz * ux - vx * uz, nz = vx * uy - vy * ux;
+      const length = Math.hypot(nx, ny, nz) || 1; nx /= length; ny /= length; nz /= length;
+      const back = (i + surfaceCount) * 3;
+      leafPositions[index] = midpoints[index] + nx * halfThickness;
+      leafPositions[index + 1] = midpoints[index + 1] + ny * halfThickness;
+      leafPositions[index + 2] = midpoints[index + 2] + nz * halfThickness;
+      leafPositions[back] = midpoints[index] - nx * halfThickness;
+      leafPositions[back + 1] = midpoints[index + 1] - ny * halfThickness;
+      leafPositions[back + 2] = midpoints[index + 2] - nz * halfThickness;
+      leafNormals[index] = nx; leafNormals[index + 1] = ny; leafNormals[index + 2] = nz;
+      leafNormals[back] = -nx; leafNormals[back + 1] = -ny; leafNormals[back + 2] = -nz;
+    }
+    for (let i = 0; i < perimeter.length; i++) {
+      const a = perimeter[i], b = perimeter[(i + 1) % perimeter.length], edge = surfaceCount * 2 + i * 4;
+      const ax = a * 3, bx = b * 3;
+      const tx = midpoints[bx] - midpoints[ax], ty = midpoints[bx + 1] - midpoints[ax + 1],
+        tz = midpoints[bx + 2] - midpoints[ax + 2];
+      let nx = leafNormals[ax + 1] * tz - leafNormals[ax + 2] * ty,
+        ny = leafNormals[ax + 2] * tx - leafNormals[ax] * tz,
+        nz = leafNormals[ax] * ty - leafNormals[ax + 1] * tx;
+      const length = Math.hypot(nx, ny, nz) || 1; nx /= length; ny /= length; nz /= length;
+      for (const [corner, source] of [a, b, b + surfaceCount, a + surfaceCount].entries()) {
+        const destination = (edge + corner) * 3;
+        leafPositions.set(leafPositions.subarray(source * 3, source * 3 + 3), destination);
+        leafNormals[destination] = nx; leafNormals[destination + 1] = ny; leafNormals[destination + 2] = nz;
+      }
+    }
+    leafGeometry.attributes.position.needsUpdate = true; leafGeometry.attributes.normal.needsUpdate = true;
+    leafGeometry.computeBoundingBox(); leafGeometry.computeBoundingSphere();
+    leaf.scale.x = direction;
+  }
+  function parkLeaf() {
+    leaf.visible = false;
+    // Box3 includes invisible objects. Park the geometry inside the paper stack
+    // so the caller's initial/rest camera measurements retain the original size.
+    poseLeaf(0, 1, true);
+  }
+
+  let chapter = 'computation', target = chapter, turn = null, reduced = false;
+  const duration = .86;
+  function beginTurn() {
+    if (target === chapter) return;
+    const direction = NOTEBOOK_CHAPTERS.indexOf(target) > NOTEBOOK_CHAPTERS.indexOf(chapter) ? 1 : -1;
+    turn = { from: chapter, to: target, direction, elapsed: 0 };
+    printOn(leafMaterials[0], chapter, direction > 0);
+    printOn(leafMaterials[1], target, direction < 0);
+    // The destination page is exposed underneath the lifting sheet. The other
+    // old page remains visible until the reverse face physically covers it.
+    printOn(direction > 0 ? pageMaterials.right : pageMaterials.left, target, direction > 0);
+    setLeafUVs(direction); poseLeaf(0, direction); leaf.visible = true;
+  }
+  function settle(nextChapter) {
+    chapter = nextChapter; turn = null; printSpread(chapter); parkLeaf();
+  }
+  const aliases = { biology: 'biology-medicine', independent: 'independent-study' };
+  setLeafUVs(1); parkLeaf();
+  root.userData.book = {
+    // dt is in seconds. No timer or RAF is owned by the model.
+    setChapter(key, { instant = false } = {}) {
+      const nextChapter = aliases[key] || key;
+      if (!NOTEBOOK_CHAPTERS.includes(nextChapter)) return false;
+      const changed = target !== nextChapter;
+      target = nextChapter;
+      if (instant || reduced) settle(target);
+      else if (!turn) beginTurn();
+      return changed || Boolean(turn);
+    },
+    update(dt) {
+      if (!turn || !Number.isFinite(dt) || dt <= 0) return Boolean(turn);
+      let remaining = dt;
+      // Only the most recent requested chapter is queued. A large elapsed time
+      // can complete both turns, avoiding an animation left running after sleep.
+      while (turn && remaining > 0) {
+        const step = Math.min(remaining, duration - turn.elapsed);
+        turn.elapsed += step; remaining -= step;
+        if (turn.elapsed >= duration) {
+          settle(turn.to);
+          if (target !== chapter) beginTurn();
+        } else poseLeaf(turn.elapsed / duration, turn.direction);
+      }
+      return Boolean(turn);
+    },
+    setReduced(value) {
+      reduced = Boolean(value);
+      if (reduced && (turn || chapter !== target)) settle(target);
+    },
+    getState: () => ({
+      chapter, target, turning: Boolean(turn), progress: turn ? turn.elapsed / duration : 0,
+      direction: turn?.direction || 0, turnTarget: turn?.to || null, reduced,
+    }),
+  };
+  return root;
 }
 
 export function createMicroscope(THREE) {

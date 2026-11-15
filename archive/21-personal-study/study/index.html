@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#151715">
+  <meta name="description" content="Marc Teyra Galiano. Artificial intelligence at FAU, work at Siemens Healthineers, and a curiosity for computation, biology and medicine.">
+  <meta property="og:title" content="Marc Teyra Galiano">
+  <meta property="og:description" content="A closer look at what I’m learning, doing and building.">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://mteyra.github.io/m.a.r.c_t.e.y.r.a/">
+  <link rel="icon" href="../island/icon.svg">
+  <link rel="preload" href="../assets/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css?v=study-1">
+  <script type="module" src="main.js?v=study-1"></script>
+  <title>Marc Teyra Galiano</title>
+</head>
+<body data-page="about" data-theme="night">
+  <a class="skip" href="#about-title">Skip to content</a>
+  <header class="world-header">
+    <a class="identity" href="#about" aria-label="Marc Teyra Galiano, return to overview"><svg viewBox="0 0 28 28" aria-hidden="true"><path d="m14 2 11 6v12l-11 6-11-6V8l11-6Zm0 12L3 8m11 6 11-6M14 14v12M8.5 5l11 6v12M8.5 11v12"/></svg><span>Marc Teyra Galiano<span class="identity-dot">.</span></span></a>
+    <div class="trail" aria-live="polite">A PERSONAL STUDY <span>/</span> <span id="trail-section">OVERVIEW</span></div>
+    <div class="header-actions">
+      <a class="cv" href="../assets/cv/marc-teyra-cv-2026-02.pdf" target="_blank" rel="noopener">CV <small>02 / 2026</small><span aria-hidden="true">↗</span></a>
+      <div class="menu-wrap">
+        <button id="menu-button" class="pill" aria-expanded="false" aria-controls="menu">Explore <span aria-hidden="true">＋</span></button>
+        <nav id="menu" aria-label="Explore my profile" hidden>
+          <a href="#about" data-page="about" aria-current="page">Overview <span>00</span></a>
+          <a href="#studies" data-page="studies">Studies <span>01</span></a>
+          <a href="#experience" data-page="experience">Experience <span>02</span></a>
+          <a href="#projects" data-page="projects">Projects <span>03</span></a>
+          <a class="archive-link" href="../../">Earlier designs <span aria-hidden="true">↗</span></a>
+        </nav>
+      </div>
+      <button id="theme-button" class="round-button" aria-label="Switch to day mode" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.1"/><path d="M10 1v2m0 14v2M1 10h2m14 0h2M3.6 3.6 5 5m10 10 1.4 1.4M3.6 16.4 5 15M15 5l1.4-1.4"/></svg></button>
+    </div>
+  </header>
+  <main id="main">
+    <section class="introduction" id="introduction" aria-labelledby="about-title">
+      <div class="intro-copy"><p class="eyebrow">A little about me</p><h1 id="about-title" tabindex="-1">Curious about where<br>computation meets life.</h1><p class="intro-note">Learning by putting ideas into practice.</p></div>
+      <div class="current">
+        <a href="#studies"><span class="eyebrow">Studying</span><strong>B.Sc. Artificial Intelligence</strong><span>FAU Erlangen-Nürnberg</span><b aria-hidden="true">↗</b></a>
+        <a href="#experience"><span class="eyebrow">Working</span><strong>Siemens Healthineers</strong><span>Alongside my degree · since April 2026</span><b aria-hidden="true">↗</b></a>
+      </div>
+    </section>
+    <div class="scene-shell" id="scene-shell">
+      <canvas id="world" aria-hidden="true"></canvas>
+      <img class="scene-fallback" src="preview.webp" alt="" aria-hidden="true">
+      <nav class="scene-labels" id="scene-labels" aria-label="Explore the study">
+        <a href="#studies" data-model="studies"><i>01</i><span>Studies</span><b aria-hidden="true">↗</b></a>
+        <a href="#experience" data-model="experience"><i>02</i><span>Experience</span><b aria-hidden="true">↗</b></a>
+        <a href="#projects" data-model="projects"><i>03</i><span>Projects</span><b aria-hidden="true">↗</b></a>
+      </nav>
+    </div>
+    <div class="reading-shell" id="reading-shell" hidden>
+      <div class="reading-toolbar"><a href="#about" class="back-link">← Back to the study</a><span class="eyebrow" id="chapter-number">01 / 03</span></div>
+      <div class="reading-scroll" id="reading-scroll" tabindex="-1">
+        <section data-view="studies" aria-labelledby="studies-title" hidden></section>
+        <section data-view="experience" aria-labelledby="experience-title" hidden></section>
+        <section data-view="projects" aria-labelledby="projects-title" hidden></section>
+      </div>
+    </div>
+    <div class="object-caption" id="object-caption" hidden><span class="eyebrow" id="object-kicker"></span><p id="object-description"></p></div>
+  </main>
+  <footer class="world-footer">
+    <div class="view-tools" aria-label="3D view controls">
+      <button id="mesh-button" class="tool" aria-pressed="false" disabled><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m10 2 7 4v8l-7 4-7-4V6l7-4Zm0 8L3 6m7 4 7-4m-7 4v8M6.5 4l7 4v8M6.5 8v8"/></svg><span>Mesh view</span></button>
+      <button id="reset-button" class="tool reset-button" aria-label="Reset the 3D view" title="Reset view" disabled>↺</button>
+      <span class="gesture-note" id="gesture-note">Drag to orbit · scroll to inspect</span>
+    </div>
+    <div class="socials"><a href="https://github.com/mteyra" target="_blank" rel="noopener">GitHub ↗</a><a href="https://www.linkedin.com/in/mteyra/" target="_blank" rel="noopener">LinkedIn ↗</a></div>
+  </footer>
+  <div class="sr-only" id="announcement" role="status" aria-live="polite"></div>
+  <noscript><p class="noscript">Explore my <a href="../island/">profile</a>, <a href="../assets/cv/marc-teyra-cv-2026-02.pdf">CV</a> or <a href="https://github.com/mteyra">GitHub</a>.</p></noscript>
+</body>
+</html>
