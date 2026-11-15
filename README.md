@@ -2,15 +2,15 @@
 
 [Visit the homepage](https://mteyra.github.io/m.a.r.c_t.e.y.r.a/)
 
-A personal homepage on a dark graphite background. Instrument Serif sets the name and chapter headings; Manrope sets the body text. About, Studies, Experience and Projects occupy stationary HTML reading views. A larger faceted 3D compass gives the introduction a diagonal oval silhouette, with its stage in document flow to keep the text and object apart. Reading views use a smaller compass.
+A personal homepage arranged as a 3D study. A notebook, microscope and Aloha palm introduce Studies, Experience and Projects. Selecting an object brings it into focus beside a readable HTML chapter. Marc’s name, current degree, employer and CV remain available through the ordinary page interface.
 
 ## Reading and interaction
 
-Explore holds the four HTML section links for direct access. The compass offers a small alignment puzzle for the same destinations: About at north, Studies at east, Experience at south and Projects at west. Horizontal dragging turns the whole instrument; vertical dragging tilts it in 3D. A sight shares the viewing tilt but stays fixed while the compass turns. Release an intentional horizontal drag with a bearing within 12 degrees of the sight to open that section. Clicking does not navigate, and a misaligned release leaves the orientation in place. A short cue below the compass names the destination when aligned.
+The overview presents three labelled objects. Click an object or its HTML label to open the corresponding chapter; Explore also provides direct links. Drag to orbit the view, pinch or use the wheel to zoom, and reset to restore its framing. Mesh view exposes the geometry. Day and night modes change the scene and interface together.
 
-Studies and Experience each show one selected category. Ordinary links switch categories and preserve browser history. The degree and current employer appear in their chapter introductions. Supporting experience accounts use native disclosures. Projects remain four concise entries with direct links.
+Studies and Experience each show one selected category. Ordinary links switch categories and preserve browser history. The degree and current employer appear in their chapter introductions. Experience types, dates and contributions remain distinct; supporting accounts use native disclosures. Projects contain four descriptions with direct source, presentation or CV links.
 
-GitHub and LinkedIn sit in the footer; Explore also holds the design archive and motion preference. Browser history, direct links into course and experience groups, keyboard navigation and reduced motion are supported. Text and page surfaces stay still during navigation. The compass accepts touch dragging in both axes and permits pinch zoom; the surrounding page retains normal scrolling. Reduced motion preserves direct manipulation and skips automatic animation. Reading and navigation are available before the graphics module loads. The locally bundled Three.js renderer rests when the instrument settles; an SVG compass takes its place if WebGL is unavailable.
+On wide screens, the focused object and reading panel share the screen. On smaller screens, the object sits above the chapter and the page scrolls. HTML navigation and the CV work independently of WebGL. A preview image provides the scene fallback. Browser history, links to individual entries and keyboard navigation are supported. Reduced motion keeps direct manipulation and skips animated settling. The renderer stops requesting frames once the view settles.
 
 ## Content
 
@@ -25,20 +25,25 @@ The public CV in `assets/cv/` is the February 2026 derivative with its private c
 GitHub Pages serves `main` from the repository root. `.nojekyll` keeps the site buildless. Fonts and Three.js are bundled locally; no account service or build step is required.
 
 - `index.html` — homepage entry and route forwarding.
-- `island/index.html` — introduction, reading containers and navigation.
-- `island/index.css` — typography, page layouts and responsive styles.
-- `island/chapters.js` — reading views, derived from the public profile.
-- `island/index-main.js` — routing, categories, keyboard controls and preferences.
-- `island/index-scene.js` — compass geometry, selection, drag handling and rendering.
+- `study/index.html` — introduction, scene labels, reading containers and navigation.
+- `study/style.css` — typography, reading panels, themes and responsive layout.
+- `study/content.js` — chapter HTML derived from the public profile.
+- `study/main.js` — routing, categories, keyboard controls and preferences.
+- `study/scene.js` — overview, object focus, camera controls and rendering.
+- `study/models-learning.js` — notebook and microscope illustrations.
+- `study/model-palm.js` — adaptation of Aloha’s procedural palm.
+- `study/preview.webp` — scene fallback when WebGL is unavailable.
 - `puzzle/content.js` — shared public profile content.
-- `archive/` — nineteen preserved design iterations.
-- `archive/19-alignment-compass/` — the preceding smaller alignment compass and horizontal section links.
-- `design/ISLAND.md` — design notes.
+- `archive/` — twenty preserved design iterations.
+- `archive/20-faceted-compass/` — the preceding compass, frozen from `b5274c429493156dc3c13b20e2ab55972b43ce23`.
+- `design/STUDY.md` — design notes for the current edition.
 
 Earlier editions preserve their own content and assets. The `?atlas=preview#travel` handoff opens the archived GPX/KML viewer. Live travel integration remains future work.
 
 ## Credits
 
-The reference review used [Keita Yamada’s site](https://p5aholic.me/) for restraint and stationary text, and [Rauno’s 2023 site](https://2023.rauno.me/) for its simple introduction and compact navigation. No source code or assets were copied from either reference site.
+The spatial overview and object inspection take direction from Rommelweb. The notebook and microscope are symbolic illustrations grounded in Marc’s coursework and supervised laboratory experience; they do not depict his personal equipment or assert medical qualifications.
 
-Three.js is MIT licensed (`assets/vendor/THREE-LICENSE.txt`). Instrument Serif is bundled under the SIL Open Font License (`assets/fonts/INSTRUMENT-SERIF-OFL.txt`). Manrope and the archived editions’ JetBrains Mono use the same license (`assets/fonts/LICENSES.txt`). Earlier editions retain their own credits.
+The palm adapts the actual procedural exhibit in [Aloha Robotics](https://github.com/clschulzer/Aloha-Robotics-HH2.0), `Website/site/palm.mjs` (`buildExhibit`). Its fronds, folded leaflets, curved trunk and plinth are rebuilt as local Three.js geometry; the Aloha renderer and runtime are not required.
+
+Three.js is MIT licensed (`assets/vendor/THREE-LICENSE.txt`). Manrope uses the SIL Open Font License (`assets/fonts/LICENSES.txt`). The archived editions retain their own assets and credits, including Instrument Serif’s license in `assets/fonts/INSTRUMENT-SERIF-OFL.txt`.
