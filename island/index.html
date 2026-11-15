@@ -13,8 +13,8 @@
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="preload" href="../assets/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/instrument-serif.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="index.css?v=compass-align">
-  <script type="module" src="index-main.js?v=compass-align"></script>
+  <link rel="stylesheet" href="index.css?v=compass-mesh">
+  <script type="module" src="index-main.js?v=compass-mesh"></script>
   <title>Marc Teyra Galiano</title>
 </head>
 <body data-page="about">
@@ -28,6 +28,7 @@
       <div class="home-heading">
         <p class="eyebrow">A little about me</p>
         <h1 id="about-title" tabindex="-1">Marc Teyra<br><span>Galiano</span></h1>
+        <p class="home-note">Learning by putting ideas into practice.</p>
       </div>
       <div class="home-copy">
         <p class="home-intro">Curious about where <br>computation meets <br>biology & medicine.</p>
@@ -36,51 +37,46 @@
           <a href="#experience"><span class="eyebrow">Working</span><strong>Siemens Healthineers</strong><span class="now-meta">Alongside my degree · since April 2026</span><b aria-hidden="true">↗</b></a>
         </div>
       </div>
-      <p class="home-note">Learning by putting ideas into practice.</p>
     </section>
     <section class="view reader" data-view="studies" data-content="studies" aria-labelledby="studies-title" hidden></section>
     <section class="view reader" data-view="experience" data-content="experience" aria-labelledby="experience-title" hidden></section>
     <section class="view reader" data-view="projects" data-content="projects" aria-labelledby="projects-title" hidden></section>
-  </main>
-  <footer class="site-footer">
-    <div class="socials"><a href="https://github.com/mteyra" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a><a href="https://www.linkedin.com/in/mteyra/" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a></div>
     <div class="index-position">
       <div class="index-visual">
         <canvas id="index-canvas" aria-hidden="true"></canvas>
-        <svg class="index-fallback" viewBox="0 0 360 200" aria-hidden="true">
-          <defs><linearGradient id="compass-rim" x2=".7" y2="1"><stop stop-color="#d0d1cf"/><stop offset=".45" stop-color="#55585a"/><stop offset=".8" stop-color="#aaaead"/><stop offset="1" stop-color="#434648"/></linearGradient></defs>
-          <g transform="translate(180 99) scale(1.65 .78)">
-            <circle cy="6" r="100" fill="#26292b" stroke="#3d4143" stroke-width="5"/>
-            <circle r="99" fill="#1b1e20" stroke="url(#compass-rim)" stroke-width="7"/>
-            <circle r="87" fill="none" stroke="#4a4e50" stroke-width=".75"/>
-            <g stroke="#777d80" stroke-width="1">
-              <path id="compass-mark" d="M0-93v7M0 93v-7M-93 0h7M93 0h-7"/>
-              <use href="#compass-mark" transform="rotate(15)"/><use href="#compass-mark" transform="rotate(30)"/><use href="#compass-mark" transform="rotate(45)"/><use href="#compass-mark" transform="rotate(60)"/><use href="#compass-mark" transform="rotate(75)"/>
+        <svg class="index-fallback" viewBox="0 0 760 410" aria-hidden="true">
+          <g transform="translate(380 212) rotate(-23) scale(2.75 1.3)">
+            <g fill="none" stroke-linejoin="bevel">
+              <circle cy="7" r="100" stroke="#484e50" stroke-width="2"/>
+              <circle r="100" stroke="#9baba8" stroke-width="2"/>
+              <circle r="91" stroke="#555f5d" stroke-width="1"/>
+              <path d="M0-91V91M-91 0H91" stroke="#424c49" stroke-width="1.2"/>
+              <path id="compass-mark" d="M0-99v7M0 99v-7M-99 0h7M99 0h-7" stroke="#83918c" stroke-width=".7"/>
+              <use href="#compass-mark" transform="rotate(30)"/><use href="#compass-mark" transform="rotate(60)"/>
             </g>
-            <g fill="#b8bcbd" font-family="Manrope,Arial,sans-serif" font-size="11" text-anchor="middle">
-              <text y="-68">N</text><text x="73" y="4">E</text><text y="77">S</text><text x="-73" y="4">W</text>
+            <g fill="#b6c1bc" font-family="Manrope,Arial,sans-serif" font-size="9" text-anchor="middle">
+              <text y="-76">N</text><text x="81" y="3">E</text><text y="84">S</text><text x="-81" y="3">W</text>
             </g>
-            <g class="fallback-needle">
-              <path d="M0-62 13 0 0 62-13 0Z" fill="#777e82"/>
-              <path d="M0-62 13 0 0 6Z" fill="#dcdedc"/>
-              <path d="M0-62-13 0 0 6Z" fill="#9ca2a5"/>
-              <path d="M0 62 13 0 0-6Z" fill="#454c51"/>
-            </g>
-            <circle r="6" fill="#aeb4b6" stroke="#34393c" stroke-width="2"/>
+            <g class="fallback-needle"><path d="M0-65-12 0 0 58 12 0Z" fill="#75837f"/><path d="M0-65-12 0 0 7Z" fill="#dce3db"/><path d="M0-65 12 0 0 7Z" fill="#a6b5ab"/><path d="M0 58 12 0 0-7Z" fill="#3b4944"/></g>
+            <circle r="5" fill="#b1bfb5" stroke="#414b46" stroke-width="1.5"/>
+            <path d="M-3-111H3L0-105Z" fill="#d5ddd3"/>
           </g>
         </svg>
         <span class="index-tooltip" id="index-tooltip">About</span>
       </div>
-      <nav class="index-links" aria-label="Explore my profile">
-        <a href="#about" data-page="about" aria-current="page"><span>About</span></a>
-        <a href="#studies" data-page="studies"><span>Studies</span></a>
-        <a href="#experience" data-page="experience"><span>Experience</span></a>
-        <a href="#projects" data-page="projects"><span>Projects</span></a>
-      </nav>
     </div>
+  </main>
+  <footer class="site-footer">
+    <div class="socials"><a href="https://github.com/mteyra" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a><a href="https://www.linkedin.com/in/mteyra/" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a></div>
     <div class="utility">
-      <button type="button" id="more" aria-label="Open more links and preferences" aria-expanded="false" aria-controls="more-menu">More <span aria-hidden="true">+</span></button>
+      <button type="button" id="more" aria-label="Open navigation and preferences" aria-expanded="false" aria-controls="more-menu">Explore <span aria-hidden="true">+</span></button>
       <div id="more-menu" hidden>
+        <nav class="index-links" aria-label="Explore my profile">
+          <a href="#about" data-page="about" aria-current="page">About</a>
+          <a href="#studies" data-page="studies">Studies</a>
+          <a href="#experience" data-page="experience">Experience</a>
+          <a href="#projects" data-page="projects">Projects</a>
+        </nav>
         <a href="../archive/">Earlier designs <span aria-hidden="true">↗</span></a>
         <button type="button" id="motion" aria-pressed="false">Motion <span id="motion-label">On</span></button>
       </div>

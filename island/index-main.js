@@ -12,6 +12,7 @@ let compassInteraction = null;
 try { manualPause = localStorage.getItem('marc-island-motion') === 'paused'; } catch {}
 for (const element of $$('[data-content]')) element.innerHTML = renderChapter(element.dataset.content);
 const view = kind => $(`[data-view="${kind}"]`);
+const compassStage = $('.index-position');
 
 function updateCompassHint() {
   const visual = $('.index-visual');
@@ -64,6 +65,8 @@ function applyRoute({ initial = false } = {}) {
   for (const kind of pages) view(kind).hidden = kind !== page;
   for (const link of $$('.index-links a')) link.dataset.page === page ? link.setAttribute('aria-current', 'page') : link.removeAttribute('aria-current');
   document.body.dataset.page = page;
+  if (page === 'about') $('#main').append(compassStage);
+  else $('.site-footer').insertBefore(compassStage, $('.utility'));
   document.title = page === 'about' ? 'Marc Teyra Galiano' : `${titles[page]} · Marc Teyra Galiano`;
   $('.skip').href = `#${page}-title`;
   scene?.select(page, { instant: initial });
@@ -87,9 +90,13 @@ function setMenu(open) {
   menuOpen = Boolean(open);
   $('#more-menu').hidden = !menuOpen;
   $('#more').setAttribute('aria-expanded', String(menuOpen));
-  $('#more').setAttribute('aria-label', `${menuOpen ? 'Close' : 'Open'} more links and preferences`);
+  $('#more').setAttribute('aria-label', `${menuOpen ? 'Close' : 'Open'} navigation and preferences`);
 }
-function closeMenu() { setMenu(false); }
+function closeMenu() {
+  const restoreFocus = menuOpen && $('#more-menu').contains(document.activeElement);
+  setMenu(false);
+  if (restoreFocus) $('#more').focus({ preventScroll: true });
+}
 function setPaused(value, persist = false) {
   if (persist) {
     manualPause = Boolean(value);
@@ -138,7 +145,7 @@ window.addEventListener('pagehide', event => { if (!event.persisted) { closed = 
 window.indexState = () => ({ page, groups: Object.fromEntries(groups), paused, menuOpen, scene: scene?.getState() || { ready: false } });
 
 // Reading and navigation are usable while the optional graphics module loads.
-import('./index-scene.js?v=compass-align').then(({ createIndexScene }) => {
+import('./index-scene.js?v=compass-mesh').then(({ createIndexScene }) => {
   if (closed) return;
   scene = createIndexScene($('#index-canvas'), {
     onSelect: navigate,
