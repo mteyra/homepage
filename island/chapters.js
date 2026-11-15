@@ -13,11 +13,10 @@ const experienceById = new Map(experiences.map(experience => [experience.id, exp
 function masthead(kind, deck, meta = '') {
   return `<header class="chapter-masthead">
     <div class="chapter-heading">
-      <h1 id="reading-title" tabindex="-1">${esc(titles[kind])}</h1>
+      <h1 id="${esc(kind)}-title" tabindex="-1">${esc(titles[kind])}</h1>
       <p class="chapter-deck">${esc(deck)}</p>
       ${meta ? `<p class="chapter-meta">${esc(meta)}</p>` : ''}
     </div>
-    <div class="chapter-art" id="chapter-art"></div>
   </header>`;
 }
 

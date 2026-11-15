@@ -3,72 +3,77 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f0f0ee">
-  <meta name="description" content="Marc Teyra Galiano. Artificial intelligence at FAU, work at Siemens Healthineers, and a curiosity for computation, biology and medicine.">
+  <meta name="theme-color" content="#eaeae7">
+  <meta name="description" content="Marc Teyra Galiano — artificial intelligence at FAU, work at Siemens Healthineers, studies and experiences.">
   <meta property="og:title" content="Marc Teyra Galiano">
   <meta property="og:description" content="Artificial intelligence at FAU. Work at Siemens Healthineers. A curiosity for computation, biology and medicine.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mteyra.github.io/m.a.r.c_t.e.y.r.a/">
   <link rel="canonical" href="https://mteyra.github.io/m.a.r.c_t.e.y.r.a/">
-  <title>Marc Teyra Galiano</title>
-  <link rel="icon" href="icon.svg?v=object" type="image/svg+xml">
+  <link rel="icon" href="icon.svg?v=folio" type="image/svg+xml">
   <link rel="preload" href="../assets/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="style.css?v=object">
-  <link rel="stylesheet" href="layout.css?v=object">
-  <link rel="stylesheet" href="navigation.css?v=object">
-  <script type="module" src="main.js?v=object"></script>
+  <link rel="stylesheet" href="folio.css?v=folio">
+  <script type="module" src="folio-main.js?v=folio"></script>
+  <title>Marc Teyra Galiano</title>
 </head>
 <body data-page="about">
-  <a class="skip" href="#page-title">Skip to content</a>
+  <a class="skip" href="#about-title">Skip to content</a>
   <header class="topline">
-    <a class="signature" href="#about" aria-label="Marc Teyra Galiano, home">
-      <svg viewBox="-2.2 -1.6 4.4 3.2" aria-hidden="true"><path d="M-1.9-1.25V1.12h.43V.8C-1.25 1.1-1.03 1.28-.63 1.28c.41 0 .66-.22.78-.49.23.31.55.49.91.49.54 0 .84-.35.84-.96v-1.57h-.52V.24c0 .4-.18.59-.48.59S.25.59.25.2v-1.45h-.5V.24c0 .4-.18.59-.48.59s-.65-.24-.65-.63v-1.45Z" transform="scale(1 -1)"/></svg>
-      <span>Marc Teyra Galiano</span>
-    </a>
+    <a href="#about" class="signature" aria-label="Marc Teyra Galiano, home">mtg<span aria-hidden="true">.</span></a>
     <a class="cv-link" href="../assets/cv/marc-teyra-cv-2026-02.pdf" target="_blank" rel="noopener" title="CV · February 2026">CV <small>Feb 2026</small><span aria-hidden="true">↗</span></a>
   </header>
 
-  <main id="main">
-    <section id="home" class="home" aria-labelledby="page-title">
-      <div class="hero-spread">
-        <div class="introduction">
-          <h1 id="page-title" tabindex="-1"><span>Marc Teyra Galiano</span></h1>
-          <p class="hero-note">I study <a href="#studies">artificial intelligence at FAU</a> and work at <a href="#experience">Siemens Healthineers</a>. Curious about where computation meets <a href="#studies/biology-medicine">biology and medicine</a>.</p>
-        </div>
-        <div class="home-art" id="home-art">
-          <div class="sculpture-stage" id="sculpture-stage">
-            <img class="sculpture-fallback" id="sculpture-fallback" src="monogram.svg?v=object" alt="" aria-hidden="true">
-            <canvas id="sculpture" tabindex="-1" aria-hidden="true"></canvas>
+  <main class="folio-viewport" id="main" aria-label="Marc’s folio">
+    <div class="folio" id="folio">
+      <section class="folio-page" data-page="about" aria-labelledby="about-title">
+        <div class="page-face">
+          <div class="page-scroll" id="scroll-about">
+            <div class="page-body cover">
+              <div class="cover-composition">
+                <h1 id="about-title" tabindex="-1">Marc Teyra<span>Galiano</span></h1>
+                <p class="cover-introduction">I study <a href="#studies">artificial intelligence at FAU</a> and work at <a href="#experience">Siemens Healthineers</a>.<br><br> Curious about where computation meets <a href="#studies/biology-medicine">biology and medicine</a>.</p>
+              </div>
+              <button class="browse-folio" id="browse-folio" type="button"><span class="folio-symbol" aria-hidden="true"><i></i><i></i><i></i></span><span>Browse the folio</span><span class="browse-arrow" aria-hidden="true">↗</span></button>
+            </div>
+            <div class="page-margin margin-left" data-grab aria-hidden="true"></div><div class="page-margin margin-right" data-grab aria-hidden="true"></div>
           </div>
+          <button class="page-preview" data-open-page="about" type="button" aria-label="Open About" hidden><span>About<small>Marc Teyra Galiano</small></span><b aria-hidden="true">↗</b></button>
         </div>
-      </div>
-    </section>
-    <article id="reading" class="reading" hidden></article>
+      </section>
+      <section class="folio-page" data-page="studies" aria-labelledby="studies-title" aria-hidden="true" inert>
+        <div class="page-face"><div class="page-scroll" id="scroll-studies"><div class="page-body reader" data-content="studies"></div><div class="page-margin margin-left" data-grab aria-hidden="true"></div><div class="page-margin margin-right" data-grab aria-hidden="true"></div></div><button class="page-preview" data-open-page="studies" type="button" aria-label="Open Studies" hidden><span>Studies<small>Degree & coursework</small></span><b aria-hidden="true">↗</b></button></div>
+      </section>
+      <section class="folio-page" data-page="experience" aria-labelledby="experience-title" aria-hidden="true" inert>
+        <div class="page-face"><div class="page-scroll" id="scroll-experience"><div class="page-body reader" data-content="experience"></div><div class="page-margin margin-left" data-grab aria-hidden="true"></div><div class="page-margin margin-right" data-grab aria-hidden="true"></div></div><button class="page-preview" data-open-page="experience" type="button" aria-label="Open Experience" hidden><span>Experience<small>Work & practical experience</small></span><b aria-hidden="true">↗</b></button></div>
+      </section>
+      <section class="folio-page" data-page="projects" aria-labelledby="projects-title" aria-hidden="true" inert>
+        <div class="page-face"><div class="page-scroll" id="scroll-projects"><div class="page-body reader" data-content="projects"></div><div class="page-margin margin-left" data-grab aria-hidden="true"></div><div class="page-margin margin-right" data-grab aria-hidden="true"></div></div><button class="page-preview" data-open-page="projects" type="button" aria-label="Open Projects" hidden><span>Projects<small>Public work & completed projects</small></span><b aria-hidden="true">↗</b></button></div>
+      </section>
+      <div class="folio-overview-controls" hidden><button type="button" data-folio-step="-1" aria-label="Previous page">←</button><button type="button" data-folio-step="1" aria-label="Next page">→</button></div>
+    </div>
   </main>
 
   <div class="dock-position">
     <div class="island" id="island">
       <section class="island-menu" id="island-menu" aria-label="Links and preferences" hidden>
-        <div class="menu-heading"><span>Around the web</span><span class="tiny-mark" aria-hidden="true">↗</span></div>
         <a href="https://github.com/mteyra" target="_blank" rel="noopener"><span>GitHub</span><small>@mteyra</small><span aria-hidden="true">↗</span></a>
-        <a href="https://www.linkedin.com/in/mteyra/" target="_blank" rel="noopener"><span>LinkedIn</span><small>My professional profile</small><span aria-hidden="true">↗</span></a>
-        <a href="../archive/"><span>Earlier designs</span><small>A little archive of this site</small><span aria-hidden="true">↗</span></a>
+        <a href="https://www.linkedin.com/in/mteyra/" target="_blank" rel="noopener"><span>LinkedIn</span><small>Professional profile</small><span aria-hidden="true">↗</span></a>
+        <a href="../archive/"><span>Earlier designs</span><small>The design archive</small><span aria-hidden="true">↗</span></a>
         <button type="button" id="motion" aria-pressed="false"><span>Motion</span><small id="motion-label">On</small><span class="toggle" aria-hidden="true"></span></button>
       </section>
       <nav class="dock" aria-label="Explore my profile">
         <div class="dock-rail">
-          <span class="dock-indicator" aria-hidden="true"></span>
-          <a href="#about" data-page="about" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V5l7 8 7-8v14"/></svg><span>About</span></a>
-          <a href="#studies" data-page="studies"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6c-3-2-6-2-9-1v14c3-1 6-1 9 1 3-2 6-2 9-1V5c-3-1-6-1-9 1Zm0 0v14"/></svg><span>Studies</span></a>
-          <a href="#experience" data-page="experience"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M5.6 18.4 18.4 5.6"/></svg><span>Experience</span></a>
-          <a href="#projects" data-page="projects"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.4"/><rect x="14" y="3" width="7" height="7" rx="1.4"/><rect x="3" y="14" width="7" height="7" rx="1.4"/><path d="M14 17.5h7m-3.5-3.5v7"/></svg><span>Projects</span></a>
+          <a href="#about" data-page="about" aria-current="page">About</a>
+          <a href="#studies" data-page="studies">Studies</a>
+          <a href="#experience" data-page="experience">Experience</a>
+          <a href="#projects" data-page="projects">Projects</a>
         </div>
         <span class="dock-divider" aria-hidden="true"></span>
-        <button type="button" id="more" aria-label="Open links and preferences" aria-expanded="false" aria-controls="island-menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+        <button type="button" id="more" aria-label="Open links and preferences" aria-expanded="false" aria-controls="island-menu"><span aria-hidden="true"></span></button>
       </nav>
     </div>
   </div>
   <p class="sr-only" id="announcement" role="status" aria-live="polite"></p>
-  <noscript><p class="noscript">Explore <a href="https://github.com/mteyra">GitHub</a>, <a href="https://www.linkedin.com/in/mteyra/">LinkedIn</a> or <a href="../assets/cv/marc-teyra-cv-2026-02.pdf">my CV</a>. JavaScript enables the sculpture and the reading views.</p></noscript>
+  <noscript><p class="noscript">Explore <a href="https://github.com/mteyra">GitHub</a>, <a href="https://www.linkedin.com/in/mteyra/">LinkedIn</a> or <a href="../assets/cv/marc-teyra-cv-2026-02.pdf">my CV</a>. JavaScript enables the folio’s other pages.</p></noscript>
 </body>
 </html>

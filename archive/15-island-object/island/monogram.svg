@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 410">
+  <defs>
+    <path id="m" d="M-1.9-1.25V1.12h.43V.8C-1.25 1.1-1.03 1.28-.63 1.28c.41 0 .66-.22.78-.49.23.31.55.49.91.49.54 0 .84-.35.84-.96v-1.57h-.52V.24c0 .4-.18.59-.48.59S.25.59.25.2v-1.45h-.5V.24c0 .4-.18.59-.48.59s-.65-.24-.65-.63v-1.45Z"/>
+    <linearGradient id="graphite" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#474b48"/><stop offset=".55" stop-color="#353936"/><stop offset="1" stop-color="#2d312e"/></linearGradient>
+    <filter id="shadow" x="-30%" y="-150%" width="160%" height="400%"><feGaussianBlur stdDeviation="9"/></filter>
+  </defs>
+  <ellipse cx="298" cy="296" rx="131" ry="10" fill="#353c36" opacity=".13" filter="url(#shadow)"/>
+  <g transform="translate(290 200) scale(65 -65)">
+    <use href="#m" transform="translate(.11 .1)" fill="#424744"/>
+    <use href="#m" fill="url(#graphite)" stroke="#515652" stroke-width=".014" stroke-linejoin="round"/>
+  </g>
+</svg>
