@@ -114,7 +114,7 @@ window.addEventListener('pagehide', event => { if (!event.persisted) { closed = 
 window.indexState = () => ({ page, groups: Object.fromEntries(groups), paused, menuOpen, scene: scene?.getState() || { ready: false } });
 
 // Reading and navigation are usable while the optional graphics module loads.
-import('./index-scene.js?v=compass').then(({ createIndexScene }) => {
+import('./index-scene.js?v=compass-tilt').then(({ createIndexScene }) => {
   if (closed) return;
   scene = createIndexScene($('#index-canvas'), {
     onSelect: navigate,

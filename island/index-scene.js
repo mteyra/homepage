@@ -90,7 +90,7 @@ export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavail
     scene = new THREE.Scene();
     camera = new THREE.OrthographicCamera(-4, 4, 3.125, -3.125, .1, 40);
     camera.position.set(0, 0, 12); camera.lookAt(0, 0, 0);
-    ring = new THREE.Group(); ring.rotation.set(-.60, .035, -.025); scene.add(ring);
+    ring = new THREE.Group(); ring.rotation.set(-1.08, .035, -.025); scene.add(ring);
     rotor = new THREE.Group(); ring.add(rotor);
 
     // Large, neutral reflectors reveal the case's bevels and the needle's facets.
@@ -155,8 +155,8 @@ export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavail
       glyph(letter, Math.cos(center) * 2.16, Math.sin(center) * 2.16, bearing);
       const indicator = mesh(new THREE.CircleGeometry(.042, 24), bearing);
       indicator.position.set(Math.cos(center) * 2.79, Math.sin(center) * 2.79, .098);
-      const hit = mesh(new THREE.ShapeGeometry(annulus(.72, 3.16, center - QUARTER / 2, center + QUARTER / 2), 48), hitMaterial);
-      hit.position.z = .50; hit.userData.index = index; hits.push(hit);
+      const hit = mesh(new THREE.ShapeGeometry(annulus(1.08, 3.16, center - QUARTER / 2, center + QUARTER / 2), 48), hitMaterial);
+      hit.position.z = .115; hit.userData.index = index; hits.push(hit);
       sectors.push({ bearing });
     });
 
@@ -308,7 +308,7 @@ export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavail
     if (!nextWidth || !nextHeight || (width === nextWidth && height === nextHeight)) return;
     releasePointer(); width = nextWidth; height = nextHeight;
     renderer.setSize(width, height, false);
-    const aspect = width / height, viewHeight = Math.max(6.25, 6.9 / aspect);
+    const aspect = width / height, viewHeight = Math.max(3.8, 6.9 / aspect);
     camera.left = -viewHeight * aspect / 2; camera.right = viewHeight * aspect / 2;
     camera.top = viewHeight / 2; camera.bottom = -viewHeight / 2;
     camera.updateProjectionMatrix();

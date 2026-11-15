@@ -10,7 +10,7 @@ The design keeps information available through a small number of visibly separat
 
 ## Composition
 
-A dark graphite field holds stationary text and a small compass near the bottom of the screen. Instrument Serif sets the full name, chapter headings and project titles. Manrope sets the body text, metadata and navigation.
+A dark graphite field holds stationary text and a small compass near the bottom of the screen. The compass leans away from the viewer at a low angle, giving its circular dial the broad oval silhouette of Orbit. Instrument Serif sets the full name, chapter headings and project titles. Manrope sets the body text, metadata and navigation.
 
 The introduction uses two parts of the available width: Marc’s name on the left, his stated interests and current degree and employer on the right. Reading pages place the chapter heading and category controls beside the selected content. The page surfaces stay flat and still when views change.
 
