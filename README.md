@@ -1,40 +1,40 @@
-# Marc Teyra Galiano · Island
+# Marc Teyra Galiano
 
 [Visit the homepage](https://mteyra.github.io/m.a.r.c_t.e.y.r.a/)
 
-A monochrome personal website with a three-piece metallic M, a floating navigation island and separate views for studies, experience and projects. The introduction uses both sides of the screen; each inner view pairs a small interactive 3D assembly with readable content.
+A monochrome personal homepage built around a graphite and silver M. The full name and introduction share the opening with the sculpture; three factual links lead into studies, current work and public or completed projects.
 
-## Interaction
+## Reading and interaction
 
-The original M is assembled at rest. Its left upright, silver chevron and right upright lead to Studies, Experience and Projects. Hovering a piece lifts it slightly, names its destination and underlines the corresponding navigation label. Hovering or focusing a normal navigation or introduction link previews the same piece. Selecting a piece opens the section immediately. There is no sorting task or completion state.
+The same M moves from the opening spread into each chapter’s masthead. Its three pieces lead to Studies, Experience and Projects; the current chapter’s piece sits slightly forward. Hovering an object or a normal link previews the matching destination. Pointer movement gently changes the viewing angle, then settles. There is no sorting task or completion state.
 
-The earlier rings, plates and frames accompany the inner sections. Each component corresponds to a real content group or project, also available through ordinary text controls. Biography links open the relevant study group, with a direct connection from biomedical coursework to science and care experience. Projects stay concise, with presentations or demos alongside source links.
+All university coursework is visible in two aligned areas. Independent courses and certificate links follow. Experience starts with the current employer, then presents dated contributions grouped into teams and prototypes, science and care, and early robotics and games. Supporting accounts expand in place. Projects remain four concise entries with direct links.
 
-The thin, light navigation expands upwards into profile links, the archive and motion preferences. Browser history, shareable chapter selections, keyboard navigation, reduced motion and static WebGL fallbacks are supported. Sculptures stop rendering when hidden and become idle after settling.
+The floating navigation expands into GitHub, LinkedIn, the design archive and motion preferences. Browser history, direct links into course and experience groups, keyboard navigation, reduced motion and WebGL fallback are supported. Text stays available throughout transitions. One WebGL context is retained between pages; rendering stops when the sculpture settles or leaves the viewport.
 
 ## Content
 
 `puzzle/content.js` contains the shared public profile: eight named university courses, three online courses, four certificate records, ten practical experiences and four selected projects. TUM’s course appears under independent study; the CS50 professional certificate is identified as a bundle.
 
-The current degree is B.Sc. Artificial Intelligence at FAU, since October 2025, with a biomedical direction. Current employer: Siemens Healthineers, since April 2026. No unverified job title is inferred.
+Current study: B.Sc. Artificial Intelligence at FAU, since October 2025, with an interest in computation, biology and medicine. Current employer: Siemens Healthineers, since April 2026. No unverified job title is inferred.
 
-The public CV in `assets/cv/` is the February 2026 derivative with its private contact header removed. It predates the current job. Original source documents and private analysis are not published.
+The public CV in `assets/cv/` is the February 2026 derivative with its private contact header removed. It predates the current job. Original source documents and private analysis are not published. There are no invented articles or claimed live travel connections.
 
 ## Source and hosting
 
-GitHub Pages serves `main` from the repository root. `.nojekyll` keeps the site buildless. Fonts and Three.js are bundled locally; no account service or build step is required.
+GitHub Pages serves `main` from the repository root. `.nojekyll` keeps the site buildless. Fonts and Three.js are bundled; no account service or build step is required.
 
 - `index.html` — homepage entry and route forwarding.
-- `island/` — current page, styles and 3D controllers.
+- `island/index.html` — introduction and persistent navigation.
+- `island/chapters.js` — reading views, derived from the public profile.
+- `island/main.js` — routing, shared scene movement, disclosures and preferences.
+- `island/monogram.js` — the three-piece M and its interaction.
 - `puzzle/content.js` — shared public profile content.
-- `archive/` — eleven preserved design iterations.
-- `archive/08-island/` — the original Island.
-- `archive/09-island-wide/` — the subsequent graphite navigation and wide-grid edition.
-- `archive/10-island-spatial/` — the first published Island, including the M puzzle.
-- `archive/11-island-identities/` — the subsequent Wing and Fold studies; `?form=fold` opens Fold.
-- `design/ISLAND.md` — current design notes.
+- `archive/` — twelve preserved design iterations.
+- `archive/12-island-monogram/` — the complete edition preceding this revamp.
+- `design/ISLAND.md` — design notes.
 
-Earlier editions preserve their original content. The `?atlas=preview#travel` handoff opens the archived GPX/KML viewer. Live travel integration remains future work.
+Earlier editions preserve their own content and assets. The `?atlas=preview#travel` handoff opens the archived GPX/KML viewer. Live travel integration remains future work.
 
 ## Credits
 

@@ -4,6 +4,8 @@ import * as THREE from '../assets/vendor/three.module.js';
 // Its three pieces are ordinary destinations, not an alignment task.
 const COUNT = 3;
 const valid = index => Number.isInteger(index) && index >= 0 && index < COUNT;
+const pagePieces = { about: null, studies: 0, experience: 1, projects: 2 };
+const clamp = value => Math.max(-1, Math.min(1, value));
 
 export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnavailable } = {}) {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
@@ -17,10 +19,11 @@ export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnava
   canvas.tabIndex = -1;
   canvas.style.touchAction = 'pan-y pinch-zoom';
 
-  let preview = null, hover = null, manualPaused = null, paused = reduced.matches;
+  let page = 'about', preview = null, hover = null, manualPaused = null, paused = reduced.matches;
   let active = true, visible = true, ready = false, unavailable = false, destroyed = false;
   let renderer, scene, camera, sculpture, environment, key, resizeObserver, visibilityObserver;
   let frame = 0, last = 0, width = 0, height = 0, moving = false, pressed = null, disposed = false;
+  let tiltX = 0, tiltY = 0, targetX = 0, targetY = 0;
   const pieces = [], pickable = [];
   const geometries = new Set(), materials = new Set(), textures = new Set();
   const raycaster = new THREE.Raycaster(), pointer = new THREE.Vector2();
@@ -51,6 +54,10 @@ export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnava
     sculpture.rotation.set(-.02, -.19, 0);
     sculpture.position.y = -.07;
     scene.add(sculpture);
+    const hitAssembly = new THREE.Group();
+    hitAssembly.rotation.copy(sculpture.rotation);
+    hitAssembly.position.copy(sculpture.position);
+    scene.add(hitAssembly);
 
     // Original broad reflectors, negative fill and narrow bevel light.
     const studio = new THREE.Scene();
@@ -119,8 +126,8 @@ export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnava
       target.visible = false;
       target.position.copy(position);
       target.userData.index = index;
-      sculpture.add(target); pickable.push(target);
-      pieces.push({ group, position, emphasis: 0 });
+      hitAssembly.add(target); pickable.push(target);
+      pieces.push({ group, position, emphasis: 0, pageEmphasis: 0 });
     }
 
     const groundMaterial = new THREE.ShadowMaterial({ color: 0x3d443e, opacity: .17, depthWrite: false });
@@ -149,14 +156,23 @@ export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnava
   function update(instant = false, dt = 1 / 60) {
     const amount = instant ? 1 : 1 - Math.exp(-dt * 12);
     let changed = false;
+    const intendedX = paused ? 0 : targetX, intendedY = paused ? 0 : targetY;
+    tiltX += (intendedX - tiltX) * amount; tiltY += (intendedY - tiltY) * amount;
+    if (Math.abs(intendedX - tiltX) < .0003) tiltX = intendedX; else changed = true;
+    if (Math.abs(intendedY - tiltY) < .0003) tiltY = intendedY; else changed = true;
+    sculpture?.rotation.set(-.02 + tiltY * .028, -.19 + tiltX * .055, 0);
     pieces.forEach((piece, index) => {
       const target = index === preview ? 1 : 0;
       piece.emphasis += (target - piece.emphasis) * amount;
       if (Math.abs(target - piece.emphasis) < .0003) piece.emphasis = target;
       else changed = true;
+      const chapterTarget = index === pagePieces[page] ? 1 : 0;
+      piece.pageEmphasis += (chapterTarget - piece.pageEmphasis) * amount;
+      if (Math.abs(chapterTarget - piece.pageEmphasis) < .0003) piece.pageEmphasis = chapterTarget;
+      else changed = true;
       piece.group.position.copy(piece.position);
-      piece.group.position.y += piece.emphasis * .16;
-      piece.group.position.z += piece.emphasis * .09;
+      piece.group.position.y += Math.max(piece.emphasis * .16, piece.pageEmphasis * .12);
+      piece.group.position.z += Math.max(piece.emphasis * .09, piece.pageEmphasis * .14);
     });
     scene?.updateMatrixWorld(true);
     return changed;
@@ -168,8 +184,11 @@ export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnava
   function resize() {
     if (!renderer || destroyed || unavailable) return;
     const rect = canvas.getBoundingClientRect();
-    if (!rect.width || !rect.height || (width === rect.width && height === rect.height)) return;
-    width = rect.width; height = rect.height;
+    // FLIP may scale the mounted stage while its layout size has already
+    // changed. Size the drawing surface to layout, not that temporary scale.
+    const nextWidth = canvas.clientWidth || rect.width, nextHeight = canvas.clientHeight || rect.height;
+    if (!nextWidth || !nextHeight || (width === nextWidth && height === nextHeight)) return;
+    width = nextWidth; height = nextHeight;
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     const distance = Math.max(9.25, 4.2 / (Math.tan(THREE.MathUtils.degToRad(17)) * camera.aspect));
@@ -196,6 +215,11 @@ export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnava
     if (preview === index) return true;
     preview = index; wake(); return true;
   }
+  function setPage(value) {
+    if (destroyed || !Object.hasOwn(pagePieces, value)) return false;
+    if (page === value) return true;
+    page = value; targetX = targetY = 0; wake(); return true;
+  }
   function nativePreview(index) {
     if (destroyed || !active || hover === index) return;
     hover = index; setPreview(index);
@@ -204,7 +228,7 @@ export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnava
   function pauseChanged() {
     const next = manualPaused ?? reduced.matches;
     if (paused === next || destroyed) return;
-    paused = next; cancelAnimationFrame(frame); frame = 0; last = 0;
+    paused = next; cancelAnimationFrame(frame); frame = 0; last = 0; targetX = targetY = 0;
     moving = update(true); render();
   }
   function setPaused(value) { if (!destroyed) { manualPaused = Boolean(value); pauseChanged(); } }
@@ -213,14 +237,14 @@ export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnava
     active = Boolean(value);
     if (!active) {
       cancelPointer(); cancelAnimationFrame(frame); frame = 0; last = 0;
-      hover = preview = null; canvas.style.cursor = 'default'; moving = update(true);
+      hover = preview = null; targetX = targetY = 0; canvas.style.cursor = 'default'; moving = update(true);
     } else { resize(); moving = update(true); render(); }
   }
   function visibilityChanged() {
     if (destroyed) return;
     if (!visible || document.hidden || !active) {
       cancelPointer(); cancelAnimationFrame(frame); frame = 0; last = 0;
-      moving = update(true);
+      targetX = targetY = 0; moving = update(true);
     } else { resize(); moving = update(true); render(); }
   }
   function hit(clientX, clientY) {
@@ -246,6 +270,12 @@ export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnava
       if (pressed.pointerType === 'touch') nativePreview(null);
     }
     if (event.pointerType === 'touch') return;
+    if (!paused) {
+      const rect = canvas.getBoundingClientRect();
+      targetX = clamp((event.clientX - rect.left) / Math.max(1, rect.width) * 2 - 1);
+      targetY = clamp((event.clientY - rect.top) / Math.max(1, rect.height) * 2 - 1);
+      wake();
+    }
     const index = hit(event.clientX, event.clientY);
     canvas.style.cursor = index === null ? 'default' : 'pointer';
     nativePreview(index);
@@ -262,7 +292,7 @@ export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnava
     cancelPointer();
     if (!moved && index === press.index) onNavigate?.(index);
   }
-  function leave() { canvas.style.cursor = 'default'; nativePreview(null); }
+  function leave() { targetX = targetY = 0; canvas.style.cursor = 'default'; nativePreview(null); wake(); }
   function windowBlur() { cancelPointer(); leave(); }
   function disposeGraphics() {
     if (disposed) return;
@@ -284,7 +314,7 @@ export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnava
     queueMicrotask(() => { if (!destroyed) onUnavailable?.(); });
   }
   function contextLost(event) { event.preventDefault(); fail(); }
-  function getState() { return { count: COUNT, preview, hover, paused, active, visible: visible && !document.hidden, ready, unavailable, moving, destroyed }; }
+  function getState() { return { count: COUNT, page, pagePiece: pagePieces[page], preview, hover, paused, active, visible: visible && !document.hidden, ready, unavailable, moving, destroyed, parallax: { x: tiltX, y: tiltY } }; }
   function destroy() {
     if (destroyed) return;
     destroyed = true; ready = false; moving = false;
@@ -308,5 +338,5 @@ export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnava
       queueMicrotask(() => { if (!destroyed && !unavailable) onReady?.(); });
     }
   } catch { fail(); }
-  return { setPreview, setPaused, setActive, destroy, getState };
+  return { setPage, setPreview, setPaused, setActive, destroy, getState };
 }

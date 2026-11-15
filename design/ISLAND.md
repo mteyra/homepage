@@ -1,45 +1,35 @@
-# Island
+# Island · Marc Teyra Galiano
 
-The selected reference is Rauno’s black-and-white 2023 homepage: a spacious opening and floating navigation. The aim is a restrained personal introduction with 3D that supports clear exploration.
+The reference is Rauno’s black-and-white 2023 homepage: a quiet opening and a floating navigation island. This revision keeps the original rigid M while making the whole site a personal introduction, with equal care for the reading views.
 
 ## Composition
 
-An off-white field, graphite and silver sculpture, large name at the left and a short introduction at the right. A dated CV link remains at the top. Four explicit destinations occupy a thin translucent navigation island, with a small active dot. A plus button grows the same shell upwards into profile links and motion preferences.
+The opening is an asymmetric spread. Marc’s full name occupies two deliberate lines on the left; the graphite and silver M sits at the right. A short statement of interest connects directly to computation and biomedical coursework. Three factual links below identify current study, current work and public or completed projects. On phones the name leads, the sculpture follows, and those facts become compact rows.
 
-The original rigid M is restored: two graphite uprights and a silver chevron, with the same proportions, bevels and studio lighting. It is assembled at rest. Its meaning starts with Marc’s initial; the interaction gives its three pieces a practical role.
+Every inner view uses the available width. Large chapter titles have a short introduction and a smaller version of the same M. The sculpture is not a separate symbol for each subject. It remains Marc’s initial, with its three pieces serving the site’s three reading destinations.
 
-## The M as navigation
+- Studies exposes computation and biology & medicine together. Actual course titles lead, codes remain secondary, and independent study follows below with verified certificate links and the audited course clearly identified.
+- Experience begins with Siemens Healthineers and its verified start date. Group headings introduce dated entries whose organisation and contribution are visible before expansion. Longer accounts and outcomes open in place.
+- Projects has four economical entries. Each gives the project, a brief contribution and direct links to the project, source, presentation or CV. No invented demonstration or architecture is added.
 
-Left to right, the pieces lead to Studies, Experience and Projects. Hovering a piece lifts it slightly and displays the destination beneath the object. The matching dock label gains an underline; the current-page dot stays on About until navigation occurs. Hovering or focusing ordinary links previews the corresponding piece.
+The public CV remains dated February 2026. It predates the current employer. There is no portrait, hometown, unverified job title, invented article or claimed live travel feed.
 
-Clicking or tapping a piece opens its section immediately. Holding a finger down previews the destination; a drag, scroll or cancelled gesture clears the preview without navigating. Keyboard focus takes priority over a stationary pointer until the pointer moves again. The canvas is outside keyboard focus; ordinary links expose all destinations and carry their accessible names. There is no sorting, completion message, score, reset or extra toolbar.
+## Connected movement
 
-## Inner views
+One WebGL canvas moves between the large opening composition and the smaller chapter mastheads. A bounded transition connects its old and new positions instead of replacing it with unrelated geometry. The destination’s piece sits slightly forward; the M remains assembled and recognizable.
 
-Each view uses the width of the viewport. A left column holds the actual subject, present-tense context and one restrained sculpture. A right column holds its information. The content takes precedence on phones, with a compact sculpture beside the introduction.
+Hover and keyboard focus on ordinary links preview the same piece as the pointer over the sculpture. Selecting a piece navigates immediately. Touch holds preview the destination, while scrolling, dragging and cancellation never trigger navigation. Canvas interaction is optional; normal links expose every destination.
 
-- Studies: three rings select computation, biology and medicine, or independent study. Exact course names and certificate links remain visible in the chosen group.
-- Experience: three plates select teams and prototypes, science and care, or robotics and games. The current employer is always visible. Each entry gives a contribution line and expands its source-backed account.
-- Projects: four frames accompany four concise entries. Pointer and keyboard focus connect the object to each project; links lead directly to source, presentation or the CV.
+Pointer movement produces a small change of angle, and the scene settles when movement stops. Fixed hit surfaces prevent a lifted or tilted piece from chasing the pointer. The reading hierarchy enters in a short sequence; supporting experience details expand with their content. The floating island remains anchored while its links panel grows upwards.
 
-The forms use the earlier edition’s graphite and silver materials. Their role is consistent across pages: selecting one reveals or identifies corresponding content. They are abstract navigation objects, without invented claims about achievements or scientific structures. The text index provides all sculpture selections with standard keyboard controls. No information is locked behind a 3D gesture. There is no portrait, origin, invented article, unverified job title or claimed live travel feed.
+Reduced motion and manual pause remove transitions. Content stays visible by default; WebGL failure reveals an SVG M. Offscreen and background rendering stop. Route changes retain one graphics context and safely cancel interrupted transitions. Deep links now scroll to visible content rather than hiding the other course groups.
 
-## Simulated visitor review
+## Review
 
-Three agents independently explored the published baseline as an employer, a professor, and a friend or classmate. These were simulated perspectives, not interviews or user-test findings.
+Two agents reviewed the earlier composition from design and visitor perspectives. These were simulated critiques, not user interviews. Both found that a large sculpture column took space from useful information, that studies hid the distinctive biomedical coursework, and that Experience should begin with the current employer. The revision addresses those points through the page hierarchy and layout.
 
-- The employer found the specific contribution details credible, especially the division of work in Hack-A-Bot. The review exposed the M puzzle’s empty payoff and the need to date the CV, which predates the current job.
-- The professor wanted a shorter path from biomedical interests to coursework and related practical experience. The introduction now opens the relevant course group, which links directly to science and care.
-- The nontechnical visitor wanted to see a project before opening code. Project actions now name the presentation or project destination explicitly, while retaining GitHub access and concise descriptions of Marc’s contribution.
+## Preservation and publication
 
-The current Siemens job title and responsibilities remain unverified. The CV-supported pharmaceutical scraper experience stays without an implementation link because no corresponding public repository could be verified.
+The complete preceding monogram edition is preserved in `archive/12-island-monogram/`, including its original content, scripts, fonts, graphics library and CV. Wing and Fold remain in `archive/11-island-identities/`; the original sorting M and separate chapter sculptures remain in `archive/10-island-spatial/`.
 
-The subsequent interaction review supported returning to the M, with one condition: show its destination before activation. This informed the shared preview between sculpture and dock, without changing the active-page marker.
-
-## Motion
-
-Objects animate gently when selected or approached, then settle. The M has no idle drift. Hidden views stop rendering and destroyed views release their graphics resources. Reduced motion, manual pause and WebGL fallback retain the same content and controls. Touch interaction preserves vertical scrolling and pinch zoom. The navigation stays anchored while its menu grows.
-
-## Preservation
-
-The first Island is in `archive/08-island/`. The subsequent graphite and wide-grid edition is in `archive/09-island-wide/`. The first published Island, with its M puzzle and separate ring, plate and frame sculptures, is in `archive/10-island-spatial/`. Both Wing/Fold studies are preserved in `archive/11-island-identities/`, including their original assets and content. The current version is published on GitHub Pages at https://mteyra.github.io/m.a.r.c_t.e.y.r.a/.
+The current site publishes to the existing GitHub Pages address: https://mteyra.github.io/m.a.r.c_t.e.y.r.a/.

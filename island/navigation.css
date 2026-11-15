@@ -1,3 +1,20 @@
+/* The persistent island is small enough to recede while reading. */
+.dock-position{position:fixed;bottom:max(25px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:20;isolation:isolate}
+.island{position:relative;overflow:hidden;transform-origin:center bottom}
+.dock{position:absolute;display:flex;align-items:center}
+.dock-rail{position:relative;display:grid;align-items:stretch;flex:1;isolation:isolate}
+.dock-rail>a{position:relative;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+.dock-indicator{position:absolute;left:0}
+.dock #more{display:grid;place-items:center;flex-shrink:0}
+.dock #more svg{fill:none}
+.dock #more[aria-expanded='true'] svg{transform:rotate(45deg)}
+.island-menu{transform-origin:center bottom}
+.menu-heading{display:flex;align-items:center;justify-content:space-between}
+.island-menu>a,.island-menu>button{display:grid;align-items:center;width:100%;text-align:left}
+.island-menu>a>span:last-child{justify-self:end}
+.island-menu .toggle{position:relative;border-radius:9px}
+.island-menu .toggle::after{content:'';position:absolute;border-radius:50%;transition:transform .3s}
+@media(max-width:700px){.dock-position{bottom:max(17px,env(safe-area-inset-bottom))}}
 /* A light frame for navigation. main.js still owns the indicator's width and
    horizontal position, and measures the menu's natural height when it opens. */
 .island {
@@ -46,7 +63,7 @@
   padding: 0 3px 3px;
   gap: 0;
   color: var(--island-muted);
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 500;
   line-height: 1;
   letter-spacing: .005em;
@@ -184,6 +201,8 @@
   transform: translate(1px, -1px);
 }
 
+.island-menu > button:disabled { cursor: default; }
+
 .island-menu .toggle {
   justify-self: end;
   width: 24px;
@@ -200,7 +219,9 @@
   background: #fcfdfb;
 }
 
-.motion-paused .island-menu .toggle {
+.motion-paused .island-menu > button:disabled { cursor: default; }
+
+.island-menu .toggle {
   background: #c7ccc2;
 }
 

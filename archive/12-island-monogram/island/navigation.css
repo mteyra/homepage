@@ -1,0 +1,322 @@
+/* A light frame for navigation. main.js still owns the indicator's width and
+   horizontal position, and measures the menu's natural height when it opens. */
+.island {
+  --island-text: #30362f;
+  --island-muted: #686e65;
+  --island-line: #25302214;
+  width: 526px;
+  max-width: calc(100vw - 32px);
+  min-height: 54px;
+  padding: 4px;
+  color: var(--island-text);
+  color-scheme: light;
+  background: #fcfdfbe8;
+  border: 1px solid #25302219;
+  border-radius: 17px;
+  box-shadow: 0 3px 12px #1f2b1f05;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transition: background .35s var(--ease), border-radius .4s var(--ease);
+}
+
+.island.menu-open {
+  background: #fcfdfbf2;
+  border-radius: 19px;
+  box-shadow: 0 3px 12px #1f2b1f05;
+}
+
+.dock {
+  height: 46px;
+  bottom: 3px;
+  left: 11px;
+  right: 7px;
+  gap: 7px;
+}
+
+.dock-rail {
+  min-width: 0;
+  height: 46px;
+  grid-template-columns: .88fr 1fr 1.3fr 1.02fr;
+}
+
+.dock-rail > a {
+  z-index: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 3px 3px;
+  gap: 0;
+  color: var(--island-muted);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: .005em;
+  border-radius: 8px;
+  background: transparent;
+  transition: color .22s var(--ease);
+}
+
+.dock-rail > a svg {
+  display: none;
+}
+
+.dock-rail > a:not([aria-current]):hover,
+.dock-rail > a.is-previewed,
+.dock-rail > a[aria-current] {
+  color: var(--island-text);
+  background: transparent;
+}
+
+.dock-rail > a.is-previewed > span {
+  text-decoration: underline;
+  text-decoration-color: #30362f66;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+
+.dock-indicator {
+  z-index: 0;
+  top: 0;
+  height: 46px;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  pointer-events: none;
+  transition: width .38s var(--ease), transform .38s var(--ease);
+}
+
+.dock-indicator::after {
+  content: "";
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: #555e50;
+}
+
+.dock-divider {
+  display: none;
+}
+
+.dock #more {
+  width: 44px;
+  height: 46px;
+  min-width: 44px;
+  min-height: 44px;
+  color: var(--island-muted);
+  border-radius: 8px;
+  background: transparent;
+  transition: color .22s var(--ease);
+}
+
+.dock #more:hover,
+.dock #more[aria-expanded="true"] {
+  color: var(--island-text);
+  background: transparent;
+}
+
+.dock #more svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  transition: transform .4s var(--ease);
+}
+
+.island a:focus-visible,
+.island button:focus-visible {
+  outline: 1px solid #596452;
+  outline-offset: -3px;
+}
+
+.island-menu {
+  margin: 0 16px 49px;
+  padding: 20px 5px 14px;
+  border-bottom: 1px solid var(--island-line);
+}
+
+.menu-heading {
+  margin-bottom: 10px;
+  color: var(--island-muted);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: .02em;
+}
+
+.menu-heading .tiny-mark {
+  display: none;
+}
+
+.island-menu > a,
+.island-menu > button {
+  grid-template-columns: 1fr auto 24px;
+  gap: 15px;
+  min-height: 47px;
+  padding: 12px 0;
+  color: var(--island-text);
+  font-size: 12px;
+  line-height: 1.6;
+  border-radius: 5px;
+}
+
+.island-menu small {
+  color: var(--island-muted);
+  font-size: 10.5px;
+  line-height: 1.6;
+}
+
+.island-menu > a > span:last-child {
+  color: var(--island-muted);
+  font-size: 15px;
+  transition: color .22s, transform .22s var(--ease);
+}
+
+.island-menu > a:hover > span:first-child {
+  text-decoration-color: #30362f55;
+  text-decoration-thickness: 1px;
+}
+
+.island-menu > a:hover > span:last-child {
+  color: var(--island-text);
+  transform: translate(1px, -1px);
+}
+
+.island-menu .toggle {
+  justify-self: end;
+  width: 24px;
+  height: 14px;
+  background: #66705f;
+  box-shadow: none;
+}
+
+.island-menu .toggle::after {
+  top: 3px;
+  left: 13px;
+  width: 8px;
+  height: 8px;
+  background: #fcfdfb;
+}
+
+.motion-paused .island-menu .toggle {
+  background: #c7ccc2;
+}
+
+.motion-paused .island-menu .toggle::after {
+  transform: translateX(-10px);
+}
+
+@media (max-width: 700px) {
+  .island {
+    width: 410px;
+    max-width: calc(100vw - 24px);
+    min-height: 52px;
+    padding: 3px;
+    border-radius: 16px;
+  }
+
+  .island.menu-open {
+    border-radius: 18px;
+  }
+
+  .dock {
+    height: 44px;
+    bottom: 3px;
+    left: 5px;
+    right: 4px;
+    gap: 4px;
+  }
+
+  .dock-rail {
+    height: 44px;
+    grid-template-columns: .86fr .98fr 1.35fr 1.02fr;
+  }
+
+  .dock-rail > a {
+    min-height: 44px;
+    padding: 0 2px 3px;
+    font-size: 11.5px;
+    letter-spacing: 0;
+  }
+
+  .dock-indicator {
+    height: 44px;
+    border-radius: 0;
+  }
+
+  .dock-indicator::after {
+    bottom: 5px;
+  }
+
+  .dock #more {
+    width: 44px;
+    height: 44px;
+  }
+
+  .island-menu {
+    margin: 0 13px 47px;
+    padding: 19px 3px 13px;
+  }
+
+  .island-menu > a,
+  .island-menu > button {
+    min-height: 47px;
+    gap: 10px;
+    font-size: 12px;
+  }
+
+  .island-menu small,
+  .menu-heading {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 350px) {
+  .dock-rail > a {
+    font-size: 10.5px;
+  }
+
+  .island-menu {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .island-menu > a,
+  .island-menu > button {
+    gap: 8px;
+    font-size: 11px;
+  }
+
+  .island-menu small {
+    font-size: 9.5px;
+  }
+}
+
+@media (forced-colors: active) {
+  .island,
+  .island.menu-open {
+    background: Canvas;
+    color: CanvasText;
+    border-color: CanvasText;
+    box-shadow: none;
+  }
+
+  .dock-indicator::after {
+    background: Highlight;
+    forced-color-adjust: none;
+  }
+
+  .island a,
+  .island button,
+  .island small,
+  .island .menu-heading {
+    color: CanvasText;
+  }
+
+  .island a:focus-visible,
+  .island button:focus-visible {
+    outline-color: Highlight;
+  }
+}
