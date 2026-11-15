@@ -2,11 +2,12 @@ import * as THREE from '../assets/vendor/three.module.js';
 
 const PAGES = ['about', 'studies', 'experience', 'projects'];
 const QUARTER = Math.PI / 2, TAU = Math.PI * 2;
+const REST_TILT = -1.08, ALIGNMENT_WINDOW = Math.PI / 15;
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const nearestAngle = (value, reference) => reference + Math.atan2(Math.sin(value - reference), Math.cos(value - reference));
 
 // The compass is an optional physical index; ordinary HTML links own keyboard navigation.
-export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavailable } = {}) {
+export function createIndexScene(canvas, { onSelect, onInteraction, onReady, onUnavailable } = {}) {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const before = {
     hidden: canvas.getAttribute('aria-hidden'), tabIndex: canvas.getAttribute('tabindex'),
@@ -14,15 +15,19 @@ export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavail
   };
   canvas.setAttribute('aria-hidden', 'true');
   canvas.tabIndex = -1;
-  canvas.style.touchAction = 'pan-y pinch-zoom';
+  canvas.style.touchAction = 'pinch-zoom';
   canvas.style.cursor = 'default';
 
   let renderer, scene, camera, ring, rotor, environment, resizeObserver, visibilityObserver;
-  let selected = 0, hovered = -1, angle = 0, targetAngle = 0;
+  let selected = 0, angle = 0, targetAngle = 0, tilt = REST_TILT, targetTilt = REST_TILT;
+  let candidate = 0, aligned = true, faceVisible = true, hasInteracted = false;
+  let lastInteraction = '', puzzleSelection = null, sightMaterial;
   let manualPaused = false, paused = reduced.matches, visible = true;
   let ready = false, unavailable = false, destroyed = false, disposed = false;
   let width = 0, height = 0, frame = 0, animation = null, press = null;
-  const geometries = new Set(), materials = new Set(), sectors = [], hits = [];
+  const geometries = new Set(), materials = new Set(), sectors = [];
+  const bounds = new THREE.Box3(), faceNormal = new THREE.Vector3();
+  const sightBounds = new THREE.Box3(new THREE.Vector3(-.22, 3.26, .07), new THREE.Vector3(.22, 3.67, .18));
   const raycaster = new THREE.Raycaster(), pointer = new THREE.Vector2();
   const quietMark = new THREE.Color(0x656b70), activeMark = new THREE.Color(0xe5e8e7);
 
@@ -30,7 +35,7 @@ export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavail
     const value = basic ? new THREE.MeshBasicMaterial(options) : new THREE.MeshPhysicalMaterial(options);
     materials.add(value); return value;
   }
-  function mesh(geometry, material, parent = ring) {
+  function mesh(geometry, material, parent = rotor) {
     geometries.add(geometry);
     const value = new THREE.Mesh(geometry, material);
     parent.add(value); return value;
@@ -50,12 +55,12 @@ export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavail
       bevelThickness: bevel, bevelSegments: 4, curveSegments: 192,
     });
   }
-  function cylinder(radius, height, material, z, parent = ring) {
+  function cylinder(radius, height, material, z, parent = rotor) {
     const value = mesh(new THREE.CylinderGeometry(radius, radius, height, 144), material, parent);
     value.rotation.x = QUARTER; value.position.z = z;
     return value;
   }
-  function stroke(x1, y1, x2, y2, thickness, material, z = .095, parent = ring) {
+  function stroke(x1, y1, x2, y2, thickness, material, z = .095, parent = rotor) {
     const value = mesh(new THREE.PlaneGeometry(Math.hypot(x2 - x1, y2 - y1), thickness), material, parent);
     value.position.set((x1 + x2) / 2, (y1 + y2) / 2, z);
     value.rotation.z = Math.atan2(y2 - y1, x2 - x1);
@@ -90,7 +95,7 @@ export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavail
     scene = new THREE.Scene();
     camera = new THREE.OrthographicCamera(-4, 4, 3.125, -3.125, .1, 40);
     camera.position.set(0, 0, 12); camera.lookAt(0, 0, 0);
-    ring = new THREE.Group(); ring.rotation.set(-1.08, .035, -.025); scene.add(ring);
+    ring = new THREE.Group(); ring.rotation.set(tilt, .035, -.025); scene.add(ring);
     rotor = new THREE.Group(); ring.add(rotor);
 
     // Large, neutral reflectors reveal the case's bevels and the needle's facets.
@@ -148,19 +153,16 @@ export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavail
         Math.cos(theta) * outer, Math.sin(theta) * outer,
         cardinal ? .032 : major ? .022 : .012, major ? marks : faintMarks);
     }
-    const hitMaterial = finish({ transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide }, true);
     ['N', 'E', 'S', 'W'].forEach((letter, index) => {
       const center = QUARTER - index * QUARTER;
       const bearing = finish({ color: quietMark, toneMapped: false }, true);
       glyph(letter, Math.cos(center) * 2.16, Math.sin(center) * 2.16, bearing);
       const indicator = mesh(new THREE.CircleGeometry(.042, 24), bearing);
       indicator.position.set(Math.cos(center) * 2.79, Math.sin(center) * 2.79, .098);
-      const hit = mesh(new THREE.ShapeGeometry(annulus(1.08, 3.16, center - QUARTER / 2, center + QUARTER / 2), 48), hitMaterial);
-      hit.position.z = .115; hit.userData.index = index; hits.push(hit);
       sectors.push({ bearing });
     });
 
-    // The compass needle is a real raised diamond section; only this assembly turns.
+    // The raised needle, dial and case belong to one instrument and turn together.
     const needleEdge = finish({ color: 0x555e65, metalness: .95, roughness: .3, envMapIntensity: .8 });
     const needleLight = finish({ color: 0xf0f0e9, metalness: .74, roughness: .32, envMapIntensity: 1.05 });
     const needleShade = finish({ color: 0xb9c0c2, metalness: .87, roughness: .31, envMapIntensity: .95 });
@@ -179,15 +181,83 @@ export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavail
     const hub = cylinder(.16, .078, edgeMetal, .425); hub.castShadow = true;
     cylinder(.10, .012, darkMetal, .471);
     cylinder(.034, .009, edgeMetal, .483);
+
+
+    // The sight follows the viewing tilt, but stays fixed while the instrument turns.
+    sightMaterial = finish({ color: 0xc7cecc, metalness: .35, roughness: .4, envMapIntensity: .8 });
+    const sight = new THREE.Shape();
+    sight.moveTo(-.13, 3.61); sight.lineTo(0, 3.28); sight.lineTo(.13, 3.61); sight.closePath();
+    mesh(new THREE.ExtrudeGeometry(sight, { depth: .07, bevelEnabled: true, bevelSize: .01,
+      bevelThickness: .01, bevelSegments: 2, steps: 1 }), sightMaterial, ring).position.z = .09;
+    const sightBase = mesh(new THREE.BoxGeometry(.42, .045, .075), darkMetal, ring);
+    sightBase.position.set(0, 3.64, .115);
+
+    // A restrained back plate makes the object readable when tipped all the way over.
+    cylinder(2.88, .018, dialFinish, -.314);
+    mesh(solid(2.69, 2.72, .012, .003), darkMetal).position.z = -.341;
+    mesh(solid(.49, .515, .012, .003), caseMetal).position.z = -.349;
+    for (let spoke = 0; spoke < 3; spoke++) {
+      const theta = spoke * TAU / 3 + QUARTER;
+      const brace = mesh(new THREE.BoxGeometry(2.14, .025, .012), caseMetal);
+      brace.position.set(Math.cos(theta) * 1.61, Math.sin(theta) * 1.61, -.344);
+      brace.rotation.z = theta;
+      const fastener = cylinder(.049, .016, caseMetal, -.342);
+      fastener.position.x = Math.cos(theta) * 2.79;
+      fastener.position.y = Math.sin(theta) * 2.79;
+    }
+  }
+  function canOpen(gesture = press) {
+    return Boolean(gesture?.dragging && gesture.horizontalTravel >= 12 &&
+      Math.abs(angle - gesture.angle) >= .12 && aligned && candidate !== selected);
+  }
+  function emitInteraction() {
+    if (destroyed) return;
+    const state = {
+      candidate: faceVisible ? PAGES[candidate] : null, aligned,
+      dragging: Boolean(press?.dragging), faceVisible, hasInteracted, canOpen: canOpen(),
+    };
+    const signature = JSON.stringify(state);
+    if (signature !== lastInteraction) { lastInteraction = signature; onInteraction?.(state); }
+  }
+  function fitCamera() {
+    if (!width || !height) return;
+    // Project the cylindrical envelope, not a rotating square bounding box.
+    // This fits front/back views without making the case breathe as the dial turns.
+    bounds.copy(sightBounds).applyMatrix4(ring.matrixWorld);
+    const matrix = ring.matrixWorld.elements;
+    for (let axis = 0; axis < 2; axis++) {
+      const radius = 3.19 * Math.hypot(matrix[axis], matrix[axis + 4]);
+      const lowerZ = -.36 * matrix[axis + 8], upperZ = .50 * matrix[axis + 8];
+      const minimum = -radius + Math.min(lowerZ, upperZ) + matrix[axis + 12];
+      const maximum = radius + Math.max(lowerZ, upperZ) + matrix[axis + 12];
+      bounds.min.setComponent(axis, Math.min(bounds.min.getComponent(axis), minimum));
+      bounds.max.setComponent(axis, Math.max(bounds.max.getComponent(axis), maximum));
+    }
+    const aspect = width / height;
+    const spanX = 2 * Math.max(Math.abs(bounds.min.x), Math.abs(bounds.max.x)) + .35;
+    const spanY = 2 * Math.max(Math.abs(bounds.min.y), Math.abs(bounds.max.y)) + .16;
+    const viewHeight = Math.max(3.8, spanY, spanX / aspect);
+    camera.left = -viewHeight * aspect / 2; camera.right = viewHeight * aspect / 2;
+    camera.top = viewHeight / 2; camera.bottom = -viewHeight / 2;
+    camera.updateProjectionMatrix();
   }
   function update() {
     if (!rotor) return;
+    ring.rotation.x = tilt;
     rotor.rotation.z = angle;
+    ring.updateMatrixWorld(true);
+    faceNormal.set(0, 0, 1).applyQuaternion(ring.quaternion);
+    faceVisible = faceNormal.z > .18;
+    const quarter = Math.round(angle / QUARTER);
+    candidate = ((quarter % PAGES.length) + PAGES.length) % PAGES.length;
+    aligned = faceVisible && Math.abs(angle - quarter * QUARTER) <= ALIGNMENT_WINDOW;
     sectors.forEach(({ bearing }, index) => {
-      const strength = index === selected ? 1 : index === hovered ? .6 : 0;
+      const strength = faceVisible && index === candidate ? (aligned ? 1 : .65) : index === selected ? .35 : 0;
       bearing.color.copy(quietMark).lerp(activeMark, strength);
     });
-    scene.updateMatrixWorld(true);
+    sightMaterial.color.setHex(aligned ? 0xf0f2eb : 0x8e9798);
+    fitCamera();
+    emitInteraction();
   }
   function canDraw() { return renderer && !destroyed && !unavailable && visible && !document.hidden && width > 0 && height > 0; }
   function canAnimate() { return canDraw() && !paused && !reduced.matches; }
@@ -196,30 +266,32 @@ export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavail
     try { renderer.render(scene, camera); } catch { fail(); }
   }
   function stopAnimation() { cancelAnimationFrame(frame); frame = 0; animation = null; }
+  function renderNow() { update(); draw(); }
   function settle() {
-    stopAnimation(); angle = targetAngle; update(); draw();
+    stopAnimation(); angle = targetAngle; tilt = targetTilt; renderNow();
   }
   function tick(now) {
     frame = 0;
-    if (!animation || destroyed || unavailable) return;
-    if (!canAnimate()) { settle(); return; }
-    animation.started ??= now;
-    const progress = clamp((now - animation.started) / animation.duration, 0, 1);
-    const eased = 1 - Math.pow(1 - progress, 3);
-    angle = animation.from + (targetAngle - animation.from) * eased;
-    if (progress >= 1) { angle = targetAngle; animation = null; }
-    update(); draw();
-    if (animation && !destroyed && !unavailable) frame = requestAnimationFrame(tick);
+    if (destroyed || unavailable) return;
+    if (animation) {
+      if (!canAnimate()) { settle(); return; }
+      animation.started ??= now;
+      const progress = clamp((now - animation.started) / animation.duration, 0, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      angle = animation.angle + (targetAngle - animation.angle) * eased;
+      tilt = animation.tilt + (targetTilt - animation.tilt) * eased;
+      if (progress >= 1) { angle = targetAngle; tilt = targetTilt; animation = null; }
+      update();
+    }
+    draw();
+    if (animation && canDraw()) frame = requestAnimationFrame(tick);
   }
+  function requestDraw() { if (!frame && canDraw()) frame = requestAnimationFrame(tick); }
   function turn(instant = false) {
     stopAnimation();
-    if (instant || !canAnimate() || Math.abs(angle - targetAngle) < .0001) { settle(); return; }
-    animation = { from: angle, started: null, duration: 320 };
-    update(); draw(); frame = requestAnimationFrame(tick);
-  }
-  function clearHover() {
-    if (hovered < 0) return;
-    hovered = -1; onHover?.(null); update(); draw();
+    if (instant || !canAnimate() || (Math.abs(angle - targetAngle) + Math.abs(tilt - targetTilt) < .0001)) { settle(); return; }
+    animation = { angle, tilt, started: null, duration: 260 };
+    update(); requestDraw();
   }
   function releasePointer() {
     const previous = press; press = null;
@@ -227,105 +299,109 @@ export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavail
     canvas.style.cursor = 'default';
     return previous;
   }
+  function hold() {
+    stopAnimation(); targetAngle = angle; targetTilt = tilt; renderNow();
+  }
   function select(page, { instant = false } = {}) {
     const next = PAGES.indexOf(page);
     if (destroyed || next < 0) return false;
-    const goal = nearestAngle(-next * QUARTER, angle);
-    if (next === selected && Math.abs(goal - targetAngle) < .0001 && !press) {
-      if (instant) settle();
-      return true;
-    }
-    releasePointer(); clearHover();
-    selected = next; targetAngle = goal; turn(instant);
+    releasePointer();
+    selected = next;
+    targetAngle = nearestAngle(next * QUARTER, angle);
+    targetTilt = puzzleSelection === next ? tilt : nearestAngle(REST_TILT, tilt);
+    turn(instant);
     return true;
   }
   function commit(index) {
-    const changed = index !== selected;
-    select(PAGES[index]);
-    if (changed) onSelect?.(PAGES[index]);
+    selected = index;
+    targetAngle = nearestAngle(index * QUARTER, angle);
+    targetTilt = tilt;
+    turn();
+    // The synchronous route callback may select the same page; preserve the inspected tilt.
+    puzzleSelection = index;
+    try { onSelect?.(PAGES[index]); } finally { puzzleSelection = null; }
   }
   function cast(event) {
-    if (!ready || destroyed || unavailable || !width || !height) return -1;
+    if (!ready || destroyed || unavailable || !width || !height) return false;
     const rect = canvas.getBoundingClientRect();
-    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) return -1;
+    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) return false;
     pointer.set((event.clientX - rect.left) / rect.width * 2 - 1, -(event.clientY - rect.top) / rect.height * 2 + 1);
     scene.updateMatrixWorld(true);
     raycaster.setFromCamera(pointer, camera);
-    return raycaster.intersectObjects(hits, false)[0]?.object.userData.index ?? -1;
+    return raycaster.intersectObject(rotor, true).length > 0;
   }
   function hover(event) {
     if (event.pointerType !== 'mouse' || press) return;
-    const hit = cast(event), changed = hit !== hovered;
-    hovered = hit; canvas.style.cursor = hit < 0 ? 'default' : 'pointer';
-    if (hit >= 0) {
-      const rect = canvas.getBoundingClientRect();
-      onHover?.(PAGES[hit], { x: event.clientX - rect.left, y: event.clientY - rect.top });
-    } else if (changed) onHover?.(null);
-    if (changed) { update(); draw(); }
+    canvas.style.cursor = cast(event) ? 'grab' : 'default';
   }
   function down(event) {
-    if (destroyed || unavailable || press || event.button !== 0 || event.isPrimary === false) return;
-    const hit = cast(event); if (hit < 0) return;
-    clearHover(); stopAnimation();
+    if (destroyed || unavailable || event.button !== 0 || event.isPrimary === false || press) return;
+    if (!cast(event)) return;
+    stopAnimation(); targetAngle = angle; targetTilt = tilt;
     press = {
       id: event.pointerId, type: event.pointerType, x: event.clientX, y: event.clientY,
-      angle, sector: hit, moved: false, dragging: false,
+      angle, tilt, width, height, dragging: false, horizontalTravel: 0,
     };
     try { canvas.setPointerCapture(event.pointerId); } catch { /* Optional capture. */ }
+    canvas.style.cursor = 'grabbing';
     if (event.pointerType !== 'touch' && event.cancelable) event.preventDefault();
   }
   function move(event) {
     if (!press) { hover(event); return; }
     if (event.pointerId !== press.id) return;
     const dx = event.clientX - press.x, dy = event.clientY - press.y;
-    if (Math.abs(dx) + Math.abs(dy) > 7) press.moved = true;
-    if (press.type === 'touch' && Math.abs(dy) > 8 && Math.abs(dy) > Math.abs(dx) * 1.1) { cancelPointer(); return; }
-    if (!canAnimate() || (!press.dragging && (Math.abs(dx) < 7 || Math.abs(dx) <= Math.abs(dy)))) return;
-    press.dragging = true; canvas.style.cursor = 'grabbing';
+    if (!press.dragging && Math.hypot(dx, dy) < 5) return;
+    press.dragging = true; hasInteracted = true;
+    press.horizontalTravel = Math.max(press.horizontalTravel, Math.abs(dx));
+    canvas.style.cursor = 'grabbing';
     if (event.cancelable) event.preventDefault();
-    angle = press.angle + dx / Math.max(width, 1) * TAU;
-    update(); draw();
+    // Direct manipulation is available even with reduced motion; only settling is animated.
+    angle = press.angle - dx / Math.max(press.width, 1) * TAU;
+    tilt = press.tilt + dy / Math.max(press.height, 96) * Math.PI;
+    targetAngle = angle; targetTilt = tilt;
+    update(); requestDraw();
   }
   function up(event) {
     if (!press || event.pointerId !== press.id) return;
     const previous = releasePointer();
-    if (previous.dragging) {
-      const next = ((Math.round(-angle / QUARTER) % PAGES.length) + PAGES.length) % PAGES.length;
-      commit(next);
-    } else if (!previous.moved && cast(event) === previous.sector) commit(previous.sector);
-    else turn();
-    if (!animation && Math.abs(angle - targetAngle) > .0001) turn();
+    update();
+    if (canOpen(previous)) commit(candidate);
+    else hold();
     hover(event);
   }
   function cancelPointer() {
     if (!press) return;
-    releasePointer(); turn();
+    releasePointer(); hold();
   }
-  function leave() { if (!press) { clearHover(); canvas.style.cursor = 'default'; } }
+  function anotherPointer(event) {
+    if (press?.type === 'touch' && event.pointerType === 'touch' && event.pointerId !== press.id) cancelPointer();
+  }
+  function keydown(event) { if (event.key === 'Escape') cancelPointer(); }
+  function leave() { if (!press) canvas.style.cursor = 'default'; }
   function resize() {
     if (!renderer || destroyed || unavailable) return;
+    // A viewport resize cancels intent even when the canvas keeps its fixed CSS size.
+    cancelPointer();
     const nextWidth = canvas.clientWidth, nextHeight = canvas.clientHeight;
     if (!nextWidth || !nextHeight || (width === nextWidth && height === nextHeight)) return;
-    releasePointer(); width = nextWidth; height = nextHeight;
+    // Resizing or cancelling an inspection must never complete the alignment puzzle.
+    width = nextWidth; height = nextHeight;
     renderer.setSize(width, height, false);
-    const aspect = width / height, viewHeight = Math.max(3.8, 6.9 / aspect);
-    camera.left = -viewHeight * aspect / 2; camera.right = viewHeight * aspect / 2;
-    camera.top = viewHeight / 2; camera.bottom = -viewHeight / 2;
-    camera.updateProjectionMatrix();
-    settle();
+    if (animation) settle(); else renderNow();
   }
   function pauseChanged() {
     const next = reduced.matches || manualPaused;
     if (destroyed || paused === next) return;
-    paused = next; releasePointer(); clearHover(); settle();
+    paused = next;
+    if (animation) settle(); else { update(); requestDraw(); }
   }
   function setPaused(value) { manualPaused = Boolean(value); pauseChanged(); }
   function visibilityChanged() {
     if (destroyed) return;
-    if (!visible || document.hidden) { releasePointer(); clearHover(); settle(); }
-    else { resize(); update(); draw(); }
+    if (!visible || document.hidden) { cancelPointer(); if (animation) settle(); else stopAnimation(); }
+    else { resize(); renderNow(); }
   }
-  function blur() { releasePointer(); clearHover(); settle(); }
+  function blur() { cancelPointer(); if (animation) settle(); }
   function dispose() {
     if (disposed) return; disposed = true;
     geometries.forEach(geometry => geometry.dispose());
@@ -336,13 +412,16 @@ export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavail
   }
   function fail() {
     if (destroyed || unavailable) return;
-    unavailable = true; ready = false; releasePointer(); stopAnimation(); clearHover();
+    unavailable = true; ready = false; releasePointer(); stopAnimation();
     dispose(); onUnavailable?.();
   }
   function contextLost(event) { event.preventDefault(); fail(); }
   function getState() {
     return {
-      type: 'compass', page: PAGES[selected], index: selected, angle, targetAngle, hovered: PAGES[hovered] ?? null,
+      type: 'compass', page: PAGES[selected], index: selected,
+      angle, spin: angle, targetAngle, tilt, targetTilt,
+      candidate: faceVisible ? PAGES[candidate] : null, aligned, faceVisible, hasInteracted,
+      canOpen: canOpen(),
       dragging: Boolean(press?.dragging), animating: Boolean(animation), paused,
       visible, ready, unavailable, destroyed, width, height,
     };
@@ -357,19 +436,22 @@ export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavail
     resizeObserver?.disconnect(); visibilityObserver?.disconnect();
     listeners.forEach(([type, handler]) => canvas.removeEventListener(type, handler));
     window.removeEventListener('resize', resize); window.removeEventListener('blur', blur);
+    document.removeEventListener('pointerdown', anotherPointer, true);
+    document.removeEventListener('keydown', keydown);
     document.removeEventListener('visibilitychange', visibilityChanged);
     reduced.removeEventListener('change', pauseChanged);
     dispose();
     canvas.style.cursor = before.cursor; canvas.style.touchAction = before.touchAction;
     if (before.hidden === null) canvas.removeAttribute('aria-hidden'); else canvas.setAttribute('aria-hidden', before.hidden);
     if (before.tabIndex === null) canvas.removeAttribute('tabindex'); else canvas.setAttribute('tabindex', before.tabIndex);
-    onHover?.(null);
   }
 
   try {
     build();
     listeners.forEach(([type, handler]) => canvas.addEventListener(type, handler));
     window.addEventListener('resize', resize, { passive: true }); window.addEventListener('blur', blur);
+    document.addEventListener('pointerdown', anotherPointer, true);
+    document.addEventListener('keydown', keydown);
     document.addEventListener('visibilitychange', visibilityChanged);
     reduced.addEventListener('change', pauseChanged);
     resizeObserver = 'ResizeObserver' in window ? new ResizeObserver(resize) : null;
@@ -379,7 +461,7 @@ export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavail
       if (next !== visible) { visible = next; visibilityChanged(); }
     }) : null;
     visibilityObserver?.observe(canvas);
-    ready = true; resize(); update(); draw();
+    ready = true; resize(); renderNow();
     queueMicrotask(() => { if (!destroyed && !unavailable) onReady?.(); });
   } catch {
     queueMicrotask(() => { if (!destroyed) fail(); });

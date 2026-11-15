@@ -10,7 +10,7 @@ The design keeps information available through a small number of visibly separat
 
 ## Composition
 
-A dark graphite field holds stationary text and a small compass near the bottom of the screen. The compass leans away from the viewer at a low angle, giving its circular dial the broad oval silhouette of Orbit. Instrument Serif sets the full name, chapter headings and project titles. Manrope sets the body text, metadata and navigation.
+A dark graphite field holds stationary text and a small compass near the bottom of the screen. It starts at a low angle, giving its circular dial the broad oval silhouette of Orbit, and can be turned and tilted directly. Instrument Serif sets the full name, chapter headings and project titles. Manrope sets the body text, metadata and navigation.
 
 The introduction uses two parts of the available width: Marc’s name on the left, his stated interests and current degree and employer on the right. Reading pages place the chapter heading and category controls beside the selected content. The page surfaces stay flat and still when views change.
 
@@ -24,9 +24,9 @@ On smaller screens, the reading layout becomes a single column and category link
 
 About, Studies, Experience and Projects have ordinary HTML links. These are the primary navigation and keyboard controls. Arrow keys also move between views, while form controls and text selection retain their own input behavior.
 
-The optional 3D compass follows Marc's request to replace the ring with a recognizable instrument. Its fixed dial carries cardinal marks: About at north, Studies at east, Experience at south and Projects at west. A raised needle points toward the selected destination and turns when selected or dragged, while the case and dial stay still. The tooltip below the instrument previews a destination without obscuring the needle. The form carries no additional claims about Marc’s achievements or interests.
+The optional compass combines direct 3D manipulation with a small alignment puzzle. Horizontal dragging turns the whole instrument, including its case, dial and needle; vertical dragging changes its tilt. A sight shares the viewing tilt but does not turn with the compass. Its cardinal marks correspond to About at north, Studies at east, Experience at south and Projects at west. A bearing within 12 degrees of the sight shows its destination in the cue below. Releasing an intentional horizontal drag while aligned opens that section; ordinary clicks, vertical inspection and cancelled gestures do not navigate. A misaligned release leaves the orientation where the user put it. The form carries no additional claims about Marc’s achievements or interests.
 
-The compass has no idle rotation or pointer-following movement. Only selection and dragging move its needle. Once a turn settles, rendering stops scheduling animation frames. System reduced motion and manual pause make selection immediate. Touch handling preserves vertical scrolling and pinch zoom. An SVG compass remains available when WebGL cannot render; the HTML links continue to work.
+The compass has no idle rotation or pointer-following movement. Once a turn settles, rendering stops scheduling animation frames. System reduced motion and manual pause preserve direct manipulation while skipping automatic animation. Touch dragging works in both axes within the compact compass canvas, with pinch zoom retained and ordinary scrolling available outside it. An SVG compass remains available when WebGL cannot render; the direct HTML links continue to work.
 
 Category links update the URL, selected state and visible panel. Browser history and direct links select the corresponding group or individual entry. Experience details use native disclosures. Text remains selectable, and navigation leaves the reading surface stationary. A no-script introduction retains links to the CV and public profiles.
 
@@ -44,6 +44,6 @@ The public CV is dated February 2026 and predates the current job. There is no p
 
 ## Preservation and publication
 
-The preceding ring edition is preserved in `archive/17-spatial-index/`, and the spatial folio remains in `archive/16-spatial-folio/`. All seventeen earlier directions retain their own content and assets.
+The preceding compass with its fixed viewing angle is preserved in `archive/18-compass-dial/`. The ring edition remains in `archive/17-spatial-index/`, and the spatial folio in `archive/16-spatial-folio/`. All eighteen earlier directions retain their own content and assets.
 
 GitHub Pages serves `main` from the repository root. The site remains buildless and publishes to the existing address: https://mteyra.github.io/m.a.r.c_t.e.y.r.a/. Fonts and Three.js load from local assets.

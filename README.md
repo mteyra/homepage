@@ -6,11 +6,11 @@ A personal homepage on a dark graphite background. Instrument Serif sets the nam
 
 ## Reading and interaction
 
-The four HTML navigation links are the primary controls. The compass offers a second way to select the same destinations: About at north, Studies at east, Experience at south and Projects at west. A raised needle turns toward the selected destination, or follows a drag, within a fixed case and dial. Cardinal marks remain stationary. The destination tooltip sits below the instrument.
+The four HTML navigation links remain available for direct access. The compass offers a small alignment puzzle for the same destinations: About at north, Studies at east, Experience at south and Projects at west. Horizontal dragging turns the whole instrument; vertical dragging tilts it in 3D. A sight shares the viewing tilt but stays fixed while the compass turns. Release an intentional horizontal drag with a bearing within 12 degrees of the sight to open that section. Clicking does not navigate, and a misaligned release leaves the orientation in place. A short cue below the compass names the destination when aligned.
 
 Studies and Experience each show one selected category. Ordinary links switch categories and preserve browser history. The degree and current employer appear in their chapter introductions. Supporting experience accounts use native disclosures. Projects remain four concise entries with direct links.
 
-GitHub and LinkedIn sit in the footer; More opens the design archive and motion preference. Browser history, direct links into course and experience groups, keyboard navigation and reduced motion are supported. Text and page surfaces stay still during navigation. Native vertical scrolling, text selection and links remain available. Reading and navigation are available before the graphics module loads. The locally bundled Three.js renderer stops scheduling animation frames when the needle settles; an SVG compass takes its place if WebGL is unavailable.
+GitHub and LinkedIn sit in the footer; More opens the design archive and motion preference. Browser history, direct links into course and experience groups, keyboard navigation and reduced motion are supported. Text and page surfaces stay still during navigation. The compact compass accepts touch dragging in both axes and permits pinch zoom; the surrounding page retains normal scrolling. Reduced motion preserves direct manipulation and skips automatic animation. Reading and navigation are available before the graphics module loads. The locally bundled Three.js renderer rests when the instrument settles; an SVG compass takes its place if WebGL is unavailable.
 
 ## Content
 
@@ -31,8 +31,8 @@ GitHub Pages serves `main` from the repository root. `.nojekyll` keeps the site 
 - `island/index-main.js` — routing, categories, keyboard controls and preferences.
 - `island/index-scene.js` — compass geometry, selection, drag handling and rendering.
 - `puzzle/content.js` — shared public profile content.
-- `archive/` — seventeen preserved design iterations.
-- `archive/17-spatial-index/` — the preceding edition with its interactive ring.
+- `archive/` — eighteen preserved design iterations.
+- `archive/18-compass-dial/` — the preceding compass with a fixed viewing angle.
 - `design/ISLAND.md` — design notes.
 
 Earlier editions preserve their own content and assets. The `?atlas=preview#travel` handoff opens the archived GPX/KML viewer. Live travel integration remains future work.

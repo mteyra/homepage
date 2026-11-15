@@ -8,9 +8,33 @@ const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 const groups = new Map();
 const scroll = new Map();
 let page = 'about', menuOpen = false, keyboard = false, scene, closed = false, manualPause = false, paused = reduced.matches;
+let compassInteraction = null;
 try { manualPause = localStorage.getItem('marc-island-motion') === 'paused'; } catch {}
 for (const element of $$('[data-content]')) element.innerHTML = renderChapter(element.dataset.content);
 const view = kind => $(`[data-view="${kind}"]`);
+
+function updateCompassHint() {
+  const visual = $('.index-visual');
+  const state = compassInteraction;
+  const available = visual.classList.contains('ready') && state;
+  let hint = titles[page];
+  if (available) {
+    hint = 'Drag to tilt · align to explore';
+    if (!state.faceVisible) hint = 'Tilt to reveal the dial';
+    else if (state.dragging && state.aligned && state.candidate) {
+      hint = state.candidate === page ? `${titles[page]} · current section`
+        : state.canOpen ? `${titles[state.candidate]} · release to open` : titles[state.candidate];
+    } else if (state.hasInteracted && state.candidate && !state.aligned) {
+      hint = `${titles[state.candidate]} · line up with the marker`;
+    }
+  }
+  $('#index-tooltip').textContent = hint;
+  visual.classList.toggle('is-aligned', Boolean(available && state.dragging && state.aligned));
+  for (const link of $$('.index-links a')) {
+    if (available && state.dragging && state.candidate === link.dataset.page) link.dataset.preview = '';
+    else delete link.dataset.preview;
+  }
+}
 
 function chooseGroup(kind, key) {
   const links = [...view(kind).querySelectorAll('.section-nav a')];
@@ -43,7 +67,7 @@ function applyRoute({ initial = false } = {}) {
   document.title = page === 'about' ? 'Marc Teyra Galiano' : `${titles[page]} · Marc Teyra Galiano`;
   $('.skip').href = `#${page}-title`;
   scene?.select(page, { instant: initial });
-  $('#index-tooltip').textContent = titles[page];
+  updateCompassHint();
   if (target && !target.matches('[data-group-panel]')) {
     if (target.matches('details')) target.open = true;
     requestAnimationFrame(() => target.scrollIntoView({ block: 'start', behavior: 'instant' }));
@@ -114,17 +138,18 @@ window.addEventListener('pagehide', event => { if (!event.persisted) { closed = 
 window.indexState = () => ({ page, groups: Object.fromEntries(groups), paused, menuOpen, scene: scene?.getState() || { ready: false } });
 
 // Reading and navigation are usable while the optional graphics module loads.
-import('./index-scene.js?v=compass-tilt').then(({ createIndexScene }) => {
+import('./index-scene.js?v=compass-align').then(({ createIndexScene }) => {
   if (closed) return;
   scene = createIndexScene($('#index-canvas'), {
     onSelect: navigate,
-    onReady: () => $('.index-visual').classList.add('ready'),
-    onUnavailable: () => $('.index-visual').classList.remove('ready'),
-    onHover: kind => { $('#index-tooltip').textContent = titles[kind] || titles[page]; },
+    onReady: () => { $('.index-visual').classList.add('ready'); updateCompassHint(); },
+    onUnavailable: () => { $('.index-visual').classList.remove('ready'); updateCompassHint(); },
+    onInteraction: state => { compassInteraction = state; updateCompassHint(); },
   });
   scene.setPaused(paused);
   scene.select(page, { instant: true });
 }).catch(() => {
   // The SVG compass and all HTML navigation remain available without WebGL.
   $('.index-visual').classList.remove('ready');
+  updateCompassHint();
 });
