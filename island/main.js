@@ -1,11 +1,10 @@
-import { renderChapter } from './chapters.js?v=quiet';
-import { createMonogram } from './monogram.js?v=quiet';
+import { renderChapter } from './chapters.js?v=object';
+import { createMonogram } from './monogram.js?v=object';
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
 const pages = ['about', 'studies', 'experience', 'projects'];
 const titles = { about: 'Marc Teyra Galiano', studies: 'Studies', experience: 'Experience', projects: 'Projects' };
-const monogramPages = ['studies', 'experience', 'projects'];
 const media = matchMedia('(prefers-reduced-motion: reduce)');
 const stage = $('#sculpture-stage');
 const accordionAnimations = new Map();
@@ -13,29 +12,10 @@ let page = 'about', sculpture, menuOpen = false, paused = media.matches, manualP
 let ready = false, renderer = 'loading', menuTransition = null, sceneTransition = null, panelTransition = null;
 let revealObserver = null, routeId = 0;
 let activeGroup = null;
-let objectPreview = null, linkPreview = null, focusPreview = null, preview = null;
 try { manualPause = localStorage.getItem('marc-island-motion'); paused = media.matches || manualPause === 'paused'; } catch { /* Optional preference. */ }
 const motionAllowed = () => !paused && !media.matches;
 const scrollBehavior = () => motionAllowed() ? 'smooth' : 'instant';
 
-function syncPreview() {
-  const candidate = document.body.classList.contains('keyboard-input') ? focusPreview : objectPreview ?? linkPreview;
-  preview = !menuOpen ? candidate : null;
-  sculpture?.setPreview(preview);
-  const destination = monogramPages[preview];
-  const caption = stage.querySelector('#sculpture-destination');
-  caption.textContent = destination ? `${titles[destination]} →` : '';
-  caption.dataset.visible = String(Boolean(destination) && renderer === 'webgl');
-  $$('.dock-rail a').forEach(link => link.classList.toggle('is-previewed', link.getAttribute('href') === `#${destination}`));
-}
-function clearPreview() { objectPreview = linkPreview = focusPreview = null; syncPreview(); }
-function linkedPiece(target) {
-  const link = target?.closest?.('a[href^="#"]');
-  if (link?.closest('.section-nav')) return null;
-  const destination = link?.getAttribute('href')?.slice(1).split('/')[0];
-  const index = monogramPages.indexOf(destination);
-  return index >= 0 ? index : null;
-}
 function syncIndicator() {
   const active = $(`.dock-rail a[data-page="${page}"]`);
   if (!active) return;
@@ -164,7 +144,6 @@ function route({ initial = false } = {}) {
   stage.remove();
   page = next;
   activeGroup = null;
-  clearPreview();
   closeMenu();
   document.body.dataset.page = page;
   document.title = page === 'about' ? titles.about : `${titles[page]} · ${titles.about}`;
@@ -226,7 +205,6 @@ function toggleExperience(entry) {
 function setMenu(open, focus = false) {
   if (menuOpen === open) return;
   menuOpen = open;
-  syncPreview();
   const panel = $('#island-menu'), island = $('#island');
   island.scrollTop = 0;
   const previousHeight = island.getBoundingClientRect().height;
@@ -290,7 +268,6 @@ document.addEventListener('click', event => { if (menuOpen && !$('#island').cont
 document.addEventListener('keydown', event => {
   if (!['Shift', 'Control', 'Alt', 'Meta'].includes(event.key)) {
     document.body.classList.add('keyboard-input');
-    syncPreview();
   }
   if (event.key === 'Escape' && menuOpen) { closeMenu(); $('#more').focus(); }
   if (event.defaultPrevented || menuOpen || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
@@ -300,20 +277,15 @@ document.addEventListener('keydown', event => {
   if (event.repeat) return;
   location.hash = pages[(pages.indexOf(page) + (event.key === 'ArrowRight' ? 1 : -1) + pages.length) % pages.length];
 });
-document.addEventListener('pointerdown', () => { document.body.classList.remove('keyboard-input'); syncPreview(); }, true);
+document.addEventListener('pointerdown', () => document.body.classList.remove('keyboard-input'), true);
 document.addEventListener('pointermove', event => {
   if (event.pointerType !== 'touch' && document.body.classList.contains('keyboard-input')) {
-    document.body.classList.remove('keyboard-input'); syncPreview();
+    document.body.classList.remove('keyboard-input');
   }
 }, { passive: true });
-document.addEventListener('pointerover', event => { if (event.pointerType !== 'touch') { linkPreview = linkedPiece(event.target); syncPreview(); } });
-document.addEventListener('pointerout', event => { if (event.pointerType !== 'touch') { linkPreview = linkedPiece(event.relatedTarget); syncPreview(); } });
 document.addEventListener('focusin', event => {
   if (menuOpen && !$('#island').contains(event.target)) closeMenu();
-  focusPreview = linkedPiece(event.target); syncPreview();
 });
-document.addEventListener('focusout', event => { focusPreview = linkedPiece(event.relatedTarget); syncPreview(); });
-window.addEventListener('blur', clearPreview);
 addEventListener('hashchange', () => route());
 addEventListener('resize', syncIndicator, { passive: true });
 media.addEventListener('change', () => setPaused(media.matches || manualPause === 'paused'));
@@ -322,16 +294,13 @@ document.fonts.ready.then(syncIndicator);
 setPaused(paused);
 route({ initial: true });
 sculpture = createMonogram($('#sculpture'), {
-  onPreview: index => { objectPreview = index; syncPreview(); },
-  onNavigate: index => { location.hash = monogramPages[index]; },
   onReady: () => { renderer = 'webgl'; document.body.classList.add('world-ready'); },
   onUnavailable: () => {
     renderer = 'fallback'; document.body.classList.remove('world-ready');
     $('#sculpture').hidden = true;
-    clearPreview();
   },
 });
 sculpture.setPaused(paused);
 sculpture.setPage(page);
 // A read-only state snapshot for browser checks.
-window.islandState = () => ({ page, activeGroup, menuOpen, paused, renderer, preview, identity: sculpture?.getState(), chapter: page === 'about' ? null : { kind: page, activeGroup }, sceneMoving: stage.classList.contains('scene-moving') });
+window.islandState = () => ({ page, activeGroup, menuOpen, paused, renderer, identity: sculpture?.getState(), chapter: page === 'about' ? null : { kind: page, activeGroup }, sceneMoving: stage.classList.contains('scene-moving') });

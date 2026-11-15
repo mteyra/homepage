@@ -2,11 +2,11 @@
 
 [Visit the homepage](https://mteyra.github.io/m.a.r.c_t.e.y.r.a/)
 
-A monochrome personal homepage built around a graphite and silver M. An open composition places the sculpture above Marc’s full name and a short introduction. The floating dock leads to studies, experience and public or completed projects.
+A monochrome personal homepage built around a continuous lowercase m in satin graphite. An open composition places the sculpture above Marc’s full name and a short introduction. The floating dock leads to studies, experience and public or completed projects.
 
 ## Reading and interaction
 
-The same M moves from the opening spread into each chapter’s masthead. Its three pieces lead to Studies, Experience and Projects; the current chapter’s piece sits slightly forward. Hovering an object or a normal link previews the matching destination. Pointer movement gently changes the viewing angle, then settles. There is no sorting task or completion state.
+The same m moves from the opening spread into each chapter’s masthead. Dragging gently turns the object in place; it settles at the inspected angle. Clicking or tapping it has no navigation action. The dock and text links handle navigation.
 
 Studies and Experience each show one selected category. Ordinary links switch categories and preserve browser history, so all coursework, certificates and experiences remain easy to reach. The degree and current employer appear in their chapter introductions. Supporting experience accounts expand in place. Projects remain four concise entries with direct links.
 
@@ -28,10 +28,10 @@ GitHub Pages serves `main` from the repository root. `.nojekyll` keeps the site 
 - `island/index.html` — introduction and persistent navigation.
 - `island/chapters.js` — reading views, derived from the public profile.
 - `island/main.js` — routing, shared scene movement, disclosures and preferences.
-- `island/monogram.js` — the three-piece M and its interaction.
+- `island/monogram.js` — the continuous lowercase m and bounded drag interaction.
 - `puzzle/content.js` — shared public profile content.
-- `archive/` — thirteen preserved design iterations.
-- `archive/13-island-studio/` — the complete edition preceding this simplification.
+- `archive/` — fourteen preserved design iterations.
+- `archive/14-island-quiet/` — the complete preceding edition with the segmented M.
 - `design/ISLAND.md` — design notes.
 
 Earlier editions preserve their own content and assets. The `?atlas=preview#travel` handoff opens the archived GPX/KML viewer. Live travel integration remains future work.

@@ -1,13 +1,12 @@
 import * as THREE from '../assets/vendor/three.module.js';
 
-// The original three-piece M, permanently in its assembled pose.
-// Its three pieces are ordinary destinations, not an alignment task.
-const COUNT = 3;
-const valid = index => Number.isInteger(index) && index >= 0 && index < COUNT;
-const pagePieces = { about: null, studies: 0, experience: 1, projects: 2 };
-const clamp = value => Math.max(-1, Math.min(1, value));
+const REST_YAW = -.19, REST_PITCH = -.02;
+const YAW_LIMIT = .65, PITCH_LIMIT = .2;
+const pages = ['about', 'studies', 'experience', 'projects'];
+const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
-export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnavailable } = {}) {
+// A single typographic glyph. Dragging inspects it without changing the page.
+export function createMonogram(canvas, { onReady, onUnavailable } = {}) {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const before = {
     hidden: canvas.getAttribute('aria-hidden'),
@@ -19,12 +18,12 @@ export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnava
   canvas.tabIndex = -1;
   canvas.style.touchAction = 'pan-y pinch-zoom';
 
-  let page = 'about', preview = null, hover = null, manualPaused = null, paused = reduced.matches;
+  let page = 'about', manualPaused = null, paused = reduced.matches;
   let active = true, visible = true, ready = false, unavailable = false, destroyed = false;
   let renderer, scene, camera, sculpture, environment, key, resizeObserver, visibilityObserver;
   let frame = 0, last = 0, width = 0, height = 0, moving = false, pressed = null, disposed = false;
-  let tiltX = 0, tiltY = 0, targetX = 0, targetY = 0;
-  const pieces = [], pickable = [];
+  let yaw = REST_YAW, pitch = REST_PITCH, targetYaw = yaw, targetPitch = pitch;
+  let glyph;
   const geometries = new Set(), materials = new Set(), textures = new Set();
   const raycaster = new THREE.Raycaster(), pointer = new THREE.Vector2();
 
@@ -51,13 +50,9 @@ export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnava
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(34, 1, .1, 50);
     sculpture = new THREE.Group();
-    sculpture.rotation.set(-.02, -.19, 0);
+    sculpture.rotation.set(pitch, yaw, 0, 'YXZ');
     sculpture.position.y = -.07;
     scene.add(sculpture);
-    const hitAssembly = new THREE.Group();
-    hitAssembly.rotation.copy(sculpture.rotation);
-    hitAssembly.position.copy(sculpture.position);
-    scene.add(hitAssembly);
 
     // Original broad reflectors, negative fill and narrow bevel light.
     const studio = new THREE.Scene();
@@ -96,44 +91,42 @@ export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnava
     const rim = new THREE.DirectionalLight(0xffffff, 1.6);
     rim.position.set(-1, 4, -5); scene.add(rim);
 
-    const graphite = material({ color: 0x333735, roughness: .33, metalness: .88, clearcoat: .32, clearcoatRoughness: .28 });
-    const graphiteSides = material({ color: 0x6d726e, roughness: .25, metalness: .94, clearcoat: .36, clearcoatRoughness: .2 });
-    const silver = material({ color: 0xbec2bc, roughness: .29, metalness: .94, clearcoat: .3, clearcoatRoughness: .22 });
-    const silverSides = material({ color: 0xdde0db, roughness: .2, metalness: .96, clearcoat: .4, clearcoatRoughness: .2 });
-    function extrude(points) {
-      const path = new THREE.Shape();
-      points.forEach(([x, y], index) => index ? path.lineTo(x, y) : path.moveTo(x, y));
-      path.closePath();
-      const value = new THREE.ExtrudeGeometry(path, {
-        depth: .64, steps: 1, bevelEnabled: true,
-        bevelThickness: .055, bevelSize: .055, bevelSegments: 5, curveSegments: 12,
-      });
-      value.translate(0, 0, -.32);
-      return value;
-    }
-    const upright = [[-.33,-1.55],[.33,-1.55],[.33,1.55],[-.33,1.55]];
-    const chevron = [[-1.18,1.55],[0,-.08],[1.18,1.55],[1.18,.53],[0,-1.1],[-1.18,.53]];
-    for (let index = 0; index < COUNT; index++) {
-      const group = new THREE.Group();
-      sculpture.add(group);
-      const body = mesh(extrude(index === 1 ? chevron : upright), [index === 1 ? silver : graphite, index === 1 ? silverSides : graphiteSides], group);
-      body.userData.index = index;
-      const position = new THREE.Vector3(index === 0 ? -1.63 : index === 2 ? 1.63 : 0, 0, 0);
-      group.position.copy(position);
-      // Keep the hit surface in the assembled pose. Lifting the visible piece
-      // must not move its boundary out from under a stationary pointer.
-      const target = new THREE.Mesh(body.geometry, body.material);
-      target.visible = false;
-      target.position.copy(position);
-      target.userData.index = index;
-      hitAssembly.add(target); pickable.push(target);
-      pieces.push({ group, position, emphasis: 0, pageEmphasis: 0 });
-    }
+    const graphite = material({
+      color: 0x343735, roughness: .42, metalness: .65,
+      clearcoat: .1, clearcoatRoughness: .4, envMapIntensity: .55,
+    });
+    const path = new THREE.Shape();
+    path.moveTo(-1.9, -1.25);
+    path.lineTo(-1.9, 1.12);
+    path.lineTo(-1.47, 1.12);
+    path.lineTo(-1.47, .80);
+    path.bezierCurveTo(-1.25, 1.10, -1.03, 1.28, -.63, 1.28);
+    path.bezierCurveTo(-.22, 1.28, .03, 1.06, .15, .79);
+    path.bezierCurveTo(.38, 1.10, .70, 1.28, 1.06, 1.28);
+    path.bezierCurveTo(1.6, 1.28, 1.9, .93, 1.9, .32);
+    path.lineTo(1.9, -1.25);
+    path.lineTo(1.38, -1.25);
+    path.lineTo(1.38, .24);
+    path.bezierCurveTo(1.38, .64, 1.20, .83, .9, .83);
+    path.bezierCurveTo(.6, .83, .25, .59, .25, .2);
+    path.lineTo(.25, -1.25);
+    path.lineTo(-.25, -1.25);
+    path.lineTo(-.25, .24);
+    path.bezierCurveTo(-.25, .64, -.43, .83, -.73, .83);
+    path.bezierCurveTo(-1.03, .83, -1.38, .59, -1.38, .2);
+    path.lineTo(-1.38, -1.25);
+    path.closePath();
+    const shape = new THREE.ExtrudeGeometry(path, {
+      depth: .48, steps: 1, bevelEnabled: true,
+      bevelThickness: .04, bevelSize: .04, bevelSegments: 4, curveSegments: 32,
+    });
+    shape.translate(0, 0, -.24);
+    glyph = mesh(shape, graphite);
 
     const groundMaterial = new THREE.ShadowMaterial({ color: 0x3d443e, opacity: .17, depthWrite: false });
     materials.add(groundMaterial);
     const ground = mesh(new THREE.PlaneGeometry(60, 60), groundMaterial, scene);
-    ground.rotation.x = -Math.PI / 2; ground.position.y = -1.88;
+    ground.rotation.x = -Math.PI / 2; ground.position.y = -1.40;
     ground.castShadow = false; ground.receiveShadow = true;
 
     const shadowCanvas = document.createElement('canvas');
@@ -149,31 +142,19 @@ export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnava
       const finish = new THREE.MeshBasicMaterial({ map: texture, transparent: true, depthWrite: false, toneMapped: false, opacity: .84 });
       materials.add(finish);
       const ambient = mesh(new THREE.PlaneGeometry(5.9, 3.8), finish, scene);
-      ambient.rotation.x = -Math.PI / 2; ambient.position.set(.1, -1.87, .15); ambient.scale.setScalar(.955);
+      ambient.rotation.x = -Math.PI / 2; ambient.position.set(.1, -1.39, .15); ambient.scale.setScalar(.955);
       ambient.castShadow = ambient.receiveShadow = false;
     }
   }
   function update(instant = false, dt = 1 / 60) {
-    const amount = instant ? 1 : 1 - Math.exp(-dt * 12);
+    const amount = instant ? 1 : 1 - Math.exp(-dt * 14);
+    yaw += (targetYaw - yaw) * amount;
+    pitch += (targetPitch - pitch) * amount;
     let changed = false;
-    const intendedX = paused ? 0 : targetX, intendedY = paused ? 0 : targetY;
-    tiltX += (intendedX - tiltX) * amount; tiltY += (intendedY - tiltY) * amount;
-    if (Math.abs(intendedX - tiltX) < .0003) tiltX = intendedX; else changed = true;
-    if (Math.abs(intendedY - tiltY) < .0003) tiltY = intendedY; else changed = true;
-    sculpture?.rotation.set(-.02 + tiltY * .028, -.19 + tiltX * .055, 0);
-    pieces.forEach((piece, index) => {
-      const target = index === preview ? 1 : 0;
-      piece.emphasis += (target - piece.emphasis) * amount;
-      if (Math.abs(target - piece.emphasis) < .0003) piece.emphasis = target;
-      else changed = true;
-      const chapterTarget = index === pagePieces[page] ? 1 : 0;
-      piece.pageEmphasis += (chapterTarget - piece.pageEmphasis) * amount;
-      if (Math.abs(chapterTarget - piece.pageEmphasis) < .0003) piece.pageEmphasis = chapterTarget;
-      else changed = true;
-      piece.group.position.copy(piece.position);
-      piece.group.position.y += Math.max(piece.emphasis * .16, piece.pageEmphasis * .12);
-      piece.group.position.z += Math.max(piece.emphasis * .09, piece.pageEmphasis * .14);
-    });
+    if (Math.abs(targetYaw - yaw) < .0003) yaw = targetYaw; else changed = true;
+    if (Math.abs(targetPitch - pitch) < .0003) pitch = targetPitch; else changed = true;
+    // Local pitch precedes yaw, keeping the feet clear of the ground throughout inspection.
+    sculpture?.rotation.set(pitch, yaw, 0, 'YXZ');
     scene?.updateMatrixWorld(true);
     return changed;
   }
@@ -184,8 +165,7 @@ export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnava
   function resize() {
     if (!renderer || destroyed || unavailable) return;
     const rect = canvas.getBoundingClientRect();
-    // FLIP may scale the mounted stage while its layout size has already
-    // changed. Size the drawing surface to layout, not that temporary scale.
+    // Size to layout while the shared stage moves between page compositions.
     const nextWidth = canvas.clientWidth || rect.width, nextHeight = canvas.clientHeight || rect.height;
     if (!nextWidth || !nextHeight || (width === nextWidth && height === nextHeight)) return;
     width = nextWidth; height = nextHeight;
@@ -195,105 +175,104 @@ export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnava
     camera.position.set(0, 2, distance - .23);
     camera.lookAt(0, .30, 0);
     camera.updateProjectionMatrix();
-    moving = update(true); render();
+    update(false, 0); render();
   }
-  function canAnimate() { return !destroyed && !unavailable && active && visible && !paused && !document.hidden; }
+  function canAnimate() { return !destroyed && !unavailable && active && visible && !paused && !reduced.matches && !document.hidden; }
+  function canManipulate() { return ready && canAnimate(); }
+  function freezeMotion() {
+    cancelAnimationFrame(frame); frame = 0; last = 0;
+    targetYaw = yaw; targetPitch = pitch; moving = false;
+    update(true);
+  }
   function tick(now) {
     frame = 0;
-    if (!canAnimate()) return;
+    if (!canAnimate()) { freezeMotion(); return; }
     const dt = Math.min(.05, (now - (last || now - 16.67)) / 1000); last = now;
     moving = update(false, dt); render();
     if (moving && canAnimate()) frame = requestAnimationFrame(tick); else last = 0;
   }
   function wake() {
     if (destroyed || unavailable) return;
-    if (!canAnimate()) { moving = update(true); render(); }
-    else if (!frame) { last = 0; frame = requestAnimationFrame(tick); }
-  }
-  function setPreview(index) {
-    if (destroyed || (index !== null && !valid(index))) return false;
-    if (preview === index) return true;
-    preview = index; wake(); return true;
+    if (!canAnimate()) { freezeMotion(); return; }
+    if (!frame) { last = 0; frame = requestAnimationFrame(tick); }
   }
   function setPage(value) {
-    if (destroyed || !Object.hasOwn(pagePieces, value)) return false;
-    if (page === value) return true;
-    page = value; targetX = targetY = 0; wake(); return true;
-  }
-  function nativePreview(index) {
-    if (destroyed || !active || hover === index) return;
-    hover = index; setPreview(index);
-    onPreview?.(index);
+    if (destroyed || !pages.includes(value)) return false;
+    page = value;
+    return true;
   }
   function pauseChanged() {
-    const next = manualPaused ?? reduced.matches;
+    const next = reduced.matches || Boolean(manualPaused);
     if (paused === next || destroyed) return;
-    paused = next; cancelAnimationFrame(frame); frame = 0; last = 0; targetX = targetY = 0;
-    moving = update(true); render();
+    paused = next; cancelPointer(); freezeMotion();
+    canvas.style.cursor = 'default';
   }
   function setPaused(value) { if (!destroyed) { manualPaused = Boolean(value); pauseChanged(); } }
   function setActive(value) {
     if (destroyed || active === Boolean(value)) return;
     active = Boolean(value);
-    if (!active) {
-      cancelPointer(); cancelAnimationFrame(frame); frame = 0; last = 0;
-      hover = preview = null; targetX = targetY = 0; canvas.style.cursor = 'default'; moving = update(true);
-    } else { resize(); moving = update(true); render(); }
+    if (!active) { cancelPointer(); freezeMotion(); canvas.style.cursor = 'default'; }
+    else { resize(); update(false, 0); render(); }
   }
   function visibilityChanged() {
     if (destroyed) return;
     if (!visible || document.hidden || !active) {
-      cancelPointer(); cancelAnimationFrame(frame); frame = 0; last = 0;
-      targetX = targetY = 0; moving = update(true);
-    } else { resize(); moving = update(true); render(); }
+      cancelPointer(); freezeMotion(); canvas.style.cursor = 'default';
+    } else { resize(); update(false, 0); render(); }
   }
   function hit(clientX, clientY) {
-    if (!ready || unavailable || destroyed || !active || !visible || document.hidden) return null;
+    if (!canManipulate() || !glyph) return false;
     const rect = canvas.getBoundingClientRect();
-    if (!rect.width || !rect.height) return null;
+    if (!rect.width || !rect.height) return false;
     pointer.set((clientX - rect.left) / rect.width * 2 - 1, -(clientY - rect.top) / rect.height * 2 + 1);
     raycaster.setFromCamera(pointer, camera);
-    return raycaster.intersectObjects(pickable, false)[0]?.object.userData.index ?? null;
+    return raycaster.intersectObject(glyph, false).length > 0;
   }
   function down(event) {
-    if (event.button !== 0 || event.isPrimary === false || pressed) return;
-    const index = hit(event.clientX, event.clientY);
-    if (index === null) return;
-    pressed = { id: event.pointerId, index, pointerType: event.pointerType, x: event.clientX, y: event.clientY, moved: false };
+    if (event.button !== 0 || event.isPrimary === false || pressed || !canManipulate()) return;
+    if (!hit(event.clientX, event.clientY)) return;
+    freezeMotion();
+    pressed = { id: event.pointerId, pointerType: event.pointerType, x: event.clientX, y: event.clientY, yaw, pitch, dragging: false };
     try { canvas.setPointerCapture(event.pointerId); } catch { /* Optional. */ }
-    if (event.pointerType === 'touch') nativePreview(index);
+    if (event.pointerType !== 'touch' && event.cancelable) event.preventDefault();
+    canvas.style.cursor = 'grab';
   }
   function move(event) {
-    if (destroyed || unavailable || !active) return;
-    if (pressed && event.pointerId === pressed.id && !pressed.moved && Math.hypot(event.clientX - pressed.x, event.clientY - pressed.y) > 9) {
-      pressed.moved = true;
-      if (pressed.pointerType === 'touch') nativePreview(null);
-    }
-    if (event.pointerType === 'touch') return;
-    if (!paused) {
-      const rect = canvas.getBoundingClientRect();
-      targetX = clamp((event.clientX - rect.left) / Math.max(1, rect.width) * 2 - 1);
-      targetY = clamp((event.clientY - rect.top) / Math.max(1, rect.height) * 2 - 1);
+    if (!canManipulate()) { canvas.style.cursor = 'default'; return; }
+    if (pressed && event.pointerId === pressed.id) {
+      const dx = event.clientX - pressed.x, dy = event.clientY - pressed.y;
+      if (pressed.pointerType === 'touch') {
+        // Once a gesture becomes vertical, release it to the browser. With no
+        // active press, later horizontal movement in that gesture cannot rotate.
+        if (Math.abs(dy) > 8 && Math.abs(dy) > Math.abs(dx) * 1.05) {
+          cancelPointer(); freezeMotion(); return;
+        }
+        if (!pressed.dragging && (Math.abs(dx) < 7 || Math.abs(dx) <= Math.abs(dy) * 1.05)) return;
+      } else if (!pressed.dragging && Math.hypot(dx, dy) < 3) return;
+      pressed.dragging = true;
+      canvas.style.cursor = 'grabbing';
+      if (event.cancelable) event.preventDefault();
+      const scale = Math.max(240, Math.min(width, height) * 1.25);
+      targetYaw = clamp(pressed.yaw + dx / scale * 1.3, REST_YAW - YAW_LIMIT, REST_YAW + YAW_LIMIT);
+      targetPitch = pressed.pointerType === 'touch' ? pressed.pitch : clamp(pressed.pitch + dy / scale * .65, REST_PITCH - PITCH_LIMIT, REST_PITCH + PITCH_LIMIT);
       wake();
+      return;
     }
-    const index = hit(event.clientX, event.clientY);
-    canvas.style.cursor = index === null ? 'default' : 'pointer';
-    nativePreview(index);
+    if (event.pointerType !== 'touch') canvas.style.cursor = hit(event.clientX, event.clientY) ? 'grab' : 'default';
   }
   function cancelPointer() {
     const press = pressed; pressed = null;
-    if (press) { try { canvas.releasePointerCapture(press.id); } catch { /* Already released. */ } }
-    if (press?.pointerType === 'touch') nativePreview(null);
+    if (!press) return;
+    canvas.style.cursor = 'default';
+    try { canvas.releasePointerCapture(press.id); } catch { /* Already released. */ }
   }
   function up(event) {
     if (!pressed || event.pointerId !== pressed.id) return;
-    const press = pressed, index = hit(event.clientX, event.clientY);
-    const moved = press.moved || Math.hypot(event.clientX - press.x, event.clientY - press.y) > 9;
     cancelPointer();
-    if (!moved && index === press.index) onNavigate?.(index);
+    if (event.pointerType !== 'touch') canvas.style.cursor = hit(event.clientX, event.clientY) ? 'grab' : 'default';
   }
-  function leave() { targetX = targetY = 0; canvas.style.cursor = 'default'; nativePreview(null); wake(); }
-  function windowBlur() { cancelPointer(); leave(); }
+  function leave() { if (!pressed?.dragging) canvas.style.cursor = 'default'; }
+  function windowBlur() { cancelPointer(); freezeMotion(); canvas.style.cursor = 'default'; }
   function disposeGraphics() {
     if (disposed) return;
     disposed = true;
@@ -309,12 +288,19 @@ export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnava
   function fail() {
     if (destroyed || unavailable) return;
     unavailable = true; ready = false; moving = false;
-    cancelPointer(); cancelAnimationFrame(frame); frame = 0;
+    cancelPointer(); freezeMotion();
     disposeGraphics();
     queueMicrotask(() => { if (!destroyed) onUnavailable?.(); });
   }
   function contextLost(event) { event.preventDefault(); fail(); }
-  function getState() { return { count: COUNT, page, pagePiece: pagePieces[page], preview, hover, paused, active, visible: visible && !document.hidden, ready, unavailable, moving, destroyed, parallax: { x: tiltX, y: tiltY } }; }
+  function getState() {
+    return {
+      count: 1, page, dragging: Boolean(pressed?.dragging), pressed: Boolean(pressed),
+      paused, active, visible: visible && !document.hidden, ready, unavailable, moving, destroyed,
+      rotation: { yaw, pitch }, target: { yaw: targetYaw, pitch: targetPitch },
+      bounds: { yaw: [REST_YAW - YAW_LIMIT, REST_YAW + YAW_LIMIT], pitch: [REST_PITCH - PITCH_LIMIT, REST_PITCH + PITCH_LIMIT] },
+    };
+  }
   function destroy() {
     if (destroyed) return;
     destroyed = true; ready = false; moving = false;
@@ -338,5 +324,5 @@ export function createMonogram(canvas, { onPreview, onNavigate, onReady, onUnava
       queueMicrotask(() => { if (!destroyed && !unavailable) onReady?.(); });
     }
   } catch { fail(); }
-  return { setPage, setPreview, setPaused, setActive, destroy, getState };
+  return { setPage, setPaused, setActive, destroy, getState };
 }

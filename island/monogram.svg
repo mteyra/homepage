@@ -1,16 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="116 10 530 360" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 410">
   <defs>
-    <linearGradient id="graphite" x1="245" y1="115" x2="285" y2="330" gradientUnits="userSpaceOnUse"><stop stop-color="#484e4a"/><stop offset=".45" stop-color="#292e2b"/><stop offset="1" stop-color="#373e38"/></linearGradient>
-    <linearGradient id="silver" x1="300" y1="100" x2="430" y2="280" gradientUnits="userSpaceOnUse"><stop stop-color="#d8dcd5"/><stop offset=".46" stop-color="#a9b0a8"/><stop offset="1" stop-color="#808980"/></linearGradient>
-    <filter id="shadow"><feGaussianBlur stdDeviation="10"/></filter>
+    <path id="m" d="M-1.9-1.25V1.12h.43V.8C-1.25 1.1-1.03 1.28-.63 1.28c.41 0 .66-.22.78-.49.23.31.55.49.91.49.54 0 .84-.35.84-.96v-1.57h-.52V.24c0 .4-.18.59-.48.59S.25.59.25.2v-1.45h-.5V.24c0 .4-.18.59-.48.59s-.65-.24-.65-.63v-1.45Z"/>
+    <linearGradient id="graphite" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#474b48"/><stop offset=".55" stop-color="#353936"/><stop offset="1" stop-color="#2d312e"/></linearGradient>
+    <filter id="shadow" x="-30%" y="-150%" width="160%" height="400%"><feGaussianBlur stdDeviation="9"/></filter>
   </defs>
-  <ellipse cx="380" cy="350" rx="142" ry="13" fill="#303830" opacity=".12" filter="url(#shadow)"/>
-  <g stroke="#f7f9f4" stroke-opacity=".35" stroke-width=".8" stroke-linejoin="round">
-    <path d="m243 124 18-17h41l-18 17v206h-41z" fill="#7d867d"/>
-    <path d="M243 124h41v206h-41z" fill="url(#graphite)"/>
-    <path d="m296 124 18-17 78 110 78-110v68l-18 17-78 88-78-88z" fill="#d4d9d0"/>
-    <path d="m296 124 78 108 78-108v68l-78 108-78-108z" fill="url(#silver)"/>
-    <path d="m464 124 18-17h41v206l-18 17h-41z" fill="#7d867d"/>
-    <path d="M464 124h41v206h-41z" fill="url(#graphite)"/>
+  <ellipse cx="298" cy="296" rx="131" ry="10" fill="#353c36" opacity=".13" filter="url(#shadow)"/>
+  <g transform="translate(290 200) scale(65 -65)">
+    <use href="#m" transform="translate(.11 .1)" fill="#424744"/>
+    <use href="#m" fill="url(#graphite)" stroke="#515652" stroke-width=".014" stroke-linejoin="round"/>
   </g>
 </svg>

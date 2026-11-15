@@ -10,9 +10,9 @@ More width is not a request for more columns or denser information. More persona
 
 ## Composition
 
-The opening contains one graphite and silver M, Marc’s full name and a short factual introduction. The M is centered with open space around it. Name and introduction align to opposite sides of the wider desktop composition; phones stack them naturally. The extra study/work/project strips have been removed.
+The opening contains one continuous lowercase m in satin graphite, Marc’s full name and a short factual introduction. The m is centered with open space around it. Name and introduction align to opposite sides of the wider desktop composition; phones stack them naturally. The extra study/work/project strips have been removed.
 
-Inner pages use smaller headings and one brief contextual introduction, with the same M quietly at the right. There are no chapter numbers, duplicate metadata bands or competing section headings.
+Inner pages use smaller headings and one brief contextual introduction, with the same m quietly at the right. There are no chapter numbers, duplicate metadata bands or competing section headings.
 
 - Studies identifies the degree, university and start date. Computation, Biology & medicine and Independent study are ordinary category links. One course group is visible at a time. All eight university courses, the independent courses, verified certificates and audited-course distinction remain accessible.
 - Experience identifies the current employer and start date. Teams & prototypes, Science & care and Robotics & games are separate views. Short contributions are visible; supporting accounts and outcomes open in place.
@@ -22,11 +22,13 @@ Space, alignment and a restrained type hierarchy separate content. The persisten
 
 ## Interaction
 
-One WebGL canvas moves between the opening composition and chapter mastheads. Its original three-piece geometry remains Marc’s M. Each piece leads directly to Studies, Experience or Projects, matching the ordinary navigation links. Pointer movement gives a small change of angle and then settles. There is no sorting task, puzzle gate or completion state.
+One WebGL canvas moves between the opening composition and chapter mastheads. The previous dark uprights and contrasting V resembled Gmail and were rejected. The replacement is a single typographic lowercase m with joined shoulders, flat-ended stems and shallow extrusion. Its one satin graphite finish avoids segmented coloring and envelope-like geometry.
 
-Category links update the URL, selected state and visible panel without rebuilding the page or M. Direct links and browser history restore the appropriate group. Switching categories keeps the chapter introduction in context. The selected panel enters with a small, brief movement; supporting experience details expand in place.
+Dragging gently turns the whole object within bounded angles. It settles at the inspected pose. A click or tap does nothing: the sculpture has no destinations, lifting pieces or navigation previews. It is a small object to inspect, without a task or invented symbolism.
 
-The sculpture and dock remain optional ways to navigate. Keyboard links work throughout. Reduced motion and manual pause remove animation. Touch scrolling never triggers sculpture navigation. WebGL failure reveals an SVG M while the content and routes keep working. One graphics context is retained; rendering stops offscreen and once the object settles.
+Category links update the URL, selected state and visible panel without rebuilding the page or m. Direct links and browser history restore the appropriate group. Switching categories keeps the chapter introduction in context. The selected panel enters with a small, brief movement; supporting experience details expand in place.
+
+The dock and text links provide navigation. Keyboard links work throughout. Reduced motion and manual pause freeze the inspected pose and disable manipulation. Horizontal touch dragging turns the object; vertical gestures remain native scrolling and cancel manipulation. WebGL failure reveals an SVG of the same glyph while the content and routes keep working. One graphics context is retained; rendering stops offscreen and once the object settles.
 
 ## Content boundaries
 
@@ -36,6 +38,6 @@ The public CV is dated February 2026 and predates the current job. There is no p
 
 ## Preservation and publication
 
-The preceding shared-M edition with openly displayed coursework is preserved in `archive/13-island-studio/`. The quieter original M edition is in `archive/12-island-monogram/`. All thirteen earlier directions remain in the archive with their own content and assets.
+The preceding quiet edition with the segmented M is preserved in `archive/14-island-quiet/`. The shared-M edition with openly displayed coursework is in `archive/13-island-studio/`. All fourteen earlier directions remain in the archive with their own content and assets.
 
 The current site publishes to the existing GitHub Pages address: https://mteyra.github.io/m.a.r.c_t.e.y.r.a/.
