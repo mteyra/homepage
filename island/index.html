@@ -13,8 +13,8 @@
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="preload" href="../assets/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/fonts/instrument-serif.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="index.css?v=spatial-index">
-  <script type="module" src="index-main.js?v=spatial-index"></script>
+  <link rel="stylesheet" href="index.css?v=compass">
+  <script type="module" src="index-main.js?v=compass"></script>
   <title>Marc Teyra Galiano</title>
 </head>
 <body data-page="about">
@@ -47,7 +47,28 @@
     <div class="index-position">
       <div class="index-visual">
         <canvas id="index-canvas" aria-hidden="true"></canvas>
-        <svg class="index-fallback" viewBox="0 0 460 180" aria-hidden="true"><defs><linearGradient id="rim" x2=".3" y2="1"><stop stop-color="#f2f2f0"/><stop offset=".45" stop-color="#484a4c"/><stop offset=".8" stop-color="#bcbfc0"/><stop offset="1" stop-color="#36383a"/></linearGradient></defs><ellipse cx="230" cy="92" rx="160" ry="59" fill="none" stroke="#232528" stroke-width="17"/><ellipse cx="230" cy="87" rx="160" ry="59" fill="none" stroke="url(#rim)" stroke-width="11"/><path d="M69 86h23m276 0h23M230 27v9m0 111v9" stroke="#d1d2d1" stroke-width="2"/></svg>
+        <svg class="index-fallback" viewBox="0 0 300 240" aria-hidden="true">
+          <defs><linearGradient id="compass-rim" x2=".7" y2="1"><stop stop-color="#d0d1cf"/><stop offset=".45" stop-color="#55585a"/><stop offset=".8" stop-color="#aaaead"/><stop offset="1" stop-color="#434648"/></linearGradient></defs>
+          <g transform="translate(150 118) scale(1 .83)">
+            <circle cy="6" r="100" fill="#26292b" stroke="#3d4143" stroke-width="5"/>
+            <circle r="99" fill="#1b1e20" stroke="url(#compass-rim)" stroke-width="7"/>
+            <circle r="87" fill="none" stroke="#4a4e50" stroke-width=".75"/>
+            <g stroke="#777d80" stroke-width="1">
+              <path id="compass-mark" d="M0-93v7M0 93v-7M-93 0h7M93 0h-7"/>
+              <use href="#compass-mark" transform="rotate(15)"/><use href="#compass-mark" transform="rotate(30)"/><use href="#compass-mark" transform="rotate(45)"/><use href="#compass-mark" transform="rotate(60)"/><use href="#compass-mark" transform="rotate(75)"/>
+            </g>
+            <g fill="#b8bcbd" font-family="Manrope,Arial,sans-serif" font-size="11" text-anchor="middle">
+              <text y="-68">N</text><text x="73" y="4">E</text><text y="77">S</text><text x="-73" y="4">W</text>
+            </g>
+            <g class="fallback-needle">
+              <path d="M0-62 13 0 0 62-13 0Z" fill="#777e82"/>
+              <path d="M0-62 13 0 0 6Z" fill="#dcdedc"/>
+              <path d="M0-62-13 0 0 6Z" fill="#9ca2a5"/>
+              <path d="M0 62 13 0 0-6Z" fill="#454c51"/>
+            </g>
+            <circle r="6" fill="#aeb4b6" stroke="#34393c" stroke-width="2"/>
+          </g>
+        </svg>
         <span class="index-tooltip" id="index-tooltip">About</span>
       </div>
       <nav class="index-links" aria-label="Explore my profile">

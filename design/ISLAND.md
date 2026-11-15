@@ -1,4 +1,4 @@
-# Spatial index · Marc Teyra Galiano
+# Compass · Marc Teyra Galiano
 
 ## The governing preference
 
@@ -10,7 +10,7 @@ The design keeps information available through a small number of visibly separat
 
 ## Composition
 
-A dark graphite field holds stationary text and a small physical index near the bottom of the screen. Instrument Serif sets the full name, chapter headings and project titles. Manrope sets the body text, metadata and navigation.
+A dark graphite field holds stationary text and a small compass near the bottom of the screen. Instrument Serif sets the full name, chapter headings and project titles. Manrope sets the body text, metadata and navigation.
 
 The introduction uses two parts of the available width: Marc’s name on the left, his stated interests and current degree and employer on the right. Reading pages place the chapter heading and category controls beside the selected content. The page surfaces stay flat and still when views change.
 
@@ -18,15 +18,15 @@ The introduction uses two parts of the available width: Marc’s name on the lef
 - Experience identifies the current employer and start date. Teams & prototypes, Science & care and Robotics & games are separate groups. Short contributions are visible; supporting accounts and outcomes open in native HTML disclosures.
 - Projects contains four brief descriptions with direct project, source, presentation or CV links.
 
-On smaller screens, the reading layout becomes a single column and category links run above their content. The CV stays in the header. GitHub and LinkedIn sit at the lower edge; More opens the archive link and motion preference. The ring becomes smaller on reading views and phones, reserving space for the content.
+On smaller screens, the reading layout becomes a single column and category links run above their content. The CV stays in the header. GitHub and LinkedIn sit at the lower edge; More opens the archive link and motion preference. The compass becomes smaller on reading views and phones, reserving space for the content.
 
 ## Interaction
 
 About, Studies, Experience and Projects have ordinary HTML links. These are the primary navigation and keyboard controls. Arrow keys also move between views, while form controls and text selection retain their own input behavior.
 
-The 3D ring is an optional physical index with four sectors corresponding to those same destinations. The center names the current section, and hovering a sector previews its destination. Selecting a sector changes the view; dragging horizontally turns the ring and selects the nearest position on release. Its center stays open. The form carries no additional claims about Marc’s achievements or interests.
+The optional 3D compass follows Marc's request to replace the ring with a recognizable instrument. Its fixed dial carries cardinal marks: About at north, Studies at east, Experience at south and Projects at west. A raised needle points toward the selected destination and turns when selected or dragged, while the case and dial stay still. The tooltip below the instrument previews a destination without obscuring the needle. The form carries no additional claims about Marc’s achievements or interests.
 
-The ring has no idle rotation or pointer-following movement. Only selection and dragging produce motion. Once a turn settles, rendering stops scheduling animation frames. System reduced motion and manual pause make ring selection immediate. Touch handling preserves vertical scrolling and pinch zoom. A static SVG remains available when WebGL cannot render; the HTML links continue to work.
+The compass has no idle rotation or pointer-following movement. Only selection and dragging move its needle. Once a turn settles, rendering stops scheduling animation frames. System reduced motion and manual pause make selection immediate. Touch handling preserves vertical scrolling and pinch zoom. An SVG compass remains available when WebGL cannot render; the HTML links continue to work.
 
 Category links update the URL, selected state and visible panel. Browser history and direct links select the corresponding group or individual entry. Experience details use native disclosures. Text remains selectable, and navigation leaves the reading surface stationary. A no-script introduction retains links to the CV and public profiles.
 
@@ -44,6 +44,6 @@ The public CV is dated February 2026 and predates the current job. There is no p
 
 ## Preservation and publication
 
-The preceding spatial folio is preserved in `archive/16-spatial-folio/`. All sixteen earlier directions retain their own content and assets.
+The preceding ring edition is preserved in `archive/17-spatial-index/`, and the spatial folio remains in `archive/16-spatial-folio/`. All seventeen earlier directions retain their own content and assets.
 
 GitHub Pages serves `main` from the repository root. The site remains buildless and publishes to the existing address: https://mteyra.github.io/m.a.r.c_t.e.y.r.a/. Fonts and Three.js load from local assets.

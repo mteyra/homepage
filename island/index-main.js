@@ -114,7 +114,7 @@ window.addEventListener('pagehide', event => { if (!event.persisted) { closed = 
 window.indexState = () => ({ page, groups: Object.fromEntries(groups), paused, menuOpen, scene: scene?.getState() || { ready: false } });
 
 // Reading and navigation are usable while the optional graphics module loads.
-import('./index-scene.js?v=spatial-index').then(({ createIndexScene }) => {
+import('./index-scene.js?v=compass').then(({ createIndexScene }) => {
   if (closed) return;
   scene = createIndexScene($('#index-canvas'), {
     onSelect: navigate,
@@ -125,6 +125,6 @@ import('./index-scene.js?v=spatial-index').then(({ createIndexScene }) => {
   scene.setPaused(paused);
   scene.select(page, { instant: true });
 }).catch(() => {
-  // The static ring and all HTML navigation remain available without WebGL.
+  // The SVG compass and all HTML navigation remain available without WebGL.
   $('.index-visual').classList.remove('ready');
 });

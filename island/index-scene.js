@@ -5,7 +5,7 @@ const QUARTER = Math.PI / 2, TAU = Math.PI * 2;
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const nearestAngle = (value, reference) => reference + Math.atan2(Math.sin(value - reference), Math.cos(value - reference));
 
-// The ring is an optional physical index; ordinary HTML links own keyboard navigation.
+// The compass is an optional physical index; ordinary HTML links own keyboard navigation.
 export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavailable } = {}) {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const before = {
@@ -24,13 +24,13 @@ export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavail
   let width = 0, height = 0, frame = 0, animation = null, press = null;
   const geometries = new Set(), materials = new Set(), sectors = [], hits = [];
   const raycaster = new THREE.Raycaster(), pointer = new THREE.Vector2();
-  const graphiteColor = new THREE.Color(0x363636), silverColor = new THREE.Color(0x999999);
+  const quietMark = new THREE.Color(0x656b70), activeMark = new THREE.Color(0xe5e8e7);
 
   function finish(options, basic = false) {
     const value = basic ? new THREE.MeshBasicMaterial(options) : new THREE.MeshPhysicalMaterial(options);
     materials.add(value); return value;
   }
-  function mesh(geometry, material, parent = rotor) {
+  function mesh(geometry, material, parent = ring) {
     geometries.add(geometry);
     const value = new THREE.Mesh(geometry, material);
     parent.add(value); return value;
@@ -50,27 +50,57 @@ export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavail
       bevelThickness: bevel, bevelSegments: 4, curveSegments: 192,
     });
   }
+  function cylinder(radius, height, material, z, parent = ring) {
+    const value = mesh(new THREE.CylinderGeometry(radius, radius, height, 144), material, parent);
+    value.rotation.x = QUARTER; value.position.z = z;
+    return value;
+  }
+  function stroke(x1, y1, x2, y2, thickness, material, z = .095, parent = ring) {
+    const value = mesh(new THREE.PlaneGeometry(Math.hypot(x2 - x1, y2 - y1), thickness), material, parent);
+    value.position.set((x1 + x2) / 2, (y1 + y2) / 2, z);
+    value.rotation.z = Math.atan2(y2 - y1, x2 - x1);
+    return value;
+  }
+  function glyph(letter, x, y, material) {
+    // Small geometric engravings stay sharp without an external font texture.
+    const paths = {
+      N: [[-.5,-.5,-.5,.5],[-.5,.5,.5,-.5],[.5,-.5,.5,.5]],
+      E: [[-.5,-.5,-.5,.5],[-.5,.5,.5,.5],[-.5,0,.35,0],[-.5,-.5,.5,-.5]],
+      S: [[.5,.5,-.5,.5],[-.5,.5,-.5,0],[-.5,0,.5,0],[.5,0,.5,-.5],[.5,-.5,-.5,-.5]],
+      W: [[-.5,.5,-.27,-.5],[-.27,-.5,0,.15],[0,.15,.27,-.5],[.27,-.5,.5,.5]],
+    };
+    paths[letter].forEach(([ax, ay, bx, by]) => stroke(x + ax * .19, y + ay * .29, x + bx * .19, y + by * .29, .027, material));
+  }
+  function facet(points, material) {
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(points.flat(), 3));
+    geometry.computeVertexNormals();
+    const value = mesh(geometry, material, rotor); value.castShadow = true;
+    return value;
+  }
   function build() {
     renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'low-power' });
     renderer.setPixelRatio(Math.min(Math.max(window.devicePixelRatio || 1, 2), 2.5));
     renderer.setClearColor(0x08090b, 0);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.08;
+    renderer.toneMappingExposure = 1.04;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     scene = new THREE.Scene();
-    camera = new THREE.OrthographicCamera(-4, 4, 2, -2, .1, 40);
+    camera = new THREE.OrthographicCamera(-4, 4, 3.125, -3.125, .1, 40);
     camera.position.set(0, 0, 12); camera.lookAt(0, 0, 0);
-    ring = new THREE.Group(); ring.rotation.set(-1.15, .035, -.025); scene.add(ring);
+    ring = new THREE.Group(); ring.rotation.set(-.60, .035, -.025); scene.add(ring);
     rotor = new THREE.Group(); ring.add(rotor);
 
-    // Broad photographic reflectors reveal the machined section without a glow pass.
+    // Large, neutral reflectors reveal the case's bevels and the needle's facets.
     const studio = new THREE.Scene(); studio.background = new THREE.Color(0x333333);
     for (const [x, y, z, w, h, color] of [
       [-4, 4, 5, 6, 8, 0xf1f1f1],
       [5, 1, 3, 3.5, 7, 0xb0b0b0],
       [0, 6, -1, 8, 3, 0xffffff],
       [0, -4, 4, 7, 3, 0x818181],
-      [0, 0, 6, 3.5, 6, 0x161616],
+      [0, 0, 6, 3.5, 6, 0x55585b],
       [-5, -2, -2, 6, 7, 0x0b0b0b],
     ]) {
       const panel = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide }));
@@ -84,42 +114,78 @@ export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavail
       studio.traverse(object => { object.geometry?.dispose(); object.material?.dispose(); });
       pmrem.dispose();
     }
-    scene.add(new THREE.HemisphereLight(0xeeeeee, 0x181818, .8));
+    scene.add(new THREE.HemisphereLight(0xeeeeee, 0x181818, .7));
     const key = new THREE.DirectionalLight(0xffffff, 1.8); key.position.set(-4, 5, 7); scene.add(key);
-    const fill = new THREE.DirectionalLight(0xe3e3e3, .7); fill.position.set(5, -2, 4); scene.add(fill);
+    key.castShadow = true; key.shadow.mapSize.set(1024, 1024);
+    Object.assign(key.shadow.camera, { left: -4, right: 4, top: 4, bottom: -4, near: .1, far: 20 });
+    key.shadow.bias = -.0005; key.shadow.normalBias = .012;
+    const fill = new THREE.DirectionalLight(0xe3e3e3, .5); fill.position.set(5, -2, 4); scene.add(fill);
 
-    const body = finish({ color: 0x383838, metalness: .91, roughness: .34, envMapIntensity: .95 });
-    const rim = finish({ color: 0xb9b9b9, metalness: .96, roughness: .34, envMapIntensity: .9 });
-    const bodyMesh = mesh(solid(2.60, 3.16, .16, .025), body);
-    bodyMesh.position.z = -.09;
-    // Both lips belong to the same shallow ring; its center remains completely open.
-    mesh(solid(3.105, 3.145, .025, .012), rim).position.z = .09;
-    mesh(solid(2.615, 2.655, .025, .012), rim).position.z = .09;
-    const hitMaterial = finish({ transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide }, true);
-    for (let index = 0; index < PAGES.length; index++) {
-      const center = -QUARTER + index * QUARTER;
-      const start = center - QUARTER / 2, end = center + QUARTER / 2;
-      const channel = finish({
-        color: graphiteColor, metalness: .88, roughness: .37,
-        clearcoat: .06, clearcoatRoughness: .42, envMapIntensity: .9,
-      });
-      mesh(solid(2.69, 3.07, .028, .009, start + .009, end - .009), channel).position.z = .073;
-      const stopMaterial = finish({ color: 0xadadad, metalness: .94, roughness: .35, envMapIntensity: .8 });
-      const stop = mesh(new THREE.BoxGeometry(.022, .20, .003), stopMaterial);
-      stop.position.set(Math.cos(center) * 2.88, Math.sin(center) * 2.88, .115);
-      stop.rotation.z = center - QUARTER;
-      const hit = mesh(new THREE.ShapeGeometry(annulus(2.60, 3.16, start, end), 72), hitMaterial);
-      hit.position.z = .13; hit.userData.index = index; hits.push(hit);
-      sectors.push({ channel, stopMaterial });
+    const caseMetal = finish({ color: 0x979b9d, metalness: .86, roughness: .32, envMapIntensity: 1.05 });
+    const edgeMetal = finish({ color: 0xd2d5d5, metalness: .90, roughness: .26, envMapIntensity: 1.10 });
+    const darkMetal = finish({ color: 0x24282b, metalness: .78, roughness: .38, envMapIntensity: .8 });
+    const dialFinish = finish({ color: 0x171a1d, metalness: .2, roughness: .72, envMapIntensity: .5 });
+    const marks = finish({ color: 0x777e82, toneMapped: false }, true);
+    const faintMarks = finish({ color: 0x3b4145, toneMapped: false }, true);
+    const seam = finish({ color: 0x14171a, toneMapped: false }, true);
+
+    cylinder(3.105, .27, darkMetal, -.165);
+    mesh(solid(2.88, 3.15, .20, .035), caseMetal).position.z = -.13;
+    mesh(solid(3.085, 3.145, .025, .012), edgeMetal).position.z = .072;
+    mesh(solid(2.88, 2.94, .02, .012), edgeMetal).position.z = .07;
+    mesh(solid(2.854, 2.881, .008, 0), seam).position.z = .079;
+    const dial = cylinder(2.873, .055, dialFinish, .03); dial.receiveShadow = true;
+    mesh(new THREE.ShapeGeometry(annulus(2.742, 2.751), 144), faintMarks).position.z = .087;
+    mesh(new THREE.ShapeGeometry(annulus(1.91, 1.918), 144), faintMarks).position.z = .087;
+
+    // A fixed 5-degree scale. Every sixth mark is longer; only four bearings navigate.
+    for (let tick = 0; tick < 72; tick++) {
+      const theta = QUARTER - tick * TAU / 72;
+      const cardinal = tick % 18 === 0, major = tick % 6 === 0;
+      const length = cardinal ? .265 : major ? .185 : .09;
+      const outer = 2.67, inner = outer - length;
+      stroke(Math.cos(theta) * inner, Math.sin(theta) * inner,
+        Math.cos(theta) * outer, Math.sin(theta) * outer,
+        cardinal ? .032 : major ? .022 : .012, major ? marks : faintMarks);
     }
+    const hitMaterial = finish({ transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide }, true);
+    ['N', 'E', 'S', 'W'].forEach((letter, index) => {
+      const center = QUARTER - index * QUARTER;
+      const bearing = finish({ color: quietMark, toneMapped: false }, true);
+      glyph(letter, Math.cos(center) * 2.16, Math.sin(center) * 2.16, bearing);
+      const indicator = mesh(new THREE.CircleGeometry(.042, 24), bearing);
+      indicator.position.set(Math.cos(center) * 2.79, Math.sin(center) * 2.79, .098);
+      const hit = mesh(new THREE.ShapeGeometry(annulus(.72, 3.16, center - QUARTER / 2, center + QUARTER / 2), 48), hitMaterial);
+      hit.position.z = .50; hit.userData.index = index; hits.push(hit);
+      sectors.push({ bearing });
+    });
+
+    // The compass needle is a real raised diamond section; only this assembly turns.
+    const needleEdge = finish({ color: 0x555e65, metalness: .95, roughness: .3, envMapIntensity: .8 });
+    const needleLight = finish({ color: 0xf0f0e9, metalness: .74, roughness: .32, envMapIntensity: 1.05 });
+    const needleShade = finish({ color: 0xb9c0c2, metalness: .87, roughness: .31, envMapIntensity: .95 });
+    const counterLight = finish({ color: 0x81898e, metalness: .72, roughness: .36, envMapIntensity: 1.0 });
+    const counterShade = finish({ color: 0x535d64, metalness: .70, roughness: .40, envMapIntensity: .95 });
+    const silhouette = new THREE.Shape();
+    silhouette.moveTo(0, 1.79); silhouette.lineTo(-.30, 0); silhouette.lineTo(0, -1.48); silhouette.lineTo(.30, 0); silhouette.closePath();
+    const needleBase = mesh(new THREE.ExtrudeGeometry(silhouette, { depth: .028, bevelEnabled: false, steps: 1 }), needleEdge, rotor);
+    needleBase.position.z = .195; needleBase.castShadow = true;
+    const north = [0, 1.79, .225], south = [0, -1.48, .225];
+    const left = [-.30, 0, .225], right = [.30, 0, .225], ridge = [0, 0, .435];
+    facet([north, left, ridge], needleLight);
+    facet([north, ridge, right], needleShade);
+    facet([south, right, ridge], counterLight);
+    facet([south, ridge, left], counterShade);
+    const hub = cylinder(.16, .078, edgeMetal, .425); hub.castShadow = true;
+    cylinder(.10, .012, darkMetal, .471);
+    cylinder(.034, .009, edgeMetal, .483);
   }
   function update() {
     if (!rotor) return;
     rotor.rotation.z = angle;
-    sectors.forEach(({ channel, stopMaterial }, index) => {
-      const strength = index === selected ? 1 : index === hovered ? .46 : 0;
-      channel.color.copy(graphiteColor).lerp(silverColor, strength);
-      stopMaterial.color.setHex(index === selected ? 0xe6e6e6 : index === hovered ? 0xcccccc : 0x808080);
+    sectors.forEach(({ bearing }, index) => {
+      const strength = index === selected ? 1 : index === hovered ? .6 : 0;
+      bearing.color.copy(quietMark).lerp(activeMark, strength);
     });
     scene.updateMatrixWorld(true);
   }
@@ -242,7 +308,7 @@ export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavail
     if (!nextWidth || !nextHeight || (width === nextWidth && height === nextHeight)) return;
     releasePointer(); width = nextWidth; height = nextHeight;
     renderer.setSize(width, height, false);
-    const aspect = width / height, viewHeight = Math.max(3.2, 6.9 / aspect);
+    const aspect = width / height, viewHeight = Math.max(6.25, 6.9 / aspect);
     camera.left = -viewHeight * aspect / 2; camera.right = viewHeight * aspect / 2;
     camera.top = viewHeight / 2; camera.bottom = -viewHeight / 2;
     camera.updateProjectionMatrix();
@@ -265,6 +331,7 @@ export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavail
     geometries.forEach(geometry => geometry.dispose());
     materials.forEach(material => material.dispose());
     environment?.dispose();
+    scene?.traverse(object => object.shadow?.dispose());
     renderer?.dispose();
   }
   function fail() {
@@ -275,7 +342,7 @@ export function createIndexScene(canvas, { onSelect, onHover, onReady, onUnavail
   function contextLost(event) { event.preventDefault(); fail(); }
   function getState() {
     return {
-      page: PAGES[selected], index: selected, angle, targetAngle, hovered: PAGES[hovered] ?? null,
+      type: 'compass', page: PAGES[selected], index: selected, angle, targetAngle, hovered: PAGES[hovered] ?? null,
       dragging: Boolean(press?.dragging), animating: Boolean(animation), paused,
       visible, ready, unavailable, destroyed, width, height,
     };
