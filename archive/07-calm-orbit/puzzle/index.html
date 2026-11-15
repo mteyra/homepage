@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10191f">
+  <meta name="description" content="Marc Teyra Galiano — artificial intelligence at FAU, work at Siemens Healthineers, and a curiosity that connects code, biology and practice.">
+  <title>Marc Teyra Galiano — Connections</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="preload" href="../assets/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="main.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#record">Skip to the full picture</a>
+  <header class="masthead">
+    <a class="signature" href="./" aria-label="Marc Teyra Galiano, start">
+      <svg viewBox="0 0 36 36" aria-hidden="true"><path d="M5 27V9l13 13L31 9v18M18 22v11"/></svg>
+      <span>Marc Teyra Galiano</span>
+    </a>
+    <nav aria-label="Main navigation">
+      <a href="#record" class="read-link">Read directly <span aria-hidden="true">↗</span></a>
+      <a href="../assets/cv/marc-teyra-cv-2026-02.pdf" class="cv-link" target="_blank" rel="noopener">CV <span aria-hidden="true">↗</span></a>
+      <button id="motion" class="icon-button" type="button" aria-label="Pause motion" aria-pressed="false" title="Pause motion">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 5v10M13 5v10"/></svg>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="introduction" aria-labelledby="page-title">
+      <div class="identity">
+        <p class="eyebrow">A little curiosity goes a long way.</p>
+        <h1 id="page-title">Hello. I’m <span>Marc.</span></h1>
+      </div>
+      <div class="present">
+        <p><span class="present-label">Studying</span><strong>B.Sc. Artificial Intelligence</strong><span>FAU Erlangen-Nürnberg · since 2025</span></p>
+        <p><span class="present-label">Working at</span><strong>Siemens Healthineers</strong><span>Alongside my degree · since 2026</span></p>
+      </div>
+    </section>
+
+    <section class="connection" aria-label="An interactive introduction">
+      <div class="instrument-column">
+        <div class="instrument-heading">
+          <div><span class="eyebrow">Three parts of the picture</span><h2 id="puzzle-title">Make the connection.</h2></div>
+          <div class="progress" aria-label="0 of 3 rings connected"><span id="progress-number">0</span><span class="progress-divider">/</span><span>3</span></div>
+        </div>
+        <div class="instrument" id="instrument">
+          <div class="instrument-grid" aria-hidden="true"></div>
+          <div class="alignment-caption" aria-hidden="true"><span>ALIGN HERE</span><i></i></div>
+          <canvas id="world" tabindex="0" aria-label="Three-ring puzzle. Drag a ring to align its opening with the top marker. Left and right arrows turn it; up and down choose a ring; Enter aligns it. The buttons below do the same."></canvas>
+          <div id="fallback" class="fallback" hidden>
+            <svg viewBox="0 0 600 600" aria-hidden="true">
+              <defs>
+                <radialGradient id="metal"><stop stop-color="#223541"/><stop offset=".7" stop-color="#324957"/><stop offset="1" stop-color="#14232d"/></radialGradient>
+              </defs>
+              <circle cx="300" cy="300" r="238" fill="none" stroke="#44606c" stroke-width="1"/>
+              <g class="fallback-ring" data-ring="0"><circle cx="300" cy="300" r="204"/><path d="M300 76v40"/></g>
+              <g class="fallback-ring" data-ring="1"><circle cx="300" cy="300" r="148"/><path d="M300 133v38"/></g>
+              <g class="fallback-ring" data-ring="2"><circle cx="300" cy="300" r="92"/><path d="M300 188v39"/></g>
+              <circle cx="300" cy="300" r="51" fill="url(#metal)" stroke="#bcab84"/>
+              <path d="M278 311v-29l22 22 22-22v29M300 304v21" fill="none" stroke="#d9e3e5" stroke-width="2"/>
+            </svg>
+          </div>
+          <div class="instrument-note" aria-hidden="true"><span class="note-rule"></span><span id="ring-caption">01 / CODE</span></div>
+          <div class="connection-light" aria-hidden="true"></div>
+        </div>
+        <div class="puzzle-console">
+          <p id="instruction">Line up each opening with the top marker.<span>Drag a ring, or use the controls.</span></p>
+          <div class="ring-controls" aria-label="Turn the selected ring">
+            <button id="turn-left" type="button" aria-label="Turn Code ring anticlockwise"><span aria-hidden="true">↶</span></button>
+            <button id="align" type="button">Align this ring <span aria-hidden="true">↑</span></button>
+            <button id="turn-right" type="button" aria-label="Turn Code ring clockwise"><span aria-hidden="true">↷</span></button>
+          </div>
+          <a class="complete-action" href="#record" hidden>Explore the full picture <span aria-hidden="true">↓</span></a>
+          <div class="console-meta"><span id="selection-label">Outer ring selected</span><button id="reset" type="button">Start again <span aria-hidden="true">↺</span></button></div>
+        </div>
+      </div>
+
+      <div class="folio" id="folio">
+        <div class="folio-heading"><span class="eyebrow">Follow an interest</span><span class="folio-live"><i></i>OPEN TO EXPLORE</span></div>
+        <div class="ring-tabs" role="tablist" aria-label="Explore three connected interests">
+          <button type="button" role="tab" id="tab-code" aria-controls="interest-panel" aria-selected="true" data-select="0"><span class="tab-no">01</span><span>Code</span><i class="lock" aria-hidden="true"></i></button>
+          <button type="button" role="tab" id="tab-life" aria-controls="interest-panel" aria-selected="false" tabindex="-1" data-select="1"><span class="tab-no">02</span><span>Life</span><i class="lock" aria-hidden="true"></i></button>
+          <button type="button" role="tab" id="tab-practice" aria-controls="interest-panel" aria-selected="false" tabindex="-1" data-select="2"><span class="tab-no">03</span><span>Practice</span><i class="lock" aria-hidden="true"></i></button>
+        </div>
+        <div class="panel-viewport"><article id="interest-panel" role="tabpanel" aria-labelledby="tab-code" tabindex="0"></article></div>
+        <div class="connection-message" id="connection-message" hidden><span class="eyebrow">Connected</span><p>Code to understand. Biology to ask better questions. Practice to bring the two together.</p></div>
+        <div class="folio-footer"><span id="panel-footnote">The things I’m learning.</span><a href="#record" id="panel-more">All studies <span aria-hidden="true">↗</span></a></div>
+      </div>
+    </section>
+
+    <section id="record" class="record" aria-labelledby="record-title" tabindex="-1">
+      <div class="record-heading">
+        <div><p class="eyebrow">Marc Teyra Galiano</p><h2 id="record-title">The full picture.</h2></div>
+        <p>An AI degree with a biomedical direction.<br>Learning through courses, labs, teams and things I make.</p>
+        <a href="#page-title" class="back-to-puzzle">Back to the puzzle <span aria-hidden="true">↑</span></a>
+      </div>
+      <div class="record-layout">
+        <nav class="record-nav" aria-label="Profile sections">
+          <a href="#studies" class="active" aria-current="location"><span>01</span>Studies <i aria-hidden="true">↗</i></a>
+          <a href="#experience"><span>02</span>Experience <i aria-hidden="true">↗</i></a>
+          <a href="#projects"><span>03</span>Selected work <i aria-hidden="true">↗</i></a>
+          <a href="#credentials"><span>04</span>Credentials <i aria-hidden="true">↗</i></a>
+          <div class="record-cv"><span class="eyebrow">Take it with you</span><a href="../assets/cv/marc-teyra-cv-2026-02.pdf" target="_blank" rel="noopener">Curriculum vitae <span aria-hidden="true">↗</span></a><small>February 2026 · PDF</small></div>
+        </nav>
+        <div class="record-content">
+          <section class="record-section" id="studies" aria-labelledby="studies-title">
+            <div class="section-heading"><span class="section-symbol" aria-hidden="true">⌘</span><div><p class="eyebrow">What I’m learning</p><h3 id="studies-title">Studies</h3></div></div>
+            <div class="degree-line"><strong>B.Sc. Artificial Intelligence</strong><span>FAU Erlangen-Nürnberg · October 2025 onwards</span></div>
+            <div id="course-groups"></div>
+          </section>
+          <section class="record-section" id="experience" aria-labelledby="experience-title">
+            <div class="section-heading"><span class="section-symbol" aria-hidden="true">⤢</span><div><p class="eyebrow">Work, teams & learning by doing</p><h3 id="experience-title">Experience</h3></div></div>
+            <div class="current-work"><span class="current-indicator"></span><div><p class="eyebrow">April 2026 — present</p><h4>Siemens Healthineers</h4><p>I work at Siemens Healthineers alongside my degree.</p></div></div>
+            <div id="experience-list"></div>
+          </section>
+          <section class="record-section" id="projects" aria-labelledby="projects-title">
+            <div class="section-heading"><span class="section-symbol" aria-hidden="true">↗</span><div><p class="eyebrow">A small selection</p><h3 id="projects-title">Things I make</h3></div></div>
+            <div id="project-list"></div>
+            <a href="https://github.com/mteyra" target="_blank" rel="noopener" class="text-link">More on GitHub <span aria-hidden="true">↗</span></a>
+          </section>
+          <section class="record-section" id="credentials" aria-labelledby="credentials-title">
+            <div class="section-heading"><span class="section-symbol" aria-hidden="true">◇</span><div><p class="eyebrow">Follow the source</p><h3 id="credentials-title">Credentials</h3></div></div>
+            <div id="credential-list"></div>
+            <p class="credential-note">The Python professional certificate combines CS50x and CS50P.</p>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">
+    <div><strong>Marc Teyra Galiano</strong><span>Always something more to learn.</span></div>
+    <nav aria-label="Elsewhere"><a href="https://github.com/mteyra" target="_blank" rel="noopener">GitHub ↗</a><a href="https://www.linkedin.com/in/mteyra/" target="_blank" rel="noopener">LinkedIn ↗</a><a href="../../index.html">Design archive ↗</a></nav>
+  </footer>
+  <div class="sr-only" role="status" id="announcement" aria-live="polite"></div>
+  <noscript><div class="noscript"><p>Marc Teyra Galiano studies B.Sc. Artificial Intelligence at FAU and works at Siemens Healthineers. This interactive introduction needs JavaScript.</p><a href="../assets/cv/marc-teyra-cv-2026-02.pdf">Read the CV</a> · <a href="https://www.linkedin.com/in/mteyra/">LinkedIn</a> · <a href="https://github.com/mteyra">GitHub</a></div></noscript>
+</body>
+</html>

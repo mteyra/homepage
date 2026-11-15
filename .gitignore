@@ -1,0 +1,7 @@
+# Private local review receipts; no runtime assets match these patterns.
+design/*.json
+archive/**/design/*.json
+archive/**/archive-verification.json
+archive/**/browser-verification.json
+archive/**/snapshot-manifest.json
+.DS_Store

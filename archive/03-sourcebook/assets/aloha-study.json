@@ -1,0 +1,163 @@
+{
+  "id": "aloha-synthetic-maintenance-study",
+  "title": "What changes the maintenance plan?",
+  "subtitle": "One people-powered approach, three explicit assumptions.",
+  "classification": "Team engineering study / Synthetic simulation",
+  "author_display": "Aloha Robotics team",
+  "summary": "The team used a reproducible model to ask which practical assumption changes a maintenance plan. It compares ways of providing power, package access and human confirmation to parked C-arms. The figures below hold the people-powered approach constant and vary the modeled scenario.",
+  "metric_label": "Modeled share of the 12-device fleet patched by day 14",
+  "rows": [
+    {
+      "scenario_id": "base",
+      "scenario_label": "Base assumptions",
+      "exact_source_scenario_label": "Base case (our assumptions)",
+      "architecture_id": "A",
+      "architecture_label": "People-powered",
+      "model_change": "120-minute installation; modeled package availability on half of devices",
+      "parameter_override": {},
+      "runs": 200,
+      "metric_key": "patchedByDeadline",
+      "metric_label": "Modeled fleet patched by day 14",
+      "mean_fraction": 0.4533333333333335,
+      "display_percent": 45,
+      "display_value": "45%",
+      "percentile_10_fraction": 0.25,
+      "percentile_90_fraction": 0.6666666666666666,
+      "source_json_selector": "scenarios[id=base].results[id=A].patchedByDeadline"
+    },
+    {
+      "scenario_id": "short",
+      "scenario_label": "Shorter installation",
+      "exact_source_scenario_label": "Install shrinks to 30 min (A/B slots, vendor side)",
+      "architecture_id": "A",
+      "architecture_label": "People-powered",
+      "model_change": "Installation duration changed from 120 to 30 minutes; other base parameters retained",
+      "parameter_override": {
+        "installMin": 30
+      },
+      "runs": 100,
+      "metric_key": "patchedByDeadline",
+      "metric_label": "Modeled fleet patched by day 14",
+      "mean_fraction": 0.49083333333333323,
+      "display_percent": 49,
+      "display_value": "49%",
+      "percentile_10_fraction": 0.3333333333333333,
+      "percentile_90_fraction": 0.6666666666666666,
+      "source_json_selector": "scenarios[id=short].results[id=A].patchedByDeadline"
+    },
+    {
+      "scenario_id": "lan",
+      "scenario_label": "Package available during use",
+      "exact_source_scenario_label": "Every C-arm gets the package while in use (network in every OR)",
+      "architecture_id": "A",
+      "architecture_label": "People-powered",
+      "model_change": "All devices receive the update package while in use; installation duration remains 120 minutes",
+      "parameter_override": {
+        "orLan": 1
+      },
+      "runs": 100,
+      "metric_key": "patchedByDeadline",
+      "metric_label": "Modeled fleet patched by day 14",
+      "mean_fraction": 0.9125000000000008,
+      "display_percent": 91,
+      "display_value": "91%",
+      "percentile_10_fraction": 0.9166666666666666,
+      "percentile_90_fraction": 0.9166666666666666,
+      "source_json_selector": "scenarios[id=lan].results[id=A].patchedByDeadline"
+    }
+  ],
+  "interpretation": "Within this model, making the update package available during use changes the people-powered result much more than shortening installation alone. This identifies connectivity as a question to validate; it does not establish a real-world clinical benefit.",
+  "methodology": {
+    "design": "Seeded stochastic simulation with common random numbers: each architecture receives the same generated hospital, procedures, emergencies, alarms and modeled human responses within a run.",
+    "model_scope": {
+      "fleet": 12,
+      "fleet_label": "synthetic mobile C-arms",
+      "simulation_days": 28,
+      "patch_deadline_day": 14,
+      "base_installation_minutes": 120,
+      "maximum_installs_per_night": 2,
+      "base_runs": 200,
+      "scenario_runs": 100,
+      "seed": 20261114
+    },
+    "implementation": "Pure JavaScript model used in Node and browser. Reuses team window-planning rules and scorer; architecture alternatives change how power, data, switch-on and physical assistance reach the device.",
+    "metric_definition": "For each run, count devices with patchedDay <= deadline - 1, divide by fleet size, then take the arithmetic mean across runs. Display percentages are rounded to whole numbers exactly as the source report does.",
+    "distribution_note": "Stored P10\u2013P90 values describe the distribution across simulated runs, not confidence intervals or clinical uncertainty. A mean can fall below P10 if a small number of runs perform much worse.",
+    "verification_performed": "Read original RESULTS.md, generated results.json, model.js, run.cjs and source-provenance record. Reader values are selected directly from result fields and match the source table after rounding. The simulation was not rerun or calibrated in this review."
+  },
+  "limitations": [
+    "All hospitals, patients/procedures, devices, people and outcomes are synthetic. No measured hospital data underlies these figures.",
+    "Almost all model inputs are explicit assumptions. Interview estimates labeled Siemens in comments are still not independent measured validation.",
+    "Human acceptance, moving/parking behavior, network availability, emergency demand and physical success are parameterized guesses; changing them can change the ranking.",
+    "The source uses 200 base runs and 100 runs for each changed scenario. These are sensitivity illustrations, not controlled trials or a proof of causal effectiveness.",
+    "The source itself states: \u201cThese are not forecasts, and they don\u2019t belong on a pitch slide.\u201d Present results inside the engineering reader with model context, never as portfolio impact or product-performance claims.",
+    "One synthetic high-demand device frequently fails to obtain an acceptable window. The model does not show that every device can be safely updated.",
+    "No hospital integration, authenticated approval, physical robot action or real update was executed. Implementation and clinical validation remain future work.",
+    "Do not include cost-benefit or cost-saving claims; the source\u2019s cost figures are rough assumptions and are omitted from this compact reader."
+  ],
+  "sources": [
+    {
+      "title": "Simulation results",
+      "kind": "team_engineering_report",
+      "path": "Documentation/architecture-options/sim/results/RESULTS.md",
+      "url": "https://github.com/clschulzer/Aloha-Robotics-HH2.0/blob/main/Documentation/architecture-options/sim/results/RESULTS.md",
+      "snapshot_url": "https://github.com/clschulzer/Aloha-Robotics-HH2.0/blob/0252cc55b27ff7e4f4be42e6c6b8ef458e3f5bf1/Documentation/architecture-options/sim/results/RESULTS.md"
+    },
+    {
+      "title": "Original result data",
+      "kind": "generated_data",
+      "path": "Documentation/architecture-options/sim/results/results.json",
+      "url": "https://github.com/clschulzer/Aloha-Robotics-HH2.0/blob/main/Documentation/architecture-options/sim/results/results.json",
+      "snapshot_url": "https://github.com/clschulzer/Aloha-Robotics-HH2.0/blob/0252cc55b27ff7e4f4be42e6c6b8ef458e3f5bf1/Documentation/architecture-options/sim/results/results.json"
+    },
+    {
+      "title": "Simulation model and explicit assumptions",
+      "kind": "source_methodology",
+      "path": "Documentation/architecture-options/sim/model.js",
+      "url": "https://github.com/clschulzer/Aloha-Robotics-HH2.0/blob/main/Documentation/architecture-options/sim/model.js#L1-L57",
+      "snapshot_url": "https://github.com/clschulzer/Aloha-Robotics-HH2.0/blob/0252cc55b27ff7e4f4be42e6c6b8ef458e3f5bf1/Documentation/architecture-options/sim/model.js#L1-L57"
+    },
+    {
+      "title": "Scenario definitions and run counts",
+      "kind": "source_methodology",
+      "path": "Documentation/architecture-options/sim/run.cjs",
+      "url": "https://github.com/clschulzer/Aloha-Robotics-HH2.0/blob/main/Documentation/architecture-options/sim/run.cjs#L10-L43",
+      "snapshot_url": "https://github.com/clschulzer/Aloha-Robotics-HH2.0/blob/0252cc55b27ff7e4f4be42e6c6b8ef458e3f5bf1/Documentation/architecture-options/sim/run.cjs#L10-L43"
+    },
+    {
+      "title": "Aggregation and metric calculation",
+      "kind": "source_methodology",
+      "path": "Documentation/architecture-options/sim/model.js",
+      "url": "https://github.com/clschulzer/Aloha-Robotics-HH2.0/blob/main/Documentation/architecture-options/sim/model.js#L425-L475",
+      "snapshot_url": "https://github.com/clschulzer/Aloha-Robotics-HH2.0/blob/0252cc55b27ff7e4f4be42e6c6b8ef458e3f5bf1/Documentation/architecture-options/sim/model.js#L425-L475"
+    },
+    {
+      "title": "Team-code provenance",
+      "kind": "provenance",
+      "path": "Documentation/architecture-options/sim/engine/SOURCES.json",
+      "url": "https://github.com/clschulzer/Aloha-Robotics-HH2.0/blob/main/Documentation/architecture-options/sim/engine/SOURCES.json",
+      "snapshot_url": "https://github.com/clschulzer/Aloha-Robotics-HH2.0/blob/0252cc55b27ff7e4f4be42e6c6b8ef458e3f5bf1/Documentation/architecture-options/sim/engine/SOURCES.json"
+    },
+    {
+      "title": "Architecture-study documentation",
+      "kind": "team_technical_documentation",
+      "path": "Documentation/architecture-options/README.md",
+      "url": "https://github.com/clschulzer/Aloha-Robotics-HH2.0/blob/main/Documentation/architecture-options/README.md",
+      "snapshot_url": "https://github.com/clschulzer/Aloha-Robotics-HH2.0/blob/0252cc55b27ff7e4f4be42e6c6b8ef458e3f5bf1/Documentation/architecture-options/README.md"
+    }
+  ],
+  "display_requirements": {
+    "persistent_badge": "Synthetic simulation",
+    "metric_prefix": "Modeled",
+    "byline": "Aloha Robotics team \u00b7 Engineering study \u00b7 14 Nov 2026",
+    "caption": "Source simulation, not measured hospital outcomes. Same people-powered approach; the scenario assumption changes.",
+    "source_link_label": "Read the original team report",
+    "do_not_label_as": [
+      "Clinical results",
+      "Proven improvement",
+      "Real-world impact",
+      "Marc\u2019s article",
+      "Live hospital data"
+    ]
+  }
+}

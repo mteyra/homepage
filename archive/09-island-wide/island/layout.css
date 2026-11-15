@@ -1,0 +1,326 @@
+/* Chapters share the viewport's edges; each passage retains a reading measure. */
+body:not([data-page="about"]) {
+  --page-gutter: clamp(30px, 4.25vw, 88px);
+  --column-gap: clamp(32px, 3.5vw, 72px);
+}
+
+body:not([data-page="about"]) .topline {
+  padding-inline: var(--page-gutter);
+}
+
+.reading {
+  width: calc(100% - 2 * var(--page-gutter));
+  max-width: none;
+  margin-inline: auto;
+  padding: 145px 0 150px;
+}
+
+.chapter-header {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+  gap: var(--column-gap);
+  margin-bottom: 69px;
+}
+
+.chapter-heading {
+  grid-column: span 2;
+}
+
+.chapter-header h1 {
+  max-width: none;
+  font-size: clamp(54px, 5.55vw, 88px);
+  line-height: 1.06;
+  letter-spacing: -.066em;
+  text-wrap: balance;
+}
+
+.eyebrow {
+  margin-bottom: 24px;
+  font-size: 12px;
+}
+
+.chapter-context {
+  padding-bottom: 4px;
+  max-width: 490px;
+}
+
+.chapter-intro {
+  margin-top: 0;
+  max-width: 44ch;
+  font-size: 16px;
+  line-height: 1.85;
+}
+
+.chapter-meta {
+  font-size: 11px;
+  margin-top: 16px;
+}
+
+.chapter-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--column-gap);
+  align-items: start;
+}
+
+.chapter-grid > .document-section {
+  display: block;
+  margin: 0;
+  padding: 27px 0 20px;
+  min-width: 0;
+}
+
+.chapter-grid .section-label {
+  display: block;
+  margin-bottom: 29px;
+}
+
+.chapter-grid .section-label h2 {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -.035em;
+}
+
+.chapter-grid .section-label p {
+  margin-top: 7px;
+  max-width: none;
+  font-size: 11px;
+  text-align: left;
+}
+
+.course-list {
+  margin-top: -9px;
+}
+
+.course-list li {
+  padding: 15px 0;
+  font-size: 14px;
+  line-height: 1.85;
+}
+
+.course-list .course-meta {
+  margin-top: 6px;
+  font-size: 10px;
+  line-height: 1.9;
+}
+
+.certificate-note {
+  max-width: 49ch;
+  font-size: 11px;
+  line-height: 1.9;
+  margin-top: 21px;
+  padding-top: 22px;
+}
+
+.current-section {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--column-gap);
+  padding: 30px 0 43px;
+}
+
+.current-section > .section-body { grid-column: span 2; }
+
+.current-section .section-label h2 {
+  font-size: 12px;
+}
+
+.current-section .section-label p {
+  max-width: none;
+  font-size: 10px;
+}
+
+.current-job {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--column-gap);
+  align-items: start;
+}
+
+.current-job h3 {
+  margin: -4px 0 0;
+  font-size: clamp(24px, 2.15vw, 34px);
+  line-height: 1.5;
+}
+
+.current-job p {
+  max-width: 42ch;
+  margin-top: 0;
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.experience-list {
+  margin-top: -14px;
+}
+
+.experience summary {
+  padding: 18px 0;
+  gap: 14px;
+}
+
+.experience summary .entry-title {
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.experience summary .entry-meta {
+  font-size: 10px;
+  line-height: 1.85;
+  margin-top: 6px;
+}
+
+.experience summary .entry-contribution {
+  max-width: 42ch;
+  font-size: 12px;
+  line-height: 1.85;
+  margin-top: 9px;
+}
+
+.experience-body {
+  padding-right: 32px;
+  max-width: 57ch;
+  font-size: 13px;
+  line-height: 1.9;
+}
+
+.projects-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(50px, 7vw, 132px);
+  row-gap: 22px;
+}
+
+body[data-page="projects"] .chapter-header {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(50px, 7vw, 132px);
+}
+
+body[data-page="projects"] .chapter-heading { grid-column: auto; }
+
+.projects-grid > .document-section {
+  padding: 27px 0 29px;
+}
+
+.projects-grid .section-label {
+  margin-bottom: 18px;
+}
+
+.projects-grid .section-label h2 {
+  font-size: 11px;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+
+.project-heading h2 {
+  font-size: clamp(27px, 2.5vw, 39px);
+  line-height: 1.35;
+  letter-spacing: -.045em;
+}
+
+.project-copy {
+  max-width: 62ch;
+  font-size: 14px;
+  line-height: 1.85;
+  margin-top: 17px;
+}
+
+.project-role {
+  font-size: 11px;
+  margin-top: 16px;
+}
+
+.project-links {
+  margin-top: 21px;
+  font-size: 12px;
+  gap: 27px;
+}
+
+.github-link {
+  margin-top: 22px;
+}
+
+@media (min-width: 1700px) {
+  .reading { padding-top: 170px; }
+  .chapter-header { margin-bottom: 82px; }
+  .chapter-intro { font-size: 18px; }
+  .chapter-grid .section-label h2 { font-size: 20px; }
+  .course-list li, .experience summary .entry-title { font-size: 16px; }
+  .course-list .course-meta, .experience summary .entry-meta { font-size: 11px; }
+  .experience summary .entry-contribution { font-size: 13px; }
+  .project-copy { font-size: 15px; }
+  .projects-grid .section-label h2 { font-size: 12px; }
+}
+
+@media (max-width: 1100px) {
+  .chapter-header, body[data-page="projects"] .chapter-header { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 44px; }
+  .chapter-heading { grid-column: auto; }
+  .chapter-header h1 { font-size: 57px; }
+  .chapter-intro { font-size: 14px; }
+  .chapter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 44px; }
+  .studies-grid > .document-section:last-child,
+  .experience-grid > .document-section:last-child { grid-column: 1 / -1; }
+  .studies-grid > .document-section:last-child .course-list,
+  .experience-grid > .document-section:last-child .experience-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 44px;
+    align-items: start;
+  }
+  .studies-grid > .document-section:last-child .course-list li:nth-child(2) { border-top: 0; }
+  .experience-grid > .document-section:last-child .experience { border-bottom: 0; }
+  .current-section { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 44px; }
+  .current-section > .section-body { grid-column: auto; }
+  .current-job { grid-template-columns: 1fr; gap: 10px; }
+  .current-job p { max-width: none; }
+  .project-heading h2 { font-size: 28px; }
+}
+
+@media (max-width: 700px) {
+  body:not([data-page="about"]) { --page-gutter: 25px; }
+  .reading { padding: 123px 0 130px; }
+  .chapter-header, body[data-page="projects"] .chapter-header { grid-template-columns: 1fr; gap: 24px; margin-bottom: 45px; }
+  .chapter-header h1 { max-width: 14ch; font-size: 46px; line-height: 1.1; }
+  .eyebrow { font-size: 10px; margin-bottom: 18px; }
+  .chapter-context { padding-bottom: 0; }
+  .chapter-intro { font-size: 14px; line-height: 1.9; }
+  .chapter-meta { font-size: 10px; margin-top: 13px; }
+  .chapter-grid { grid-template-columns: 1fr; gap: 24px; }
+  .chapter-grid > .document-section { padding: 24px 0 8px; }
+  .chapter-grid .section-label { margin-bottom: 24px; }
+  .chapter-grid .section-label h2 { font-size: 17px; }
+  .chapter-grid .section-label p { font-size: 10px; margin-top: 5px; }
+  .course-list li { font-size: 13px; padding: 14px 0; }
+  .course-list .course-meta { font-size: 10px; }
+  .studies-grid > .document-section:last-child .course-list,
+  .experience-grid > .document-section:last-child .experience-list {
+    display: block;
+  }
+  .studies-grid > .document-section:last-child .course-list li:nth-child(2) { border-top: 1px solid #2028200d; }
+  .experience-grid > .document-section:last-child .experience:not(:last-child) { border-bottom: 1px solid var(--line); }
+  .current-section { grid-template-columns: 1fr; gap: 24px; padding: 25px 0 32px; }
+  .current-section .section-label { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; }
+  .current-section .section-label p { margin: 0; }
+  .current-job h3 { font-size: 24px; }
+  .current-job p { font-size: 12px; }
+  .experience summary .entry-title { font-size: 14px; }
+  .experience summary .entry-meta { font-size: 10px; }
+  .experience summary .entry-contribution { font-size: 12px; }
+  .experience-body { font-size: 12px; padding-right: 25px; }
+  .projects-grid { row-gap: 22px; }
+  .projects-grid .section-label { margin-bottom: 14px; }
+  .projects-grid .section-label h2 { font-size: 10px; }
+  .project-heading h2 { font-size: 27px; }
+  .project-copy { font-size: 13px; line-height: 1.9; margin-top: 14px; }
+  .project-role { font-size: 10px; margin-top: 13px; }
+  .project-links { font-size: 11px; margin-top: 17px; }
+}
+
+@media (max-width: 370px) {
+  body:not([data-page="about"]) { --page-gutter: 21px; }
+  .reading { padding-top: 115px; }
+  .chapter-header h1 { font-size: 40px; }
+  .chapter-intro { font-size: 13px; }
+  .course-list li { font-size: 12px; }
+  .project-heading h2 { font-size: 25px; }
+}

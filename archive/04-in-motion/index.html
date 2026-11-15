@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#090b10">
+  <meta name="description" content="Marc Teyra Galiano. Artificial Intelligence at FAU, Siemens Healthineers, and an interactive collection of things I've built.">
+  <title>Marc Teyra — In motion</title>
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/signal.css">
+</head>
+<body data-view="home">
+  <a class="skip" href="#main">Skip to content</a>
+  <canvas id="signal" aria-hidden="true"></canvas>
+  <div class="atmosphere" aria-hidden="true"></div>
+  <header class="masthead">
+    <a href="#home" class="wordmark" aria-label="Marc Teyra, home"><svg viewBox="0 0 38 32" aria-hidden="true"><path d="M3 28V4l12 13L27 4v24M27 4h8M27 28h8"/></svg><span>MARC TEYRA<span class="wordmark-sub">PERSONAL SPACE</span></span></a>
+    <nav class="navigation" aria-label="Main navigation">
+      <a href="#work" data-nav="work">Work<span>01</span></a>
+      <a href="#about" data-nav="about">About<span>02</span></a>
+      <a href="#travel" data-nav="travel">Elsewhere<span>03</span></a>
+    </nav>
+    <div class="header-tools"><a class="cv-link" href="assets/cv/marc-teyra-cv-2026-02.pdf" target="_blank" rel="noopener">CV <span>↗</span></a><button class="command-toggle" aria-haspopup="dialog" aria-label="Open terminal"><span aria-hidden="true">&gt;_</span><span class="command-label">Terminal</span><kbd>⌘ K</kbd></button></div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section class="view home-view" data-panel="home" aria-labelledby="home-title">
+      <div class="home-copy">
+        <p class="eyebrow"><span class="status-light"></span>A CURIOUS MIND. AN OPEN WORKSPACE.</p>
+        <h1 id="home-title" aria-label="Marc Teyra Galiano"><span class="name-line">MARC</span><span class="name-line name-second">TEYRA<span class="name-dot">.</span></span><span class="surname">GALIANO</span></h1>
+        <p class="home-intro">Code. Intelligence. The human side.</p>
+        <div class="current"><p><span>STUDYING</span>Artificial Intelligence <i>/</i> FAU</p><p><span>WORKING AT</span>Siemens Healthineers</p></div>
+        <a class="enter-work" href="#work/aloha"><span class="round-arrow">↗</span><span>Step inside the work<span class="button-note">EXPLORE. OPEN. PLAY.</span></span></a>
+      </div>
+      <div class="project-orbit" aria-label="Project previews">
+        <div class="orbit-label"><span class="tiny-cross">+</span> IDEAS, MADE TANGIBLE <span class="orbit-line"></span></div>
+        <button class="orbit-window orbit-back" data-project="nixcare" aria-label="Explore Nixcare"><span class="mini-chrome"><i></i><i></i><i></i><span>nixcare / maintenance, considered</span><b>↗</b></span><img src="assets/previews/nixcare.webp" alt="Nixcare's actual project website" width="1280" height="800"><span class="window-caption">02 <strong>Nixcare</strong><span>OPEN SOURCE</span></span></button>
+        <button class="orbit-window orbit-front" data-project="aloha" aria-label="Explore Aloha Robotics"><span class="mini-chrome"><i></i><i></i><i></i><span>aloha / invisible connectivity</span><b>↗</b></span><img src="assets/previews/aloha-pitch.webp" alt="The team's interactive C-ARMAGOTCHI presentation" width="1280" height="800"><span class="window-caption">01 <strong>Aloha Robotics</strong><span>ENTER THE DEMO ↗</span></span></button>
+        <div class="orbit-coordinate">REAL PROJECTS. OPEN WINDOWS.</div>
+      </div>
+      <div class="home-bottom"><span class="location"><i>↳</i> ERLANGEN, GERMANY</span><a href="https://github.com/mteyra" target="_blank" rel="noopener">GitHub ↗</a><a href="https://www.linkedin.com/in/mteyra/" target="_blank" rel="noopener">LinkedIn ↗</a><button class="terminal-hint command-toggle"><span>&gt;_</span> Or take the command line <kbd>/</kbd></button></div>
+    </section>
+
+    <section class="view work-view" data-panel="work" aria-labelledby="work-title" hidden>
+      <div class="section-top"><div><p class="eyebrow">01 / SELECTED WORK</p><h2 id="work-title">Go ahead. <em>Open it.</em></h2></div><button class="text-button" id="open-catalog">All projects <span>↗</span></button></div>
+      <div class="work-layout">
+        <div class="project-menu" aria-label="Select a project"><button data-project="aloha"><span>01</span><strong>Aloha Robotics</strong><small>HACKATHON / TEAM PROJECT</small><b>↗</b></button><button data-project="nixcare"><span>02</span><strong>Nixcare</strong><small>OPEN SOURCE / CREATOR</small><b>↗</b></button><button data-project="nixos"><span>03</span><strong>NixOS</strong><small>MY EVERYDAY SYSTEM</small><b>↗</b></button></div>
+        <div class="work-stage">
+          <div class="browser-window" id="browser-window">
+            <div class="browser-toolbar"><div class="traffic" aria-hidden="true"><i></i><i></i><i></i></div><span id="window-address">Aloha Robotics</span><div class="browser-actions"><button id="expand-window" aria-label="Expand project window" title="Expand project">⛶</button><a id="window-external" target="_blank" rel="noopener" aria-label="Open project in a new tab" title="Open in a new tab">↗</a></div></div>
+            <div class="browser-screen" id="browser-screen"><div class="window-loading"><span class="loader-ring"></span>Opening a window…</div></div>
+            <div class="window-tabs" id="window-tabs" aria-label="Project experiences"></div>
+          </div>
+          <div class="project-caption"><div><p id="project-kind" class="eyebrow"></p><h3 id="project-name"></h3><p id="project-summary"></p></div><div class="project-meta"><p id="project-role"></p><a id="project-source" class="source-link" target="_blank" rel="noopener">View source <span>↗</span></a></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view about-view" data-panel="about" aria-labelledby="about-title" hidden>
+      <div class="about-intro"><p class="eyebrow">02 / THE PERSON BEHIND THE PROJECTS</p><h2 id="about-title">Across<br><em>disciplines.</em></h2><p>I'm Marc Teyra Galiano. I'm interested in what happens where software, intelligence and the physical world meet.</p><div class="about-links"><a class="outline-link" href="assets/cv/marc-teyra-cv-2026-02.pdf" target="_blank" rel="noopener">Read my CV <span>↗</span></a><small>FEBRUARY 2026 SNAPSHOT</small></div><div class="identity-notes"><span>CATALONIA · CANADA · ESTONIA · GERMANY</span><p>English & Catalan · native<br>Spanish & German · professional<br>French · elementary</p></div></div>
+      <div class="about-details">
+        <div class="current-row"><span class="row-number">01</span><div><p class="eyebrow">NOW / WORK</p><h3>Siemens Healthineers</h3><p>Since April 2026</p></div><span class="small-signal"></span></div>
+        <div class="current-row"><span class="row-number">02</span><div><p class="eyebrow">NOW / STUDY</p><h3>B.Sc. Artificial Intelligence</h3><p>FAU Erlangen-Nürnberg · Since October 2025</p><p class="detail-note">With a biomedical engineering focus.</p></div></div>
+        <details class="profile-fold"><summary><span>Before that</span><span>03 <b>+</b></span></summary><div class="fold-content" id="experience-list"></div></details>
+        <details class="profile-fold"><summary><span>Courses & credentials</span><span>04 <b>+</b></span></summary><div class="fold-content" id="credential-list"></div></details>
+        <div class="profile-contact"><span>FIND ME ELSEWHERE</span><a href="https://github.com/mteyra" target="_blank" rel="noopener">GitHub ↗</a><a href="https://www.linkedin.com/in/mteyra/" target="_blank" rel="noopener">LinkedIn ↗</a></div>
+      </div>
+    </section>
+
+    <section class="view travel-view" data-panel="travel" aria-labelledby="travel-title" hidden>
+      <div class="travel-copy"><p class="eyebrow">03 / AWAY FROM THE KEYBOARD</p><h2 id="travel-title">A little<br><em>elsewhere.</em></h2><p>New places. Different perspectives.</p><div class="travel-journal"><span class="journal-year">2024</span><div><strong>A European chapter.</strong><p>11 countries from my original travel journal.</p></div></div><div class="country-list">Estonia · Latvia · Lithuania · Poland · Slovakia · Hungary · Croatia · Slovenia · Montenegro · Albania · Greece</div><p class="travel-note">Highlighted countries are recorded visits, not a GPS route.</p><a class="outline-link" href="atlas-studio.html">Preview a MapOut route <span>↗</span></a><p class="travel-note">Local GPX / KML import. MapOut sync isn't connected yet.</p></div>
+      <div class="globe-caption"><span class="tiny-cross">+</span> 11 PLACES / ONE CHAPTER <span class="globe-line"></span></div>
+      <div class="route-preview" id="route-preview" hidden><div><p class="eyebrow">LOCAL ROUTE PREVIEW</p><button id="clear-routes" class="text-button">Clear ×</button></div><svg id="route-map" viewBox="0 0 600 350" role="img" aria-label="Your locally imported route"></svg><p id="route-caption"></p></div>
+    </section>
+  </main>
+
+  <footer class="app-footer"><a href="../index.html" class="archive-link">DESIGN ARCHIVE <span>↗</span></a><div class="view-indicator"><span class="view-track"><i></i></span><span id="view-label">00 / HOME</span></div><button id="motion-toggle" aria-pressed="false"><span class="motion-icon">Ⅱ</span><span id="motion-label">PAUSE MOTION</span></button></footer>
+  <p id="announcer" class="sr-only" role="status"></p>
+
+  <dialog id="terminal" aria-labelledby="terminal-title"><div class="terminal-head"><h2 id="terminal-title"><span>&gt;_</span> marc@home<span class="terminal-path">:~</span></h2><button class="close-dialog" aria-label="Close terminal">×</button></div><div class="terminal-output" id="terminal-output" role="log" aria-live="polite"></div><form id="terminal-form" autocomplete="off"><label for="terminal-input" class="prompt">mteyra <span>~</span> ❯</label><input id="terminal-input" name="command" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Terminal command" placeholder="Try help"><button type="submit" aria-label="Run command">↵</button></form><div class="terminal-shortcuts"><button data-command="projects">projects</button><button data-command="whoami">whoami</button><button data-command="open aloha">open aloha</button><button data-command="help">help</button><span>↑ HISTORY <i>·</i> TAB COMPLETE <i>·</i> ESC CLOSE</span></div></dialog>
+
+  <dialog id="catalog" aria-labelledby="catalog-title"><div class="catalog-head"><div><p class="eyebrow">PUBLIC WORK & COMPLETED PROJECTS</p><h2 id="catalog-title">The rest of the workspace.</h2></div><button class="close-dialog" aria-label="Close projects">×</button></div><div id="catalog-list"></div></dialog>
+  <noscript><div class="noscript">The interactive workspace needs JavaScript. <a href="assets/cv/marc-teyra-cv-2026-02.pdf">Read my CV</a> or <a href="https://github.com/mteyra">explore my GitHub</a>.</div></noscript>
+  <script type="module" src="assets/signal.js"></script>
+</body>
+</html>

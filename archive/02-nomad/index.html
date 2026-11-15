@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101727">
+  <meta name="description" content="Enter Marc Teyra's world. Biomedical AI, autonomous tools, open-source projects, and a few detours.">
+  <title>Marc Teyra — NOMAD</title>
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/station.css">
+  <script type="module" src="assets/station.js"></script>
+</head>
+<body data-place="overview" data-view="explore">
+  <a class="skip-link" href="#destination-nav">Skip to destinations</a>
+  <svg class="icon-library" aria-hidden="true"><defs>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 19 19 5M5 5h14v14"/></symbol>
+    <symbol id="i-work" viewBox="0 0 24 24"><path d="m12 2 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 15l9 5 9-5"/></symbol>
+    <symbol id="i-study" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="11" ry="5" transform="rotate(50 12 12)"/><ellipse cx="12" cy="12" rx="11" ry="5" transform="rotate(-50 12 12)"/></symbol>
+    <symbol id="i-travel" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><ellipse cx="12" cy="12" rx="4" ry="10"/><path d="M2 12h20M4 6h16M4 18h16"/></symbol>
+    <symbol id="i-about" viewBox="0 0 24 24"><path d="M12 3 4 7v10l8 4 8-4V7l-8-4Zm0 0v18M4 7l8 4 8-4"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="m12 2 10 10-10 10L2 12 12-10Zm0 5 5 5-5 5-5-5 5-5Z"/></symbol>
+  </defs></svg>
+  <header class="masthead">
+    <button class="brand" data-station="overview" aria-label="Marc Teyra, return to overview">
+      <svg class="brand-mark" viewBox="0 0 44 44" aria-hidden="true"><path d="M4 34V10l18 24V10M22 10h18L22 34h18" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+      <span><strong>MARC TEYRA</strong><small>GALIANO</small></span>
+    </button>
+    <div class="world-title"><span class="live-mark"></span>NOMAD<span class="world-title-sub"> / A PERSONAL WORLD</span></div>
+    <div class="masthead-links">
+      <a href="https://github.com/mteyra" target="_blank" rel="noopener noreferrer">GitHub <span>↗</span></a>
+      <a href="https://www.linkedin.com/in/mteyra/" target="_blank" rel="noopener noreferrer">LinkedIn <span>↗</span></a>
+      <button class="index-toggle" id="index-toggle" aria-expanded="false" aria-controls="quick-index">Index <span>☷</span></button>
+    </div>
+  </header>
+  <main id="main">
+    <div class="world-stage" id="world-stage">
+      <div class="world-word" aria-hidden="true">NOMAD</div>
+      <canvas id="world-canvas" aria-label="A three-dimensional architectural world containing projects, study, travels and background. Use the destination buttons to explore." role="img"></canvas>
+      <div id="blueprint" class="blueprint" aria-hidden="true">
+        <svg viewBox="0 0 1200 760" preserveAspectRatio="xMidYMid meet">
+          <defs><pattern id="plan-grid" width="38" height="38" patternUnits="userSpaceOnUse"><path d="M38 0H0v38" fill="none" stroke="#53647f" stroke-width=".5"/></pattern><linearGradient id="plan-ground" x2="0" y2="1"><stop stop-color="#313f56"/><stop offset="1" stop-color="#101725"/></linearGradient></defs>
+          <g transform="translate(600 370) rotate(-12) scale(1 .62)">
+            <circle r="395" fill="none" stroke="#7c8ba5" stroke-dasharray="2 16"/>
+            <circle r="345" fill="url(#plan-ground)" stroke="#7d8ba1"/><circle r="335" fill="url(#plan-grid)"/>
+            <path d="M-310 0H310M0-310V310" stroke="#8090aa" stroke-dasharray="6 8"/>
+            <path d="M-180-160 160-160 185 170-170 190Z" fill="none" stroke="#ff553b" stroke-width="8"/>
+            <g fill="#dce3e8" stroke="#8396b0" stroke-width="2">
+              <path d="M-270-220h160v125h-160z"/><path d="M-260-210h45v100h-45zM-205-210h40v100h-40zM-155-210h35v100h-35z" fill="#253347"/>
+              <circle cx="180" cy="-170" r="76"/><circle cx="180" cy="-170" r="50" fill="#384b72"/><circle cx="180" cy="-170" r="25" fill="#ff553b"/>
+              <circle cx="175" cy="170" r="95" fill="none" stroke-width="12"/><circle cx="175" cy="170" r="72" fill="#253347"/><ellipse cx="175" cy="170" rx="28" ry="72" fill="none"/><path d="M100 170h150M175 97v145"/>
+              <path d="M-265 115h170v150h-170z"/><path d="m-250 240 60-100 75 100" fill="none" stroke-width="6"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div class="atmosphere" aria-hidden="true"></div>
+    </div>
+    <div class="orientation" id="orientation">
+      <span class="eyebrow"><span class="orange-line"></span>ONE MIND. MANY DIRECTIONS.</span>
+      <h1>Never just<br>one thing<span class="accent">.</span></h1>
+      <p>Biomedical AI student.<br>Builder of autonomous tools.<br>Always taking the scenic route.</p>
+      <button class="entry-link" data-station="work"><span>Start with what I build</span><span class="round-arrow">↗</span></button>
+    </div>
+    <div class="hotspots" id="hotspots" aria-label="Places in Marc's world">
+      <button class="hotspot" data-station="work" data-anchor="work" style="--anchor-x:44%;--anchor-y:32%"><span class="hotspot-dot"></span><span class="hotspot-tag"><small>01 / THE WORKSHOP</small><strong>Projects <span>↗</span></strong></span></button>
+      <button class="hotspot" data-station="study" data-anchor="study" style="--anchor-x:67%;--anchor-y:40%"><span class="hotspot-dot"></span><span class="hotspot-tag"><small>02 / THE OBSERVATORY</small><strong>Study <span>↗</span></strong></span></button>
+      <button class="hotspot" data-station="travel" data-anchor="travel" style="--anchor-x:58%;--anchor-y:64%"><span class="hotspot-dot"></span><span class="hotspot-tag"><small>03 / THE OUTPOST</small><strong>Travels <span>↗</span></strong></span></button>
+      <button class="hotspot" data-station="about" data-anchor="about" style="--anchor-x:34%;--anchor-y:58%"><span class="hotspot-dot"></span><span class="hotspot-tag"><small>04 / THE COMMON GROUND</small><strong>About me <span>↗</span></strong></span></button>
+    </div>
+    <div class="scene-caption" id="scene-caption" aria-hidden="true"><span class="caption-rule"></span><span id="caption-text">A few places worth getting lost in.</span></div>
+    <div class="view-tools" aria-label="World controls">
+      <div class="view-switch" role="group" aria-label="Camera view">
+        <button id="explore-view" aria-pressed="true"><span class="view-cube">◇</span> Explore</button>
+        <button id="plan-view" aria-pressed="false"><span class="view-cube">▦</span> Plan</button>
+      </div>
+      <button id="motion-toggle" class="motion-toggle" aria-label="Pause world animation" aria-pressed="false"><span id="motion-icon" aria-hidden="true">Ⅱ</span></button>
+    </div>
+    <div class="world-hint" id="world-hint"><span class="drag-icon">↔</span>Drag to look around<span class="hint-divider">/</span>Select a place to get closer</div>
+    <span class="render-note" id="render-note" hidden>Plan view · 3D unavailable on this device</span>
+    <section class="dossier" id="dossier" aria-labelledby="dossier-title" hidden>
+      <div class="dossier-topline"><span id="dossier-location">THE WORKSHOP</span><button class="return-button" data-station="overview" aria-label="Close destination and return to overview"><span>Back to the world</span> <b>×</b></button></div>
+      <div class="dossier-content" id="dossier-content"></div>
+      <div class="dossier-bottomline"><span id="dossier-number">01 / 04</span><button id="next-place">Next place <span>→</span></button></div>
+    </section>
+    <nav class="destination-nav" id="destination-nav" aria-label="Destinations">
+      <button class="home-destination is-active" data-station="overview" aria-current="page" aria-label="Overview"><svg><use href="#i-home"/></svg><span>World</span></button>
+      <span class="dock-divider" aria-hidden="true"></span>
+      <button data-station="work"><svg><use href="#i-work"/></svg><span>Projects</span><small>01</small></button>
+      <button data-station="study"><svg><use href="#i-study"/></svg><span>Study</span><small>02</small></button>
+      <button data-station="travel"><svg><use href="#i-travel"/></svg><span>Travels</span><small>03</small></button>
+      <button data-station="about"><svg><use href="#i-about"/></svg><span>About me</span><small>04</small></button>
+    </nav>
+    <div class="edition-mark" aria-hidden="true">DESIGNED TO BE EXPLORED<span>ERLANGEN, DE ↗ EVERYWHERE</span></div>
+  </main>
+  <aside class="quick-index" id="quick-index" aria-label="Quick index" hidden>
+    <div class="index-heading"><span>YOUR WAY IN</span><button id="index-close" aria-label="Close index">×</button></div>
+    <p>No route required.<br>Go straight to what matters.</p>
+    <button data-station="work"><span>See the work</span><small>Public projects, demos & source</small><b>↗</b></button>
+    <button data-station="study"><span>Understand the direction</span><small>Degree & academic interests</small><b>↗</b></button>
+    <button data-station="travel"><span>Take a detour</span><small>Journeys beyond the screen</small><b>↗</b></button>
+    <button data-station="about"><span>Meet the person</span><small>Current role, experience & languages</small><b>↗</b></button>
+    <a class="index-cv" href="assets/cv/marc-teyra-cv-2026-02.pdf" target="_blank" rel="noopener noreferrer"><span>Read the CV</span><small>PDF snapshot · February 2026</small><b>↗</b></a>
+  </aside>
+  <div class="index-backdrop" id="index-backdrop" hidden></div>
+  <div class="sr-only" id="scene-announcement" role="status" aria-live="polite"></div>
+  <template id="place-work">
+    <div class="place-heading"><span class="eyebrow">IDEAS, OUT IN THE OPEN</span><h2 id="dossier-title" tabindex="-1">Things<br>I've built<span class="accent">.</span></h2><p>Tools, systems, and experiments that have made it into the world.</p></div>
+    <div class="project-selector" role="tablist" aria-label="Selected projects"><button role="tab" id="tab-nixcare" data-project="nixcare" aria-controls="project-detail" aria-selected="true">Nixcare</button><button role="tab" id="tab-aloha" data-project="aloha" aria-controls="project-detail" aria-selected="false" tabindex="-1">Aloha</button><button role="tab" id="tab-robotics" data-project="robotics" aria-controls="project-detail" aria-selected="false" tabindex="-1">Robotics</button><button role="tab" id="tab-nixos" data-project="nixos" aria-controls="project-detail" aria-selected="false" tabindex="-1">NixOS</button></div>
+    <div id="project-detail" class="project-detail" role="tabpanel" aria-labelledby="tab-nixcare"></div>
+    <details class="record-disclosure"><summary>More completed work <span>05</span></summary><div class="record-list" id="completed-projects"></div></details>
+    <details class="record-disclosure"><summary>The public archive <span>03</span></summary><div class="record-list" id="public-archive"></div></details>
+    <a class="quiet-link all-projects" href="https://github.com/mteyra?tab=repositories" target="_blank" rel="noopener noreferrer">The rest lives on GitHub <span>↗</span></a>
+  </template>
+  <template id="place-study">
+    <div class="place-heading"><span class="eyebrow">AT THE INTERSECTION</span><h2 id="dossier-title" tabindex="-1">Intelligence.<br>With purpose<span class="accent">.</span></h2></div>
+    <div class="degree-record"><span class="record-label">CURRENT DEGREE / B.Sc.</span><h3 id="degree-title"></h3><p class="degree-institution" id="degree-institution"></p><p id="degree-focus"></p></div>
+    <div class="interest-heading">THE QUESTIONS I'M DRAWN TO</div>
+    <ul class="interest-list"><li><span>01</span><div><h3>Biomedical AI</h3><p>Applied data science in medicine and psychology, molecular biology, and practical computational biology.</p></div></li><li><span>02</span><div><h3>Brains & intelligent systems</h3><p>Neuroanatomy, neurophysiology and neuromodulation, alongside algorithms, programming and AI.</p></div></li><li><span>03</span><div><h3>From perception to action</h3><p>Robotics and computer vision, grounded in reproducible systems and hands-on prototypes.</p></div></li></ul>
+    <details class="record-disclosure"><summary>Learning beyond the degree <span>04</span></summary><div class="credential-list" id="credentials"></div></details>
+    <div class="earlier-education"><span class="record-label">BEFORE FAU</span><h3>IB Diploma · 2024</h3><p>Miina Härma Gümnaasium, Tartu, Estonia.<br>Previously at Harbord Collegiate Institute in Toronto.</p></div>
+    <button class="crosslink" data-station="work"><span>Where curiosity becomes practical</span><strong>Visit the workshop <span>→</span></strong></button>
+  </template>
+  <template id="place-travel">
+    <div class="place-heading"><span class="eyebrow">SOME DETOURS ARE THE POINT</span><h2 id="dossier-title" tabindex="-1">Outside<br>the frame<span class="accent">.</span></h2><p>Different places. Different perspectives.<br>A few chapters from beyond the screen.</p></div>
+    <div class="journey-heading"><span>JOURNAL / 2024</span><span>11 COUNTRIES</span></div>
+    <div class="travel-map"><svg id="journey-map" viewBox="0 0 500 340" role="img" aria-label="Map highlighting eleven countries from Marc's 2024 trip"><g id="journey-land"></g></svg><span class="map-selection" id="map-selection">A journey through Europe</span></div>
+    <h3 class="journey-title">Baltics, Balkans<br>& back.</h3>
+    <p class="journey-description">From Estonia down through central and southeastern Europe, with plenty of places in between.</p>
+    <div class="country-index" aria-label="Countries in the travel journal"><button data-country="Estonia">Estonia</button><button data-country="Latvia">Latvia</button><button data-country="Lithuania">Lithuania</button><button data-country="Poland">Poland</button><button data-country="Slovakia">Slovakia</button><button data-country="Hungary">Hungary</button><button data-country="Croatia">Croatia</button><button data-country="Slovenia">Slovenia</button><button data-country="Montenegro">Montenegro</button><button data-country="Albania">Albania</button><button data-country="Greece">Greece</button></div>
+    <p class="source-note">Places from my 2024 travel journal. The map shows countries visited, rather than an exact recorded route.</p>
+  </template>
+  <template id="place-about">
+    <div class="place-heading"><span class="eyebrow">THE PERSON CONNECTING THE DOTS</span><h2 id="dossier-title" tabindex="-1">Marc Teyra<br>Galiano<span class="accent">.</span></h2><p class="about-lead">Builder. Student. Nomad.<br>Never particularly good at staying in one box.</p></div>
+    <div id="current-role"></div>
+    <a id="cv-download" class="primary-link" hidden><span id="cv-label">Read my CV</span><svg><use href="#i-arrow"/></svg></a>
+    <p class="about-paragraph">My route into biomedical AI runs through robotics, Python tools for researchers, laboratory experience and clinical shadowing. I enjoy building things and finding a clear way to explain what they do.</p>
+    <div class="roots"><span class="record-label">ROOTS & ROUTES</span><div class="roots-trail"><span>Catalonia</span><span>Canada</span><span>Estonia</span><span>Germany</span></div><p>Currently based in Erlangen, Germany.</p></div>
+    <details class="record-disclosure"><summary>Research & clinical experience <span>03</span></summary><div class="record-list" id="experience-list"></div></details>
+    <div class="languages"><span class="record-label">A FEW WAYS TO SAY HELLO</span><ul id="language-list"></ul></div>
+    <div class="contact-block"><span class="record-label">GOOD THINGS START WITH A CONVERSATION</span><h3>Find me on the<br>other side.</h3><a href="https://www.linkedin.com/in/mteyra/" target="_blank" rel="noopener noreferrer"><span>LinkedIn</span><small>Background & getting in touch</small><svg><use href="#i-arrow"/></svg></a><a href="https://github.com/mteyra" target="_blank" rel="noopener noreferrer"><span>GitHub</span><small>The code, in the open</small><svg><use href="#i-arrow"/></svg></a></div>
+  </template>
+  <noscript><div class="no-script"><h1>Marc Teyra Galiano</h1><p>B.Sc. student at FAU Erlangen-Nürnberg, focused on artificial intelligence and biomedical engineering. At Siemens Healthineers since April 2026. Based in Erlangen, Germany.</p><h2>Selected public work</h2><p><a href="https://github.com/mteyra/nixcare">Nixcare</a> · <a href="https://github.com/clschulzer/Aloha-Robotics-HH2.0">Aloha Robotics — team project</a> · <a href="https://github.com/mteyra/nixos-config">NixOS Config</a></p><p><a href="assets/cv/marc-teyra-cv-2026-02.pdf">CV · February 2026</a> · <a href="https://www.linkedin.com/in/mteyra/">LinkedIn</a> · <a href="https://github.com/mteyra">GitHub</a></p><p>Enable JavaScript to explore the architectural world.</p></div></noscript>
+</body>
+</html>
