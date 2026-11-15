@@ -1,35 +1,41 @@
 # Island · Marc Teyra Galiano
 
-The reference is Rauno’s black-and-white 2023 homepage: a quiet opening and a floating navigation island. This revision keeps the original rigid M while making the whole site a personal introduction, with equal care for the reading views.
+## The governing preference
+
+Marc repeatedly asked for whitespace, clear separation and intuitive organization. The site must represent his studies, work, experiences and projects, with enough character to reward curiosity. Information must be available without being exposed all at once.
+
+The reference is specifically the simple black-and-white hero and floating dock of Rauno’s 2023 homepage. Its cluttered subpages were rejected. Orbit’s clarity, restrained 3D and the original interactive M were positive references. Generic portfolio layouts, cheap-looking navigation, narrow reading pages, the white-and-lime palette, fictional buildings and arbitrary M sorting were rejected.
+
+More width is not a request for more columns or denser information. More personality is not a request for additional widgets. A full name correction is not a request for a billboard. Simulated visitor reviews must not outweigh Marc’s direct feedback.
 
 ## Composition
 
-The opening is an asymmetric spread. Marc’s full name occupies two deliberate lines on the left; the graphite and silver M sits at the right. A short statement of interest connects directly to computation and biomedical coursework. Three factual links below identify current study, current work and public or completed projects. On phones the name leads, the sculpture follows, and those facts become compact rows.
+The opening contains one graphite and silver M, Marc’s full name and a short factual introduction. The M is centered with open space around it. Name and introduction align to opposite sides of the wider desktop composition; phones stack them naturally. The extra study/work/project strips have been removed.
 
-Every inner view uses the available width. Large chapter titles have a short introduction and a smaller version of the same M. The sculpture is not a separate symbol for each subject. It remains Marc’s initial, with its three pieces serving the site’s three reading destinations.
+Inner pages use smaller headings and one brief contextual introduction, with the same M quietly at the right. There are no chapter numbers, duplicate metadata bands or competing section headings.
 
-- Studies exposes computation and biology & medicine together. Actual course titles lead, codes remain secondary, and independent study follows below with verified certificate links and the audited course clearly identified.
-- Experience begins with Siemens Healthineers and its verified start date. Group headings introduce dated entries whose organisation and contribution are visible before expansion. Longer accounts and outcomes open in place.
-- Projects has four economical entries. Each gives the project, a brief contribution and direct links to the project, source, presentation or CV. No invented demonstration or architecture is added.
+- Studies identifies the degree, university and start date. Computation, Biology & medicine and Independent study are ordinary category links. One course group is visible at a time. All eight university courses, the independent courses, verified certificates and audited-course distinction remain accessible.
+- Experience identifies the current employer and start date. Teams & prototypes, Science & care and Robotics & games are separate views. Short contributions are visible; supporting accounts and outcomes open in place.
+- Projects is a short list with brief descriptions and direct project, source, presentation or CV links. No invented architecture or demonstration is added.
 
-The public CV remains dated February 2026. It predates the current employer. There is no portrait, hometown, unverified job title, invented article or claimed live travel feed.
+Space, alignment and a restrained type hierarchy separate content. The persistent dock already provides chapter navigation; extra next-page footers are unnecessary. The CV remains in the header and external links remain inside the dock’s expandable menu.
 
-## Connected movement
+## Interaction
 
-One WebGL canvas moves between the large opening composition and the smaller chapter mastheads. A bounded transition connects its old and new positions instead of replacing it with unrelated geometry. The destination’s piece sits slightly forward; the M remains assembled and recognizable.
+One WebGL canvas moves between the opening composition and chapter mastheads. Its original three-piece geometry remains Marc’s M. Each piece leads directly to Studies, Experience or Projects, matching the ordinary navigation links. Pointer movement gives a small change of angle and then settles. There is no sorting task, puzzle gate or completion state.
 
-Hover and keyboard focus on ordinary links preview the same piece as the pointer over the sculpture. Selecting a piece navigates immediately. Touch holds preview the destination, while scrolling, dragging and cancellation never trigger navigation. Canvas interaction is optional; normal links expose every destination.
+Category links update the URL, selected state and visible panel without rebuilding the page or M. Direct links and browser history restore the appropriate group. Switching categories keeps the chapter introduction in context. The selected panel enters with a small, brief movement; supporting experience details expand in place.
 
-Pointer movement produces a small change of angle, and the scene settles when movement stops. Fixed hit surfaces prevent a lifted or tilted piece from chasing the pointer. The reading hierarchy enters in a short sequence; supporting experience details expand with their content. The floating island remains anchored while its links panel grows upwards.
+The sculpture and dock remain optional ways to navigate. Keyboard links work throughout. Reduced motion and manual pause remove animation. Touch scrolling never triggers sculpture navigation. WebGL failure reveals an SVG M while the content and routes keep working. One graphics context is retained; rendering stops offscreen and once the object settles.
 
-Reduced motion and manual pause remove transitions. Content stays visible by default; WebGL failure reveals an SVG M. Offscreen and background rendering stop. Route changes retain one graphics context and safely cancel interrupted transitions. Deep links now scroll to visible content rather than hiding the other course groups.
+## Content boundaries
 
-## Review
+Marc Teyra Galiano studies B.Sc. Artificial Intelligence at FAU Erlangen-Nürnberg, since October 2025, and works at Siemens Healthineers, since April 2026. Computation, biology and medicine are stated interests; no formal specialization or job title is inferred.
 
-Two agents reviewed the earlier composition from design and visitor perspectives. These were simulated critiques, not user interviews. Both found that a large sculpture column took space from useful information, that studies hid the distinctive biomedical coursework, and that Experience should begin with the current employer. The revision addresses those points through the page hierarchy and layout.
+The public CV is dated February 2026 and predates the current job. There is no portrait, hometown, invented article or claimed live travel connection. Public source facts remain in `puzzle/content.js`. Private source documents are not published.
 
 ## Preservation and publication
 
-The complete preceding monogram edition is preserved in `archive/12-island-monogram/`, including its original content, scripts, fonts, graphics library and CV. Wing and Fold remain in `archive/11-island-identities/`; the original sorting M and separate chapter sculptures remain in `archive/10-island-spatial/`.
+The preceding shared-M edition with openly displayed coursework is preserved in `archive/13-island-studio/`. The quieter original M edition is in `archive/12-island-monogram/`. All thirteen earlier directions remain in the archive with their own content and assets.
 
 The current site publishes to the existing GitHub Pages address: https://mteyra.github.io/m.a.r.c_t.e.y.r.a/.

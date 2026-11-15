@@ -2,13 +2,13 @@
 
 [Visit the homepage](https://mteyra.github.io/m.a.r.c_t.e.y.r.a/)
 
-A monochrome personal homepage built around a graphite and silver M. The full name and introduction share the opening with the sculpture; three factual links lead into studies, current work and public or completed projects.
+A monochrome personal homepage built around a graphite and silver M. An open composition places the sculpture above Marc’s full name and a short introduction. The floating dock leads to studies, experience and public or completed projects.
 
 ## Reading and interaction
 
 The same M moves from the opening spread into each chapter’s masthead. Its three pieces lead to Studies, Experience and Projects; the current chapter’s piece sits slightly forward. Hovering an object or a normal link previews the matching destination. Pointer movement gently changes the viewing angle, then settles. There is no sorting task or completion state.
 
-All university coursework is visible in two aligned areas. Independent courses and certificate links follow. Experience starts with the current employer, then presents dated contributions grouped into teams and prototypes, science and care, and early robotics and games. Supporting accounts expand in place. Projects remain four concise entries with direct links.
+Studies and Experience each show one selected category. Ordinary links switch categories and preserve browser history, so all coursework, certificates and experiences remain easy to reach. The degree and current employer appear in their chapter introductions. Supporting experience accounts expand in place. Projects remain four concise entries with direct links.
 
 The floating navigation expands into GitHub, LinkedIn, the design archive and motion preferences. Browser history, direct links into course and experience groups, keyboard navigation, reduced motion and WebGL fallback are supported. Text stays available throughout transitions. One WebGL context is retained between pages; rendering stops when the sculpture settles or leaves the viewport.
 
@@ -30,8 +30,8 @@ GitHub Pages serves `main` from the repository root. `.nojekyll` keeps the site 
 - `island/main.js` — routing, shared scene movement, disclosures and preferences.
 - `island/monogram.js` — the three-piece M and its interaction.
 - `puzzle/content.js` — shared public profile content.
-- `archive/` — twelve preserved design iterations.
-- `archive/12-island-monogram/` — the complete edition preceding this revamp.
+- `archive/` — thirteen preserved design iterations.
+- `archive/13-island-studio/` — the complete edition preceding this simplification.
 - `design/ISLAND.md` — design notes.
 
 Earlier editions preserve their own content and assets. The `?atlas=preview#travel` handoff opens the archived GPX/KML viewer. Live travel integration remains future work.

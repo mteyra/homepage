@@ -1,5 +1,5 @@
-import { renderChapter } from './chapters.js?v=studio';
-import { createMonogram } from './monogram.js?v=studio';
+import { renderChapter } from './chapters.js?v=quiet';
+import { createMonogram } from './monogram.js?v=quiet';
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
@@ -10,8 +10,9 @@ const media = matchMedia('(prefers-reduced-motion: reduce)');
 const stage = $('#sculpture-stage');
 const accordionAnimations = new Map();
 let page = 'about', sculpture, menuOpen = false, paused = media.matches, manualPause = null;
-let ready = false, renderer = 'loading', menuTransition = null, sceneTransition = null;
+let ready = false, renderer = 'loading', menuTransition = null, sceneTransition = null, panelTransition = null;
 let revealObserver = null, routeId = 0;
+let activeGroup = null;
 let objectPreview = null, linkPreview = null, focusPreview = null, preview = null;
 try { manualPause = localStorage.getItem('marc-island-motion'); paused = media.matches || manualPause === 'paused'; } catch { /* Optional preference. */ }
 const motionAllowed = () => !paused && !media.matches;
@@ -25,11 +26,12 @@ function syncPreview() {
   const caption = stage.querySelector('#sculpture-destination');
   caption.textContent = destination ? `${titles[destination]} →` : '';
   caption.dataset.visible = String(Boolean(destination) && renderer === 'webgl');
-  $$('.dock-rail a, .home-index a').forEach(link => link.classList.toggle('is-previewed', link.getAttribute('href') === `#${destination}`));
+  $$('.dock-rail a').forEach(link => link.classList.toggle('is-previewed', link.getAttribute('href') === `#${destination}`));
 }
 function clearPreview() { objectPreview = linkPreview = focusPreview = null; syncPreview(); }
 function linkedPiece(target) {
   const link = target?.closest?.('a[href^="#"]');
+  if (link?.closest('.section-nav')) return null;
   const destination = link?.getAttribute('href')?.slice(1).split('/')[0];
   const index = monogramPages.indexOf(destination);
   return index >= 0 ? index : null;
@@ -50,13 +52,13 @@ function enterText(element, delay = 0, distance = 20) {
 function animatePage() {
   if (page === 'about') {
     $$('.introduction h1 > span').forEach((element, index) => enterText(element, index * 55, 26));
-    enterText($('.hello'), 0, 9);
     enterText($('.hero-note'), 100, 16);
-    $$('.home-index > a').forEach((element, index) => enterText(element, 110 + index * 50, 16));
   } else {
-    enterText($('.chapter-number'), 0, 8);
     enterText($('#reading-title'), 25, 22);
     enterText($('.chapter-deck'), 75, 13);
+    enterText($('.chapter-meta'), 100, 8);
+    enterText($('.section-nav'), 100, 8);
+    enterText($('.chapter-panel:not([hidden])'), 125, 8);
   }
   revealObserver?.disconnect();
   if (!('IntersectionObserver' in window)) return;
@@ -98,12 +100,56 @@ function goToKey(key, { initial = false } = {}) {
     heading.focus({ preventScroll: true });
   }
 }
+function activateGroup(key, { animate = true, keepContext = false } = {}) {
+  if (!['studies', 'experience'].includes(page)) { activeGroup = null; return false; }
+  const nav = $('#reading .section-nav');
+  if (!nav) { activeGroup = null; return false; }
+  const links = [...nav.querySelectorAll('a[data-group]')];
+  const selectedLink = links.find(link => link.dataset.group === key) || links[0];
+  const panels = $$('#reading [data-group-panel]');
+  const selectedPanel = panels.find(panel => panel.dataset.groupPanel === selectedLink?.dataset.group);
+  if (!selectedPanel) return false;
+  const changed = activeGroup !== selectedLink.dataset.group;
+  const focusWasInHiddenPanel = panels.some(panel => panel !== selectedPanel && panel.contains(document.activeElement));
+  activeGroup = selectedLink.dataset.group;
+  links.forEach(link => {
+    if (link === selectedLink) link.setAttribute('aria-current', 'location');
+    else link.removeAttribute('aria-current');
+  });
+  panelTransition?.cancel();
+  panels.forEach(panel => {
+    panel.hidden = panel !== selectedPanel;
+    if (!panel.hidden) return;
+    accordionAnimations.forEach((transaction, entry) => {
+      if (!panel.contains(entry)) return;
+      entry.open = transaction.opening;
+      transaction.animation.cancel();
+      entry.classList.remove('is-animating');
+      accordionAnimations.delete(entry);
+    });
+  });
+  if (changed && animate && motionAllowed() && selectedPanel.animate) {
+    panelTransition = selectedPanel.animate([
+      { opacity: .45, transform: 'translateY(8px)' },
+      { opacity: 1, transform: 'translateY(0)' },
+    ], { duration: 360, easing: 'cubic-bezier(.16,1,.3,1)' });
+  }
+  if (focusWasInHiddenPanel && document.body.classList.contains('keyboard-input')) selectedLink.focus({ preventScroll: true });
+  if (keepContext) {
+    const rect = nav.getBoundingClientRect();
+    if (rect.top < 0 || rect.bottom > innerHeight) nav.scrollIntoView({ block: 'nearest', behavior: scrollBehavior() });
+  }
+  return true;
+}
 function route({ initial = false } = {}) {
   const [raw, key] = location.hash.slice(1).split('/');
   const next = pages.includes(raw) ? raw : 'about';
   if (ready && page === next && !initial) {
     closeMenu();
-    if (key) goToKey(key); else window.scrollTo({ top: 0, behavior: scrollBehavior() });
+    if (activateGroup(key, { keepContext: Boolean(key) })) {
+      if (!key) window.scrollTo({ top: 0, behavior: scrollBehavior() });
+    } else if (key) goToKey(key);
+    else window.scrollTo({ top: 0, behavior: scrollBehavior() });
     return;
   }
   const token = ++routeId;
@@ -117,6 +163,7 @@ function route({ initial = false } = {}) {
   // The same WebGL canvas changes its place in the composition without creating another context.
   stage.remove();
   page = next;
+  activeGroup = null;
   clearPreview();
   closeMenu();
   document.body.dataset.page = page;
@@ -134,17 +181,18 @@ function route({ initial = false } = {}) {
     $('#reading').setAttribute('aria-labelledby', 'reading-title');
   }
   (isHome ? $('#home-art') : $('#chapter-art')).append(stage);
+  const hasGroups = !isHome && activateGroup(key, { animate: false });
   $('.skip').href = isHome ? '#page-title' : '#reading-title';
   sculpture?.setPage(page);
   sculpture?.setActive(true);
   window.scrollTo({ top: 0, behavior: 'instant' });
-  if (!key) moveScene(from, token);
+  if (!key || hasGroups) moveScene(from, token);
   if (!initial && document.body.classList.contains('keyboard-input')) {
     (isHome ? $('#page-title') : $('#reading-title')).focus({ preventScroll: true });
   }
   if (!initial) $('#announcement').textContent = `${titles[page]}.`;
   animatePage();
-  if (key) requestAnimationFrame(() => { if (token === routeId) goToKey(key, { initial: true }); });
+  if (key && !hasGroups) requestAnimationFrame(() => { if (token === routeId) goToKey(key, { initial: true }); });
   ready = true;
 }
 
@@ -286,4 +334,4 @@ sculpture = createMonogram($('#sculpture'), {
 sculpture.setPaused(paused);
 sculpture.setPage(page);
 // A read-only state snapshot for browser checks.
-window.islandState = () => ({ page, menuOpen, paused, renderer, preview, identity: sculpture?.getState(), chapter: page === 'about' ? null : { kind: page }, sceneMoving: stage.classList.contains('scene-moving') });
+window.islandState = () => ({ page, activeGroup, menuOpen, paused, renderer, preview, identity: sculpture?.getState(), chapter: page === 'about' ? null : { kind: page, activeGroup }, sceneMoving: stage.classList.contains('scene-moving') });
