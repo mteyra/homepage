@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#eeefed">
   <meta name="description" content="Marc Teyra Galiano. Artificial intelligence at FAU, work at Siemens Healthineers, and a curiosity for computation, biology and medicine.">
   <title>Marc Teyra · A few things about me</title>
+  <script>document.documentElement.dataset.form = new URLSearchParams(location.search).get('form') === 'fold' ? 'fold' : 'wing';</script>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="preload" href="../assets/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
@@ -20,34 +21,19 @@
       <svg viewBox="0 0 28 28" aria-hidden="true"><path d="M5 22V6l9 10 9-10v16"/></svg>
       <span>Marc Teyra Galiano</span>
     </a>
-    <a class="cv-link" href="../assets/cv/marc-teyra-cv-2026-02.pdf" target="_blank" rel="noopener" title="CV · February 2026">Read CV <span aria-hidden="true">↗</span></a>
+    <a class="cv-link" href="../assets/cv/marc-teyra-cv-2026-02.pdf" target="_blank" rel="noopener" title="CV · February 2026">CV <small>Feb 2026</small><span aria-hidden="true">↗</span></a>
   </header>
 
   <main id="main">
     <section id="home" class="home" aria-labelledby="page-title">
       <div class="sculpture-stage">
-        <svg id="sculpture-fallback" viewBox="0 0 760 450" aria-hidden="true">
-          <defs>
-            <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#777c7b"/><stop offset=".3" stop-color="#262a29"/><stop offset=".7" stop-color="#363b39"/><stop offset="1" stop-color="#131715"/></linearGradient>
-            <filter id="shadow"><feGaussianBlur stdDeviation="12"/></filter>
-          </defs>
-          <ellipse cx="380" cy="345" rx="165" ry="18" fill="#343a37" opacity=".12" filter="url(#shadow)"/>
-          <g fill="url(#metal)" stroke="#f8f9f7" stroke-opacity=".5" stroke-width="1">
-            <path class="fallback-piece" data-piece="0" d="M225 315V120l53 17v197z"/>
-            <path class="fallback-piece" data-piece="1" d="m294 136 82 103 83-98v72l-83 97-82-103z"/>
-            <path class="fallback-piece" data-piece="2" d="m475 137 53-17v195l-53 19z"/>
-          </g>
-        </svg>
-        <canvas id="sculpture" tabindex="0" aria-label="An M made of three pieces. Click a piece to fit it into place. Use left and right arrows to select a piece, then Enter to align it."></canvas>
-        <div class="puzzle-caption" aria-label="Optional three-piece puzzle">
-          <span class="puzzle-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-          <button id="align" type="button">Fit the pieces <span aria-hidden="true">↗</span></button>
-          <button id="reset" type="button" aria-label="Reset the sculpture" title="Start again" hidden>↺</button>
-        </div>
+        <img class="sculpture-fallback" id="sculpture-fallback" src="wing.svg" alt="" aria-hidden="true">
+        <img class="sculpture-fallback" id="sculpture-fallback-fold" src="fold.svg" alt="" aria-hidden="true">
+        <canvas id="sculpture" tabindex="-1" aria-hidden="true"></canvas>
       </div>
       <div class="introduction">
         <h1 id="page-title" tabindex="-1">Marc Teyra</h1>
-        <p>I study artificial intelligence at <a href="#studies">FAU</a> and work at<br class="desktop-break"> <a href="#experience">Siemens Healthineers</a>. Curious about where<br class="desktop-break"> computation meets biology and medicine.</p>
+        <p>I study artificial intelligence at <a href="#studies">FAU</a> and work at<br class="desktop-break"> <a href="#experience">Siemens Healthineers</a>. Curious about where<br class="desktop-break"> computation meets <a href="#studies/biology-medicine">biology and medicine</a>.</p>
       </div>
     </section>
     <article id="reading" class="reading" hidden></article>

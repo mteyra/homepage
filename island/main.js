@@ -1,5 +1,4 @@
 import { profile, coursework, credentials, experiences, projects } from '../puzzle/content.js';
-import { createSculpture } from './world.js';
 import { createChapterWorld } from './chapter-world.js';
 
 const $ = selector => document.querySelector(selector);
@@ -9,15 +8,30 @@ const outward = '<span aria-hidden="true">↗</span>';
 const external = 'target="_blank" rel="noopener"';
 const pages = ['about', 'studies', 'experience', 'projects'];
 const titles = { about: 'Marc Teyra', studies: 'Studies', experience: 'Experience', projects: 'Projects' };
+const variant = document.documentElement.dataset.form === 'fold' ? 'fold' : 'wing';
 const media = matchMedia('(prefers-reduced-motion: reduce)');
-let page = 'about', sculpture, puzzleState, menuOpen = false, paused = media.matches, manualPause = null;
+let page = 'about', sculpture, menuOpen = false, paused = media.matches, manualPause = null;
 let ready = false, renderer = 'loading', transition = null, menuTransition = null;
 let chapterWorld = null, panelTransition = null;
 const selections = { studies: 0, experience: 0, projects: 0 };
+const chapterKeys = {
+  studies: coursework.map(group => group.id),
+  experience: ['teams-prototypes', 'science-care', 'robotics-games'],
+  projects: projects.map(project => project.id),
+};
 try { manualPause = localStorage.getItem('marc-island-motion'); if (manualPause !== null) paused = manualPause === 'paused'; } catch { /* Storage is optional. */ }
 
 const universityCourses = group => group.items.map(item => `<li><span class="course-title">${esc(item.title)}</span>${item.code ? `<span class="course-meta">${esc(item.code)}</span>` : ''}</li>`).join('');
-const chapterFallback = kind => `<svg class="chapter-fallback" viewBox="0 0 500 360" aria-hidden="true"><defs><linearGradient id="chapter-metal" x2="1" y2="1"><stop stop-color="#a3a7a2"/><stop offset=".48" stop-color="#ebeeea"/><stop offset="1" stop-color="#656a65"/></linearGradient><filter id="chapter-shadow"><feGaussianBlur stdDeviation="10"/></filter></defs><ellipse cx="250" cy="290" rx="110" ry="12" fill="#30362d" opacity=".1" filter="url(#chapter-shadow)"/>${kind === 'studies' ? '<g fill="none" stroke="url(#chapter-metal)" stroke-width="9"><ellipse cx="250" cy="160" rx="112" ry="54" transform="rotate(-32 250 160)"/><ellipse cx="250" cy="160" rx="112" ry="54" transform="rotate(32 250 160)"/><ellipse cx="250" cy="160" rx="112" ry="54" transform="rotate(90 250 160)"/></g>' : kind === 'experience' ? '<g fill="url(#chapter-metal)" stroke="#fafbf9" stroke-width="1"><path d="m137 205 140-63 100 50-140 65z"/><path d="m120 155 140-63 100 50-140 65z"/><path d="m147 105 140-63 100 50-140 65z"/></g>' : '<g fill="none" stroke="url(#chapter-metal)" stroke-width="10" transform="translate(250 150) rotate(-18) skewY(14)"><rect x="-105" y="-62" width="120" height="120" rx="6"/><rect x="-65" y="-82" width="120" height="120" rx="6"/><rect x="-25" y="-102" width="120" height="120" rx="6"/><rect x="15" y="-122" width="120" height="120" rx="6"/></g>'}</svg>`;
+const chapterFallback = kind => {
+  if (variant === 'fold') {
+    const placements = kind === 'projects' ? [[118,168],[203,143],[288,168],[373,143]] : [[155,173],[250,130],[345,173]];
+    const folds = placements.map(([x,y]) => `<path d="M-25 35V-22Q-25-45 0-45T25-22V35" transform="translate(${x} ${y})" fill="none" stroke="url(#chapter-fold-metal)" stroke-width="13" stroke-linecap="round"/>`).join('');
+    return `<svg class="chapter-fallback" viewBox="0 0 500 360" aria-hidden="true"><defs><linearGradient id="chapter-fold-metal"><stop stop-color="#555c58"/><stop offset=".47" stop-color="#d4d8d2"/><stop offset="1" stop-color="#7e8780"/></linearGradient><filter id="chapter-shadow"><feGaussianBlur stdDeviation="10"/></filter></defs><ellipse cx="250" cy="263" rx="102" ry="12" fill="#30362d" opacity=".1" filter="url(#chapter-shadow)"/>${folds}</svg>`;
+  }
+  const layouts = { studies: [[192,146],[265,114],[267,198]], experience: [[190,195],[250,155],[310,115]], projects: [[194,127],[270,105],[232,199],[308,177]] };
+  const cells = layouts[kind].map(([x,y],i) => `<path d="M0-48 42-24V24L0 48-42 24V-24Z" transform="translate(${x} ${y}) scale(1 .72)" fill="${i === 0 ? '#333c36' : '#aeb6ad'}"/>`).join('');
+  return `<svg class="chapter-fallback" viewBox="0 0 500 360" aria-hidden="true"><defs><filter id="chapter-shadow"><feGaussianBlur stdDeviation="10"/></filter></defs><ellipse cx="250" cy="263" rx="102" ry="12" fill="#30362d" opacity=".1" filter="url(#chapter-shadow)"/><g stroke="#f4f6f1" stroke-width="1.4" stroke-linejoin="round">${cells}</g></svg>`;
+};
 const selectors = (kind, groups) => `<div class="chapter-selectors" role="tablist" aria-orientation="vertical" aria-label="${kind === 'studies' ? 'Areas of study' : 'Areas of experience'}">${groups.map((group, index) => `<button class="chapter-choice" type="button" role="tab" id="${kind}-choice-${index}" aria-controls="${kind}-panel-${index}" aria-selected="${index === selections[kind]}" tabindex="${index === selections[kind] ? 0 : -1}" data-choice="${index}"><span class="choice-mark" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span><span>${group.title}</span></button>`).join('')}</div>`;
 const panel = (kind, index, title, meta, body) => `<section class="chapter-panel" id="${kind}-panel-${index}" role="tabpanel" aria-labelledby="${kind}-choice-${index}" tabindex="0" ${index !== selections[kind] ? 'hidden' : ''}><header class="panel-heading"><span class="panel-kicker">${meta}</span><h2>${title}</h2></header>${body}</section>`;
 function chapter(kind, intro, meta, body, groups = []) {
@@ -34,7 +48,7 @@ function studies() {
   const bundle = credentials.find(item => item.id === 'computer-science-python');
   return chapter('studies', `<strong>${esc(profile.degree.title)}</strong><br>${esc(profile.degree.institution)}`, `Since ${esc(profile.degree.since)} · A biomedical direction`,
     panel('studies', 0, 'Computation', 'University coursework', `<ul class="course-list">${universityCourses(coursework[0])}</ul>`) +
-    panel('studies', 1, 'Biology & medicine', 'University coursework', `<ul class="course-list">${universityCourses(coursework[1])}</ul>`) +
+    panel('studies', 1, 'Biology & medicine', 'University coursework', `<ul class="course-list">${universityCourses(coursework[1])}</ul><a class="related-link" href="#experience/science-care"><span>Related experience</span>Science & care <span aria-hidden="true">→</span></a>`) +
     panel('studies', 2, 'Independent study', 'Courses & certificates', `<ul class="course-list">${independent}<li><a href="${esc(tum.url)}" ${external}><span><span class="course-title">${esc(tum.title)}</span><span class="course-meta">${esc(tum.institution)} · Verified certificate, ${esc(tum.date)}</span></span><span class="external-arrow" aria-hidden="true">↗</span></a></li></ul><p class="certificate-note">CS50x and CS50P also form the <a href="${esc(bundle.url)}" ${external}>Computer Science for Python Programming professional certificate ${outward}</a>.</p>`),
     coursework);
 }
@@ -54,15 +68,15 @@ function experience() {
 
 function projectPage() {
   const summaries = {
-    nixcare: 'Diagnostics, maintenance and controlled updates for Nix systems.',
-    aloha: 'Interactive web experiences and presentations for our medical-device hackathon prototype.',
+    nixcare: 'I build tools that check, maintain and safely update a NixOS Linux system.',
+    aloha: 'I built the interactive web experiences and presentations for our team’s medical-device hackathon prototype.',
     'nixos-config': 'My declarative NixOS setup, including tablet-mode input and touchscreen recovery.',
     'cube-solver': 'A LEGO Mindstorms robot that solves a 3×3 cube. Mechanical design, sensors and EV3 programming.',
   };
-  return chapter('projects', 'A few things I’ve made.<br>Public work and completed projects.', '', `<div class="project-index">${projects.map((project, index) => `<section class="project-entry" data-project="${index}" data-current="${index === selections.projects}" id="project-${project.id}"><span class="project-number" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span><div class="project-info"><p class="project-type">${esc(project.type)}</p><h2><a href="${esc(project.sourceUrl || project.url)}" ${external}>${esc(project.title)}</a></h2><p class="project-copy">${esc(summaries[project.id])}</p><div class="project-links">${project.sourceUrl ? `<a href="${esc(project.sourceUrl)}" ${external}>GitHub ${outward}</a>` : `<a href="${esc(project.url)}" ${external}>In my CV ${outward}</a>`}${project.sourceUrl && project.url !== project.sourceUrl ? `<a href="${esc(project.url)}" ${external}>${project.id === 'aloha' ? 'Presentation' : 'Website'} ${outward}</a>` : ''}</div></div></section>`).join('')}</div>`);
+  return chapter('projects', 'A few things I’ve made.<br>Public work and completed projects.', '', `<div class="project-index">${projects.map((project, index) => `<section class="project-entry" data-project="${index}" data-current="${index === selections.projects}" id="project-${project.id}"><span class="project-number" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span><div class="project-info"><p class="project-type">${esc(project.type)}</p><h2>${project.sourceUrl ? `<a href="${esc(project.url)}" ${external}>${esc(project.title)}</a>` : esc(project.title)}</h2><p class="project-copy">${esc(summaries[project.id])}</p><div class="project-links">${project.sourceUrl && project.url !== project.sourceUrl ? `<a href="${esc(project.url)}" ${external}>${project.id === 'aloha' ? 'View presentation' : 'View project'} ${outward}</a>` : ''}${project.sourceUrl ? `<a href="${esc(project.sourceUrl)}" ${external}>GitHub ${outward}</a>` : `<a href="${esc(project.url)}" ${external}>In my CV ${outward}</a>`}</div></div></section>`).join('')}</div>`);
 }
 
-function selectChapter(index, { focus = false, fromObject = false } = {}) {
+function selectChapter(index, { focus = false, fromObject = false, updateUrl = true } = {}) {
   const count = page === 'projects' ? projects.length : 3;
   if (!Number.isInteger(index) || index < 0 || index >= count || page === 'about') return;
   const changed = selections[page] !== index;
@@ -73,6 +87,7 @@ function selectChapter(index, { focus = false, fromObject = false } = {}) {
     if (fromObject) $(`.project-entry[data-project="${index}"]`)?.scrollIntoView({ block: 'center', behavior: paused ? 'instant' : 'smooth' });
     return;
   }
+  if (updateUrl) history.replaceState(null, '', `#${page}/${chapterKeys[page][index]}`);
   $$('.chapter-choice').forEach((button, item) => {
     button.setAttribute('aria-selected', String(item === index));
     button.tabIndex = item === index ? 0 : -1;
@@ -90,6 +105,7 @@ function mountChapter() {
   const kind = page;
   chapterWorld = createChapterWorld($('#chapter-canvas'), {
     kind,
+    variant,
     onSelect: index => selectChapter(index, { fromObject: true }),
     onReady: () => $('.chapter-visual')?.classList.add('is-ready'),
     onUnavailable: () => $('.chapter-visual')?.classList.remove('is-ready'),
@@ -119,10 +135,16 @@ function syncIndicator() {
 }
 
 function route({ initial = false } = {}) {
-  const raw = location.hash.slice(1).split('/')[0];
+  const [raw, key] = location.hash.slice(1).split('/');
   const next = pages.includes(raw) ? raw : 'about';
-  if (ready && page === next && !initial) { closeMenu(); return; }
+  const requestedIndex = chapterKeys[next]?.indexOf(key) ?? -1;
+  if (ready && page === next && !initial) {
+    closeMenu();
+    if (requestedIndex >= 0) selectChapter(requestedIndex, { updateUrl: false });
+    return;
+  }
   page = next;
+  if (requestedIndex >= 0) selections[page] = requestedIndex;
   closeMenu();
   document.body.dataset.page = page;
   document.title = page === 'about' ? 'Marc Teyra · A few things about me' : `${titles[page]} · Marc Teyra`;
@@ -197,28 +219,6 @@ function setPaused(value, persist = false) {
   }
 }
 
-function updatePuzzle(state) {
-  puzzleState = state;
-  const count = state.solved.filter(Boolean).length;
-  const align = $('#align');
-  const busy = ['aligning', 'settling', 'resetting'].includes(state.phase);
-  align.innerHTML = state.complete ? 'Everything fits.' : count ? 'Fit the next piece <span aria-hidden="true">↗</span>' : 'Fit the pieces <span aria-hidden="true">↗</span>';
-  // Keep keyboard focus through an alignment instead of disabling its button.
-  align.setAttribute('aria-disabled', String(busy || state.complete));
-  align.setAttribute('aria-label', state.complete ? 'Sculpture complete. All three pieces aligned.' : `Align piece ${state.selected + 1}. ${count} of 3 pieces aligned.`);
-  $('#reset').hidden = count === 0 && state.phase !== 'aligning';
-  $$('.puzzle-dots i').forEach((dot, index) => dot.dataset.solved = state.solved[index]);
-  $$('.fallback-piece').forEach((part, index) => part.dataset.solved = state.solved[index]);
-  if (count) $('#announcement').textContent = state.complete ? 'All three pieces fit. Sculpture complete.' : `${count} of 3 pieces fit.`;
-}
-
-$('#align').addEventListener('click', () => {
-  if ($('#align').getAttribute('aria-disabled') !== 'true') sculpture?.align();
-});
-$('#reset').addEventListener('click', () => {
-  $('#align').focus({ preventScroll: true });
-  sculpture?.reset();
-});
 $('#more').addEventListener('click', event => setMenu(!menuOpen, event.detail === 0));
 $('#motion').addEventListener('click', () => setPaused(!paused, true));
 $('#reading').addEventListener('click', event => {
@@ -227,10 +227,11 @@ $('#reading').addEventListener('click', event => {
 });
 $('#reading').addEventListener('keydown', event => {
   const button = event.target.closest('[data-choice]');
-  if (!button || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(event.key)) return;
+  if (!button || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || !['ArrowUp', 'ArrowDown', 'Home', 'End'].includes(event.key)) return;
   event.preventDefault();
+  if (event.repeat) return;
   const index = Number(button.dataset.choice);
-  selectChapter(event.key === 'Home' ? 0 : event.key === 'End' ? 2 : (index + (['ArrowRight', 'ArrowDown'].includes(event.key) ? 1 : 2)) % 3, { focus: true });
+  selectChapter(event.key === 'Home' ? 0 : event.key === 'End' ? 2 : (index + (event.key === 'ArrowDown' ? 1 : 2)) % 3, { focus: true });
 });
 for (const type of ['pointerover', 'focusin']) {
   $('#reading').addEventListener(type, event => {
@@ -246,10 +247,12 @@ $('.dock-rail').addEventListener('click', event => {
 });
 $('.dock-rail').addEventListener('keydown', event => {
   const links = $$('.dock-rail a'), current = links.indexOf(document.activeElement);
-  if (current < 0 || !['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
+  if (current < 0 || menuOpen || window.getSelection()?.toString() || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || !['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
   event.preventDefault();
+  if (event.repeat) return;
   const index = event.key === 'Home' ? 0 : event.key === 'End' ? links.length - 1 : (current + (event.key === 'ArrowRight' ? 1 : -1) + links.length) % links.length;
   links[index].focus();
+  location.hash = links[index].getAttribute('href');
 });
 $('.skip').addEventListener('click', event => {
   event.preventDefault();
@@ -260,6 +263,13 @@ document.addEventListener('click', event => { if (menuOpen && !$('#island').cont
 document.addEventListener('keydown', event => {
   if (!['Shift', 'Control', 'Alt', 'Meta'].includes(event.key)) document.body.classList.add('keyboard-input');
   if (event.key === 'Escape' && menuOpen) { closeMenu(); $('#more').focus(); }
+  if (event.defaultPrevented || menuOpen || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+  if (event.target.closest?.('input, textarea, select, [contenteditable]:not([contenteditable="false"]), [role="slider"], [role="combobox"], [role="listbox"], [role="menu"], [role="tree"]')) return;
+  if (window.getSelection()?.toString()) return;
+  event.preventDefault();
+  if (event.repeat) return;
+  const index = (pages.indexOf(page) + (event.key === 'ArrowRight' ? 1 : -1) + pages.length) % pages.length;
+  location.hash = pages[index];
 });
 document.addEventListener('pointerdown', () => document.body.classList.remove('keyboard-input'), true);
 document.addEventListener('focusin', event => {
@@ -272,7 +282,9 @@ document.fonts.ready.then(syncIndicator);
 
 setPaused(paused);
 route({ initial: true });
-sculpture = createSculpture($('#sculpture'), {
+sculpture = createChapterWorld($('#sculpture'), {
+  kind: 'about',
+  variant,
   onReady: () => { renderer = 'webgl'; document.body.classList.add('world-ready'); },
   onUnavailable: () => {
     renderer = 'fallback';
@@ -280,10 +292,9 @@ sculpture = createSculpture($('#sculpture'), {
     $('#sculpture').hidden = true;
     $('#sculpture').tabIndex = -1;
   },
-  onProgress: updatePuzzle,
 });
 sculpture.setPaused(paused);
 sculpture.setActive(page === 'about');
 
-// Small, read-only view for local interaction QA.
-window.islandState = () => ({ page, menuOpen, paused, renderer, puzzle: sculpture?.getState(), chapter: chapterWorld?.getState(), selections: { ...selections } });
+// Small, read-only view for interaction QA.
+window.islandState = () => ({ page, variant, menuOpen, paused, renderer, identity: sculpture?.getState(), chapter: chapterWorld?.getState(), selections: { ...selections } });
