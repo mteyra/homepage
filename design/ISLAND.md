@@ -1,42 +1,40 @@
-# Spatial folio · Marc Teyra Galiano
+# Spatial index · Marc Teyra Galiano
 
 ## The governing preference
 
 Marc repeatedly asked for whitespace, clear separation and intuitive organization. The site must represent his studies, work, experiences and projects, with enough character to reward curiosity. Information must be available without being exposed all at once.
 
-The positive references are Rauno’s simple black-and-white hero and floating dock, Orbit’s clarity and restrained, interactive 3D. Generic portfolios, cheap-looking navigation, narrow reading pages, the white-and-lime palette, fictional buildings, arbitrary M sorting and the wing motif were rejected. The segmented M resembled Gmail; changing it to a continuous lowercase m still repeated the same decorative idea.
+The positive references are Rauno’s simple black-and-white hero and floating dock, Orbit’s clarity and restrained, interactive 3D. Generic portfolios, cheap-looking navigation, narrow reading pages, the white-and-lime palette, fictional buildings, arbitrary M sorting and the wing motif were rejected. Marc identified a Gmail resemblance in the segmented M and disliked its click navigation. He subsequently rejected the spatial folio’s appearance and animation.
 
-More width does not mean more columns. More personality does not mean more widgets. The site must have one coherent interaction whose purpose visitors can understand. Simulated visitor reviews must not outweigh Marc’s direct feedback.
-
-## The new premise
-
-The content itself occupies space. Four persistent HTML pages form a folio: About, Studies, Experience and Projects. There is no separate sculpture above otherwise conventional content.
-
-The cover rests at a slight angle. “Browse the folio” spreads the same pages into an overview, then a selected page moves forward and settles flat for reading. The dock also navigates directly, and the outer page margins support turning to an adjacent page. Nothing must be solved or discovered before Marc’s information is available.
-
-The reference review found two useful principles: Rauno places real work into a spatial composition; Times Two preserves continuity between its index and a selected project. This folio applies those principles to Marc’s broader profile, rather than making projects the entire experience.
+The design keeps information available through a small number of visibly separated views. Width provides room for text and spacing. Simulated visitor reviews and design assessments remain hypotheses; Marc’s direct feedback takes precedence.
 
 ## Composition
 
-The cover places the full name and a short factual introduction on opposite sides of a broad surface. A small browse control is the only added invitation. Fine page edges provide depth; square corners and restrained shadows keep the surfaces closer to paper than dashboard cards.
+A dark graphite field holds stationary text and a small physical index near the bottom of the screen. Instrument Serif sets the full name, chapter headings and project titles. Manrope sets the body text, metadata and navigation.
 
-Reading pages use the available width with generous margins. The heading, one brief introduction and a clearly selected category precede the content. Neighboring sheets reveal only a narrow paper edge while reading.
+The introduction uses two parts of the available width: Marc’s name on the left, his stated interests and current degree and employer on the right. Reading pages place the chapter heading and category controls beside the selected content. The page surfaces stay flat and still when views change.
 
-- Studies identifies the degree, university and start date. Computation, Biology & medicine and Independent study are ordinary category links. One course group is visible at a time. All eight university courses, the independent courses, verified certificates and audited-course distinction remain accessible.
-- Experience identifies the current employer and start date. Teams & prototypes, Science & care and Robotics & games are separate views. Short contributions are visible; supporting accounts and outcomes open in place.
-- Projects is a short list with brief descriptions and direct project, source, presentation or CV links. No invented architecture or demonstration is added.
+- Studies identifies the degree, university and start date. Computation, Biology & medicine and Independent study are ordinary category links. One course group is visible at a time. Eight university courses, the independent courses, verified certificates and the audited-course distinction remain accessible.
+- Experience identifies the current employer and start date. Teams & prototypes, Science & care and Robotics & games are separate groups. Short contributions are visible; supporting accounts and outcomes open in native HTML disclosures.
+- Projects contains four brief descriptions with direct project, source, presentation or CV links.
 
-Phones retain the reading layout and use one large overview preview with previous and next controls. The CV stays in the header. GitHub, LinkedIn, the archive and motion preferences stay in the dock’s expandable menu.
+On smaller screens, the reading layout becomes a single column and category links run above their content. The CV stays in the header. GitHub and LinkedIn sit at the lower edge; More opens the archive link and motion preference. The ring becomes smaller on reading views and phones, reserving space for the content.
 
 ## Interaction
 
-The same DOM surfaces persist throughout navigation. Dock changes, margin dragging and overview selection share a continuous spatial transition. The content remains native HTML; there is no WebGL requirement.
+About, Studies, Experience and Projects have ordinary HTML links. These are the primary navigation and keyboard controls. Arrow keys also move between views, while form controls and text selection retain their own input behavior.
 
-Only the current reading page, or visible overview previews, participate in focus and pointer interaction. Native vertical scrolling and text selection remain available. Margin dragging is optional; the dock reaches every page directly.
+The 3D ring is an optional physical index with four sectors corresponding to those same destinations. The center names the current section, and hovering a sector previews its destination. Selecting a sector changes the view; dragging horizontally turns the ring and selects the nearest position on release. Its center stays open. The form carries no additional claims about Marc’s achievements or interests.
 
-Category links update the URL, selected state and visible panel without rebuilding the pages. Direct links and browser history restore the appropriate group. Switching categories keeps the chapter introduction in context. The selected panel enters with a small, brief movement; supporting experience details expand in place.
+The ring has no idle rotation or pointer-following movement. Only selection and dragging produce motion. Once a turn settles, rendering stops scheduling animation frames. System reduced motion and manual pause make ring selection immediate. Touch handling preserves vertical scrolling and pinch zoom. A static SVG remains available when WebGL cannot render; the HTML links continue to work.
 
-System reduced motion and manual pause make navigation immediate. Animation frames stop once a transition settles and when the page is hidden. A static no-script introduction retains links to the CV and public profiles.
+Category links update the URL, selected state and visible panel. Browser history and direct links select the corresponding group or individual entry. Experience details use native disclosures. Text remains selectable, and navigation leaves the reading surface stationary. A no-script introduction retains links to the CV and public profiles.
+
+## References and assets
+
+[Keita Yamada’s site](https://p5aholic.me/) was reviewed for restraint and stationary text. [Rauno’s 2023 site](https://2023.rauno.me/) remains a reference for its simple introduction and compact navigation. The earlier Calm Orbit review also identified the separation of a readable text area from a contained 3D object. These references informed the composition; no reference-site code or assets were copied.
+
+Instrument Serif is bundled with its SIL Open Font License in `assets/fonts/INSTRUMENT-SERIF-OFL.txt`. Manrope’s license is in `assets/fonts/LICENSES.txt`. Three.js is bundled with its MIT license in `assets/vendor/THREE-LICENSE.txt`.
 
 ## Content boundaries
 
@@ -46,6 +44,6 @@ The public CV is dated February 2026 and predates the current job. There is no p
 
 ## Preservation and publication
 
-The preceding continuous-m edition is preserved in `archive/15-island-object/`. All fifteen earlier directions retain their own content and assets.
+The preceding spatial folio is preserved in `archive/16-spatial-folio/`. All sixteen earlier directions retain their own content and assets.
 
-The current site publishes to the existing GitHub Pages address: https://mteyra.github.io/m.a.r.c_t.e.y.r.a/.
+GitHub Pages serves `main` from the repository root. The site remains buildless and publishes to the existing address: https://mteyra.github.io/m.a.r.c_t.e.y.r.a/. Fonts and Three.js load from local assets.
