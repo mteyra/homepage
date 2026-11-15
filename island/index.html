@@ -6,13 +6,12 @@
   <meta name="theme-color" content="#eeefed">
   <meta name="description" content="Marc Teyra Galiano. Artificial intelligence at FAU, work at Siemens Healthineers, and a curiosity for computation, biology and medicine.">
   <title>Marc Teyra · A few things about me</title>
-  <script>document.documentElement.dataset.form = new URLSearchParams(location.search).get('form') === 'fold' ? 'fold' : 'wing';</script>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="preload" href="../assets/fonts/manrope.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="layout.css">
-  <link rel="stylesheet" href="navigation.css">
-  <script type="module" src="main.js"></script>
+  <link rel="stylesheet" href="layout.css?v=monogram">
+  <link rel="stylesheet" href="navigation.css?v=monogram">
+  <script type="module" src="main.js?v=monogram"></script>
 </head>
 <body data-page="about">
   <a class="skip" href="#page-title">Skip to content</a>
@@ -27,9 +26,9 @@
   <main id="main">
     <section id="home" class="home" aria-labelledby="page-title">
       <div class="sculpture-stage">
-        <img class="sculpture-fallback" id="sculpture-fallback" src="wing.svg" alt="" aria-hidden="true">
-        <img class="sculpture-fallback" id="sculpture-fallback-fold" src="fold.svg" alt="" aria-hidden="true">
+        <img class="sculpture-fallback" id="sculpture-fallback" src="monogram.svg" alt="" aria-hidden="true">
         <canvas id="sculpture" tabindex="-1" aria-hidden="true"></canvas>
+        <span class="sculpture-destination" id="sculpture-destination" data-visible="false" aria-hidden="true"></span>
       </div>
       <div class="introduction">
         <h1 id="page-title" tabindex="-1">Marc Teyra</h1>

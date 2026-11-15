@@ -6,23 +6,23 @@ The selected reference is Rauno’s black-and-white 2023 homepage: a spacious op
 
 An off-white field, graphite and silver sculpture, large name at the left and a short introduction at the right. A dated CV link remains at the top. Four explicit destinations occupy a thin translucent navigation island, with a small active dot. A plus button grows the same shell upwards into profile links and motion preferences.
 
-The sculpture develops Marc’s existing GitHub avatar: a wing-shaped silver skin with nineteen beveled hexagons, with one pale accent among the dark tiles. Its two faces refer to the wing and heatshield reading Marc described. The tile count serves the silhouette; it does not encode a claimed achievement or personal statistic. Turning the object reveals its reverse. The old M-sorting task was removed because completing it offered no useful discovery.
+The original rigid M is restored: two graphite uprights and a silver chevron, with the same proportions, bevels and studio lighting. It is assembled at rest. Its meaning starts with Marc’s initial; the interaction gives its three pieces a practical role.
 
-## Two identity studies
+## The M as navigation
 
-The user requested concrete options rather than another advance design decision. Both studies therefore run in the same layout and use the same content. `?form=wing` selects the avatar-derived form; `?form=fold` selects the new ribbon. The default remains Wing, and there is no added selector toolbar.
+Left to right, the pieces lead to Studies, Experience and Projects. Hovering a piece lifts it slightly and displays the destination beneath the object. The matching dock label gains an underline; the current-page dot stays on About until navigation occurs. Hovering or focusing ordinary links previews the corresponding piece.
 
-Fold is one continuous silver ribbon with an open M silhouette and two deep, rounded lobes. The initial is literal; the ordered folds and softer curvature suggest the meeting of computational and biological interests. This is an aesthetic interpretation, not an anatomical model, scientific diagram or achievement code. Turning the object reveals its depth. Its inner-page sculptures use folded ribbon units corresponding to the same real content groups.
+Clicking or tapping a piece opens its section immediately. Holding a finger down previews the destination; a drag, scroll or cancelled gesture clears the preview without navigating. Keyboard focus takes priority over a stationary pointer until the pointer moves again. The canvas is outside keyboard focus; ordinary links expose all destinations and carry their accessible names. There is no sorting, completion message, score, reset or extra toolbar.
 
 ## Inner views
 
 Each view uses the width of the viewport. A left column holds the actual subject, present-tense context and one restrained sculpture. A right column holds its information. The content takes precedence on phones, with a compact sculpture beside the introduction.
 
-- Studies: three facets select computation, biology and medicine, or independent study. Exact course names and certificate links remain visible in the chosen group.
-- Experience: three clusters of connected cells select teams and prototypes, science and care, or robotics and games. The current employer is always visible. Each entry gives a contribution line and expands its source-backed account.
-- Projects: four separate cells accompany four concise entries. Pointer and keyboard focus connect the object to each project; links lead directly to source, presentation or the CV.
+- Studies: three rings select computation, biology and medicine, or independent study. Exact course names and certificate links remain visible in the chosen group.
+- Experience: three plates select teams and prototypes, science and care, or robotics and games. The current employer is always visible. Each entry gives a contribution line and expands its source-backed account.
+- Projects: four frames accompany four concise entries. Pointer and keyboard focus connect the object to each project; links lead directly to source, presentation or the CV.
 
-The cells share their materials and geometry with the opening sculpture. Their role is consistent across pages: selecting one reveals or identifies the corresponding content. The text index provides all sculpture selections with standard keyboard controls. No information is locked behind a 3D gesture. There is no portrait, origin, invented article, unverified job title or claimed live travel feed.
+The forms use the earlier edition’s graphite and silver materials. Their role is consistent across pages: selecting one reveals or identifies corresponding content. They are abstract navigation objects, without invented claims about achievements or scientific structures. The text index provides all sculpture selections with standard keyboard controls. No information is locked behind a 3D gesture. There is no portrait, origin, invented article, unverified job title or claimed live travel feed.
 
 ## Simulated visitor review
 
@@ -34,10 +34,12 @@ Three agents independently explored the published baseline as an employer, a pro
 
 The current Siemens job title and responsibilities remain unverified. The CV-supported pharmaceutical scraper experience stays without an implementation link because no corresponding public repository could be verified.
 
+The subsequent interaction review supported returning to the M, with one condition: show its destination before activation. This informed the shared preview between sculpture and dock, without changing the active-page marker.
+
 ## Motion
 
-Objects animate gently when selected, approached or turned, then settle. They do not spin continuously. Hidden views stop rendering and destroyed views release their graphics resources. Reduced motion, manual pause and WebGL fallback retain the same content and controls. Touch interaction preserves vertical scrolling and pinch zoom. The navigation stays anchored while its menu grows.
+Objects animate gently when selected or approached, then settle. The M has no idle drift. Hidden views stop rendering and destroyed views release their graphics resources. Reduced motion, manual pause and WebGL fallback retain the same content and controls. Touch interaction preserves vertical scrolling and pinch zoom. The navigation stays anchored while its menu grows.
 
 ## Preservation
 
-The first Island is in `archive/08-island/`. The subsequent graphite and wide-grid edition is in `archive/09-island-wide/`. The first published Island, with its M puzzle and separate ring, plate and frame sculptures, is in `archive/10-island-spatial/`. The current version replaces that edition on GitHub Pages at https://mteyra.github.io/m.a.r.c_t.e.y.r.a/.
+The first Island is in `archive/08-island/`. The subsequent graphite and wide-grid edition is in `archive/09-island-wide/`. The first published Island, with its M puzzle and separate ring, plate and frame sculptures, is in `archive/10-island-spatial/`. Both Wing/Fold studies are preserved in `archive/11-island-identities/`, including their original assets and content. The current version is published on GitHub Pages at https://mteyra.github.io/m.a.r.c_t.e.y.r.a/.

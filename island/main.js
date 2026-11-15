@@ -1,5 +1,6 @@
 import { profile, coursework, credentials, experiences, projects } from '../puzzle/content.js';
-import { createChapterWorld } from './chapter-world.js';
+import { createChapterWorld } from './chapter-world.js?v=monogram';
+import { createMonogram } from './monogram.js';
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
@@ -8,11 +9,12 @@ const outward = '<span aria-hidden="true">↗</span>';
 const external = 'target="_blank" rel="noopener"';
 const pages = ['about', 'studies', 'experience', 'projects'];
 const titles = { about: 'Marc Teyra', studies: 'Studies', experience: 'Experience', projects: 'Projects' };
-const variant = document.documentElement.dataset.form === 'fold' ? 'fold' : 'wing';
+const monogramPages = ['studies', 'experience', 'projects'];
 const media = matchMedia('(prefers-reduced-motion: reduce)');
 let page = 'about', sculpture, menuOpen = false, paused = media.matches, manualPause = null;
 let ready = false, renderer = 'loading', transition = null, menuTransition = null;
 let chapterWorld = null, panelTransition = null;
+let objectPreview = null, linkPreview = null, focusPreview = null, preview = null;
 const selections = { studies: 0, experience: 0, projects: 0 };
 const chapterKeys = {
   studies: coursework.map(group => group.id),
@@ -22,16 +24,7 @@ const chapterKeys = {
 try { manualPause = localStorage.getItem('marc-island-motion'); if (manualPause !== null) paused = manualPause === 'paused'; } catch { /* Storage is optional. */ }
 
 const universityCourses = group => group.items.map(item => `<li><span class="course-title">${esc(item.title)}</span>${item.code ? `<span class="course-meta">${esc(item.code)}</span>` : ''}</li>`).join('');
-const chapterFallback = kind => {
-  if (variant === 'fold') {
-    const placements = kind === 'projects' ? [[118,168],[203,143],[288,168],[373,143]] : [[155,173],[250,130],[345,173]];
-    const folds = placements.map(([x,y]) => `<path d="M-25 35V-22Q-25-45 0-45T25-22V35" transform="translate(${x} ${y})" fill="none" stroke="url(#chapter-fold-metal)" stroke-width="13" stroke-linecap="round"/>`).join('');
-    return `<svg class="chapter-fallback" viewBox="0 0 500 360" aria-hidden="true"><defs><linearGradient id="chapter-fold-metal"><stop stop-color="#555c58"/><stop offset=".47" stop-color="#d4d8d2"/><stop offset="1" stop-color="#7e8780"/></linearGradient><filter id="chapter-shadow"><feGaussianBlur stdDeviation="10"/></filter></defs><ellipse cx="250" cy="263" rx="102" ry="12" fill="#30362d" opacity=".1" filter="url(#chapter-shadow)"/>${folds}</svg>`;
-  }
-  const layouts = { studies: [[192,146],[265,114],[267,198]], experience: [[190,195],[250,155],[310,115]], projects: [[194,127],[270,105],[232,199],[308,177]] };
-  const cells = layouts[kind].map(([x,y],i) => `<path d="M0-48 42-24V24L0 48-42 24V-24Z" transform="translate(${x} ${y}) scale(1 .72)" fill="${i === 0 ? '#333c36' : '#aeb6ad'}"/>`).join('');
-  return `<svg class="chapter-fallback" viewBox="0 0 500 360" aria-hidden="true"><defs><filter id="chapter-shadow"><feGaussianBlur stdDeviation="10"/></filter></defs><ellipse cx="250" cy="263" rx="102" ry="12" fill="#30362d" opacity=".1" filter="url(#chapter-shadow)"/><g stroke="#f4f6f1" stroke-width="1.4" stroke-linejoin="round">${cells}</g></svg>`;
-};
+const chapterFallback = kind => `<svg class="chapter-fallback" viewBox="0 0 500 360" aria-hidden="true"><defs><linearGradient id="chapter-metal" x2="1" y2="1"><stop stop-color="#a3a7a2"/><stop offset=".48" stop-color="#ebeeea"/><stop offset="1" stop-color="#656a65"/></linearGradient><filter id="chapter-shadow"><feGaussianBlur stdDeviation="10"/></filter></defs><ellipse cx="250" cy="290" rx="110" ry="12" fill="#30362d" opacity=".1" filter="url(#chapter-shadow)"/>${kind === 'studies' ? '<g fill="none" stroke="url(#chapter-metal)" stroke-width="9"><ellipse cx="250" cy="160" rx="112" ry="54" transform="rotate(-32 250 160)"/><ellipse cx="250" cy="160" rx="112" ry="54" transform="rotate(32 250 160)"/><ellipse cx="250" cy="160" rx="112" ry="54" transform="rotate(90 250 160)"/></g>' : kind === 'experience' ? '<g fill="url(#chapter-metal)" stroke="#fafbf9" stroke-width="1"><path d="m137 205 140-63 100 50-140 65z"/><path d="m120 155 140-63 100 50-140 65z"/><path d="m147 105 140-63 100 50-140 65z"/></g>' : '<g fill="none" stroke="url(#chapter-metal)" stroke-width="10" transform="translate(250 150) rotate(-18) skewY(14)"><rect x="-105" y="-62" width="120" height="120" rx="6"/><rect x="-65" y="-82" width="120" height="120" rx="6"/><rect x="-25" y="-102" width="120" height="120" rx="6"/><rect x="15" y="-122" width="120" height="120" rx="6"/></g>'}</svg>`;
 const selectors = (kind, groups) => `<div class="chapter-selectors" role="tablist" aria-orientation="vertical" aria-label="${kind === 'studies' ? 'Areas of study' : 'Areas of experience'}">${groups.map((group, index) => `<button class="chapter-choice" type="button" role="tab" id="${kind}-choice-${index}" aria-controls="${kind}-panel-${index}" aria-selected="${index === selections[kind]}" tabindex="${index === selections[kind] ? 0 : -1}" data-choice="${index}"><span class="choice-mark" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span><span>${group.title}</span></button>`).join('')}</div>`;
 const panel = (kind, index, title, meta, body) => `<section class="chapter-panel" id="${kind}-panel-${index}" role="tabpanel" aria-labelledby="${kind}-choice-${index}" tabindex="0" ${index !== selections[kind] ? 'hidden' : ''}><header class="panel-heading"><span class="panel-kicker">${meta}</span><h2>${title}</h2></header>${body}</section>`;
 function chapter(kind, intro, meta, body, groups = []) {
@@ -105,13 +98,37 @@ function mountChapter() {
   const kind = page;
   chapterWorld = createChapterWorld($('#chapter-canvas'), {
     kind,
-    variant,
     onSelect: index => selectChapter(index, { fromObject: true }),
     onReady: () => $('.chapter-visual')?.classList.add('is-ready'),
     onUnavailable: () => $('.chapter-visual')?.classList.remove('is-ready'),
   });
   chapterWorld.setPaused(paused);
   chapterWorld.setSelection(selections[kind]);
+}
+
+function syncPreview() {
+  const candidate = document.body.classList.contains('keyboard-input') ? focusPreview : objectPreview ?? linkPreview;
+  preview = page === 'about' && !menuOpen ? candidate : null;
+  sculpture?.setPreview(preview);
+  const destination = monogramPages[preview];
+  const caption = $('#sculpture-destination');
+  caption.textContent = destination ? `${titles[destination]} →` : '';
+  caption.dataset.visible = String(Boolean(destination) && renderer === 'webgl');
+  $$('.dock-rail a').forEach(link => {
+    link.classList.toggle('is-previewed', link.dataset.page === destination);
+  });
+}
+
+function clearPreview() {
+  objectPreview = linkPreview = focusPreview = null;
+  syncPreview();
+}
+
+function linkedPiece(target) {
+  const link = target?.closest?.('.dock-rail a, .introduction a');
+  const destination = link?.getAttribute('href')?.slice(1).split('/')[0];
+  const index = monogramPages.indexOf(destination);
+  return index >= 0 ? index : null;
 }
 
 function animateIn(element, kind = 'reading') {
@@ -144,6 +161,7 @@ function route({ initial = false } = {}) {
     return;
   }
   page = next;
+  clearPreview();
   if (requestedIndex >= 0) selections[page] = requestedIndex;
   closeMenu();
   document.body.dataset.page = page;
@@ -182,6 +200,7 @@ function route({ initial = false } = {}) {
 function setMenu(open, focus = false) {
   if (menuOpen === open) return;
   menuOpen = open;
+  syncPreview();
   const panel = $('#island-menu'), island = $('#island');
   island.scrollTop = 0;
   const previousHeight = island.getBoundingClientRect().height;
@@ -261,7 +280,10 @@ $('.skip').addEventListener('click', event => {
 });
 document.addEventListener('click', event => { if (menuOpen && !$('#island').contains(event.target)) closeMenu(); });
 document.addEventListener('keydown', event => {
-  if (!['Shift', 'Control', 'Alt', 'Meta'].includes(event.key)) document.body.classList.add('keyboard-input');
+  if (!['Shift', 'Control', 'Alt', 'Meta'].includes(event.key)) {
+    document.body.classList.add('keyboard-input');
+    syncPreview();
+  }
   if (event.key === 'Escape' && menuOpen) { closeMenu(); $('#more').focus(); }
   if (event.defaultPrevented || menuOpen || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
   if (event.target.closest?.('input, textarea, select, [contenteditable]:not([contenteditable="false"]), [role="slider"], [role="combobox"], [role="listbox"], [role="menu"], [role="tree"]')) return;
@@ -271,10 +293,36 @@ document.addEventListener('keydown', event => {
   const index = (pages.indexOf(page) + (event.key === 'ArrowRight' ? 1 : -1) + pages.length) % pages.length;
   location.hash = pages[index];
 });
-document.addEventListener('pointerdown', () => document.body.classList.remove('keyboard-input'), true);
+document.addEventListener('pointerdown', () => {
+  document.body.classList.remove('keyboard-input');
+  syncPreview();
+}, true);
+document.addEventListener('pointermove', event => {
+  if (event.pointerType !== 'touch' && document.body.classList.contains('keyboard-input')) {
+    document.body.classList.remove('keyboard-input');
+    syncPreview();
+  }
+}, { passive: true });
+document.addEventListener('pointerover', event => {
+  if (event.pointerType === 'touch' || page !== 'about') return;
+  linkPreview = linkedPiece(event.target);
+  syncPreview();
+});
+document.addEventListener('pointerout', event => {
+  if (event.pointerType === 'touch' || page !== 'about') return;
+  linkPreview = linkedPiece(event.relatedTarget);
+  syncPreview();
+});
 document.addEventListener('focusin', event => {
   if (menuOpen && !$('#island').contains(event.target)) closeMenu();
+  focusPreview = linkedPiece(event.target);
+  syncPreview();
 });
+document.addEventListener('focusout', event => {
+  focusPreview = linkedPiece(event.relatedTarget);
+  syncPreview();
+});
+window.addEventListener('blur', clearPreview);
 addEventListener('hashchange', () => route());
 addEventListener('resize', syncIndicator, { passive: true });
 media.addEventListener('change', () => { if (manualPause === null) setPaused(media.matches); });
@@ -282,19 +330,20 @@ document.fonts.ready.then(syncIndicator);
 
 setPaused(paused);
 route({ initial: true });
-sculpture = createChapterWorld($('#sculpture'), {
-  kind: 'about',
-  variant,
+sculpture = createMonogram($('#sculpture'), {
+  onPreview: index => { objectPreview = index; syncPreview(); },
+  onNavigate: index => { location.hash = monogramPages[index]; },
   onReady: () => { renderer = 'webgl'; document.body.classList.add('world-ready'); },
   onUnavailable: () => {
     renderer = 'fallback';
     document.body.classList.remove('world-ready');
     $('#sculpture').hidden = true;
     $('#sculpture').tabIndex = -1;
+    clearPreview();
   },
 });
 sculpture.setPaused(paused);
 sculpture.setActive(page === 'about');
 
 // Small, read-only view for interaction QA.
-window.islandState = () => ({ page, variant, menuOpen, paused, renderer, identity: sculpture?.getState(), chapter: chapterWorld?.getState(), selections: { ...selections } });
+window.islandState = () => ({ page, menuOpen, paused, renderer, preview, identity: sculpture?.getState(), chapter: chapterWorld?.getState(), selections: { ...selections } });
