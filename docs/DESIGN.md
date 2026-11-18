@@ -44,4 +44,4 @@ The public CV is the February 2026 derivative with its private contact header re
 
 The preceding notebook, static microscope and campus edition is preserved on the `archive` branch in `archive/22-turning-pages/` from exact commit `19b84ea8f658760a1b75aa1d514a6fbac5aedf28`. The first personal study with its Aloha palm remains in `archive/21-personal-study/` from `44ccaf77f63142401b7eadca05d171d75f8bfb41`. The faceted compass remains in `archive/20-faceted-compass/` from `b5274c429493156dc3c13b20e2ab55972b43ce23`. All twenty-two earlier editions retain their own content and assets, with archive links adjusted to the collection.
 
-GitHub Pages continues to serve `main` from the repository root at https://mteyra.github.io/m.a.r.c_t.e.y.r.a/. The site lives at the repository root. `.nojekyll` keeps the site buildless; no hosting migration or new account service is required.
+GitHub Pages continues to serve `main` from the repository root at https://mteyra.github.io/homepage/. The site lives at the repository root. `.nojekyll` keeps the site buildless; no hosting migration or new account service is required.

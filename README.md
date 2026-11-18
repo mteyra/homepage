@@ -1,6 +1,6 @@
 # Marc Teyra Galiano
 
-**Live:** https://mteyra.github.io/m.a.r.c_t.e.y.r.a/
+**Live:** https://mteyra.github.io/homepage/
 
 My personal homepage, arranged as a 3D study. A notebook opens my **Studies**, a microscope my **Experience**, and a miniature of the Rommelweb campus my **Projects**. Selecting an object brings it into focus beside a readable chapter. Navigation, chapters and the CV also work without WebGL.
 
@@ -42,7 +42,7 @@ GitHub Pages serves `main` from the repository root. There is no build step; `.n
 
 ## Earlier designs
 
-The 22 earlier versions of this site are kept on the [`archive` branch](https://github.com/mteyra/m.a.r.c_t.e.y.r.a/tree/archive/archive), unchanged.
+The 22 earlier versions of this site are kept on the [`archive` branch](https://github.com/mteyra/homepage/tree/archive/archive), unchanged.
 
 ## Credits
 
