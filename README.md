@@ -20,6 +20,7 @@ js/model-palm.js      Aloha Robotics palm exhibit
 data/profile.js       all profile text: courses, credentials, experience, projects
 assets/               Three.js, Manrope font, CV, icon, no-WebGL preview image
 docs/DESIGN.md        design notes
+health-sync/          page and privacy policy for my health-sync tool (needed by Google sign-in)
 ```
 
 ## Editing

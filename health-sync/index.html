@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="health-sync: a personal tool that copies my own Fitbit data from Google to my own laptop. What it does and its privacy policy.">
+  <link rel="canonical" href="https://mteyra.github.io/homepage/health-sync/">
+  <link rel="icon" href="../assets/icon.svg">
+  <title>health-sync · privacy policy</title>
+  <style>
+    @font-face{font-family:Manrope;src:url('../assets/fonts/manrope.woff2') format('woff2');font-weight:200 800;font-display:swap}
+    :root{color-scheme:dark;--paper:#151715;--ink:#e3e3d9;--muted:#a4a59d;--line:#e1e2d622}
+    @media (prefers-color-scheme:light){:root{color-scheme:light;--paper:#e9e9e1;--ink:#30362e;--muted:#646c60;--line:#30362e26}}
+    body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 Manrope,system-ui,sans-serif}
+    main{max-width:42rem;margin:0 auto;padding:clamp(32px,7vw,88px) 24px}
+    h1{font-weight:500;font-size:clamp(2rem,6vw,2.8rem);line-height:1.1;margin:0 0 .4em}
+    h2{font-weight:600;font-size:1.05rem;margin:2.2em 0 .4em}
+    p,ul{margin:0 0 1em}
+    li{margin-bottom:.4em}
+    .eyebrow{color:var(--muted);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:1.4em}
+    .note{color:var(--muted);font-size:.9rem;border-top:1px solid var(--line);padding-top:1.4em;margin-top:2.6em}
+    a{color:inherit;text-underline-offset:3px}
+    code{font:.9em ui-monospace,SFMono-Regular,Consolas,monospace}
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow"><a href="../">Marc Teyra Galiano</a> / health-sync</p>
+    <h1>health-sync</h1>
+    <p>A small personal tool I wrote for myself. It signs in to my own Google account and copies my own Fitbit data from the Google Health API to my own laptop, twice a day, so I can keep and study it there.</p>
+    <p>The source code is public, in <a href="https://github.com/mteyra/nixos-config">mteyra/nixos-config</a> (<code>modules/health-sync.py</code> and <code>modules/health.nix</code>). It uses Google’s open-source <a href="https://github.com/Google-Health-API/google-health-cli">ghealth</a> tool.</p>
+
+    <h2 id="privacy">Privacy policy</h2>
+    <ul>
+      <li><strong>Who uses it:</strong> only me. health-sync isn’t offered to anyone else, and only my own Google account signs in to it.</li>
+      <li><strong>What it reads:</strong> the health and fitness data in my Google account that I allow when I sign in, such as steps, heart rate and sleep. It only reads; it never changes or deletes anything in the account.</li>
+      <li><strong>Where the data goes:</strong> into files on my own laptop. health-sync sends it nowhere else. It isn’t shared, sold, or used for advertising, and there are no analytics or trackers.</li>
+      <li><strong>Sign-in:</strong> the Google sign-in token stays on my laptop as well.</li>
+      <li><strong>Removing access:</strong> access can be withdrawn at any time in <a href="https://myaccount.google.com/connections">my Google Account’s third-party connections</a>. Deleting the files on the laptop deletes the copy.</li>
+      <li><strong>Contact:</strong> <a href="https://github.com/mteyra">github.com/mteyra</a>.</li>
+    </ul>
+    <p class="note">If health-sync ever starts sending data anywhere else, this page will say so first. Last updated 18 November 2026.</p>
+  </main>
+</body>
+</html>
